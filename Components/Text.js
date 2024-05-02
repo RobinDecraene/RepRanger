@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 
 export function P({ children }) {
   const [fontsLoaded] = useFonts({
-    'FuturaCyrillicBook': require('../../assets/fonts/FuturaCyrillicBook.ttf'),
+    'FuturaCyrillicBook': require('../assets/fonts/FuturaCyrillicBook.ttf'),
   });
 
   if (!fontsLoaded) {

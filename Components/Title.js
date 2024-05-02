@@ -4,7 +4,7 @@ import { useFonts } from 'expo-font';
 
 export function Title({ children }) {
   const [fontsLoaded] = useFonts({
-    'BauhausRegular': require('../../assets/fonts/BAUHS93.ttf'),
+    'BauhausRegular': require('../assets/fonts/BAUHS93.ttf'),
   });
 
   if (!fontsLoaded) {
