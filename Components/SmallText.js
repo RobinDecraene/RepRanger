@@ -8,7 +8,7 @@ export function SmallText({ children }) {
   });
 
   return (
-    <Text style={{ fontFamily: 'FuturaCyrillicBook', color: '#9CA2BF', fontSize: 12 }}>
+    <Text style={{ fontFamily: 'FuturaCyrillicBook', color: '#9CA2BF', fontSize: 16 }}>
       {children}
     </Text>
   );
