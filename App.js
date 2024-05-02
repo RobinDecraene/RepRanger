@@ -5,6 +5,8 @@ import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navig
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from './Firebase';
+import { format } from 'date-fns'; 
+import { nl } from 'date-fns/locale';
 
 import Start from './src/Auth/Start';
 import Login from './src/Auth/Login';
@@ -110,6 +112,8 @@ if (!user){
 }
 
 function StackNavigatorHome() {
+  const currentMonth = format(new Date(), 'MMMM', { locale: nl });
+  const capitalizedMonth = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
   return (
     <Stack.Navigator
       screenOptions={{
@@ -117,7 +121,7 @@ function StackNavigatorHome() {
       }}
     >
       <Stack.Screen
-        name='Home'
+        name={capitalizedMonth}
         component={Home}
       />
       <Stack.Screen
