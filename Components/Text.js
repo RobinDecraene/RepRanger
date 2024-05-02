@@ -12,7 +12,7 @@ export function P({ children }) {
   }
 
   return (
-    <Text style={{ fontFamily: 'FuturaCyrillicBook' }}>
+    <Text style={{ fontFamily: 'FuturaCyrillicBook', fontSize: 20 }}>
       {children}
     </Text>
   );
