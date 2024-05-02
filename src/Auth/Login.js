@@ -5,6 +5,8 @@ import { firebase } from '../../Firebase';
 import { useNavigation } from '@react-navigation/native';
 import { TextInput } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Button, ButtonLink } from '../../Components/Button';
+import { Input } from '../../Components/Input';
 
 const Login = () => {
   const navigation = useNavigation()
@@ -32,48 +34,20 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <P style={{fontWeight:'bold', fontSize:26,}}>
-        Login
-      </P>
-      <View style={{marginTop:40}}>
-        <TextInput style={styles.textInput} 
-          placeholder="Email" 
-          onChangeText={(email) => setEmail(email)}
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-        <TextInput style={styles.textInput} 
-          placeholder="Password" 
-          onChangeText={(password)=> setPassword(password)}
-          autoCorrect={false}
-          autoCapitalize="none"
-          secureTextEntry={true}
-        />
-      </View>
-      <TouchableOpacity
-          onPress={()=>loginUser(email,password)}
-          style={styles.button}
-      >
-        <P style={{fontWeight:'bold', fontSize:22}}>Login</P>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={()=>navigation.navigate('Registration')}
-        style={{marginTop:20,}}
-      >
-        <P style={{fontSize:16, fontWeight:'bold'}}>
-          Don't have an account? Sign up here
-        </P>
-        
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={()=>{forgetPassword()}}
-        style={{marginTop:20,}}
-      >
-        <P style={{fontSize:16, fontWeight:'bold'}}>
-          Forget Password?
-        </P>
-        
-      </TouchableOpacity>
+      <Input
+        placeholder="Email" 
+        onChangeText={(email) => setEmail(email)}
+      />
+
+      <Input
+        placeholder="Wachtwoord" 
+        onChangeText={(email) => setEmail(email)}
+        secureTextEntry={true}
+      />
+
+      <Button onPress={()=>loginUser(email,password)}>Log in</Button>
+      <ButtonLink onPress={()=>navigation.navigate('Registration')}>Geen account? Regustreer u hier</ButtonLink>
+      <ButtonLink onPress={()=>{forgetPassword()}}>Wachtwoord vergeten?</ButtonLink>
     </View>
   )
 }
@@ -82,27 +56,8 @@ export default Login
 
 const styles = StyleSheet.create({
 container: {
-  flex:1,  
+  flex:1,
+  backgroundColor: '#fff',  
   alignItems:'center',
-  marginTop:100,
-},
-textInput: {
-  paddingTop: 20,
-  paddingBottom:10,
-  width:400,
-  fontSize: 20,
-  borderBottomColor: '#000',
-  borderBottomWidth: 1,
-  marginBottom: 10,
-  textAlign: 'center',
-},
-button: {
-  marginTop:50,
-  height:70,
-  width:250,
-  backgroundColor:'#026efd',
-  alignItems:'center',
-  justifyContent:'center',
-  borderRadius:50,
 }
 });

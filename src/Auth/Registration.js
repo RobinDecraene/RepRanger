@@ -4,6 +4,8 @@ import { P } from '../../Components/Text';
 import { firebase } from '../../Firebase';
 import { TextInput } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Input } from '../../Components/Input';
+import { Button, ButtonLink } from '../../Components/Button';
 
 const Registration = () => {
   const [email, setEmail] = useState('')
@@ -44,42 +46,31 @@ const Registration = () => {
 
   return (
     <View style={styles.container}>
-        <P style={{fontWeight:'bold', fontSize:23,}}>
-          Register Here!
-        </P>
-        <View style={{marginTop:40}}>
-          <TextInput style={styles.textInput} 
-              placeholder="First Name" 
-              onChangeText={(firstName) => setFirstName(firstName)}
-              autoCorrect={false}
-          />
-          <TextInput style={styles.textInput} 
-            placeholder="Last Name" 
-            onChangeText={(lastName) => setLastName(lastName)}
-            autoCorrect={false}
-          />
-          <TextInput style={styles.textInput} 
-            placeholder="Email" 
-            onChangeText={(email) => setEmail(email)}
-            autoCapitalize="none"
-            autoCorrect={false}
-            keyboardType="email-address"
-          />
-          <TextInput style={styles.textInput} 
-            placeholder="Password" 
-            onChangeText={(password)=> setPassword(password)}
-            autoCorrect={false}
-            autoCapitalize="none"
-            secureTextEntry={true}
-          />
-        </View>
-        <TouchableOpacity
-            onPress={()=>registerUser(email,password, firstName, lastName)}
-            style={styles.button}
-        >
-          <P style={{fontWeight:'bold', fontSize:22}}>Register</P>
-        </TouchableOpacity>
-      </View>
+      <Input
+        placeholder="First Name" 
+        onChangeText={(firstName) => setFirstName(firstName)}
+      />
+
+      <Input
+        placeholder="Last Name" 
+        onChangeText={(lastName) => setLastName(lastName)}
+      />
+
+      <Input
+        placeholder="Email" 
+        onChangeText={(email) => setEmail(email)}
+        keyboardType="email-address"
+      />
+
+      <Input
+        placeholder="Password" 
+        onChangeText={(password)=> setPassword(password)}
+        secureTextEntry={true}
+      />
+
+      <Button onPress={()=>registerUser(email,password, firstName, lastName)}>Registreer</Button>
+      <ButtonLink onPress={()=>navigation.navigate('Login')}>Al een account? Log hier in</ButtonLink>
+    </View>
   )
 }
 
@@ -87,27 +78,8 @@ export default Registration
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,  
+    flex:1,
+    backgroundColor: '#fff',  
     alignItems:'center',
-    marginTop:80,
-  },
-  textInput: {
-    paddingTop: 20,
-    paddingBottom:10,
-    width:400,
-    fontSize: 20,
-    borderBottomColor: '#000',
-    borderBottomWidth: 1,
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  button: {
-    marginTop:50,
-    height:70,
-    width:250,
-    backgroundColor:'#026efd',
-    alignItems:'center',
-    justifyContent:'center',
-    borderRadius:50,
   }
 });
