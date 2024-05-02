@@ -1,65 +1,66 @@
-import { Keyboard, StatusBar, StyleSheet, View } from 'react-native';
-import React, { useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { format, startOfWeek, addDays, isSameDay } from 'date-fns';
+import { nl } from 'date-fns/locale';
 import { P } from '../../Components/Text';
-import { firebase } from '../../Firebase'
-import { TextInput } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-
 
 const Home = () => {
-  const navigation = useNavigation();
-  const workout = firebase.firestore().collection('newData');
-  const [addData, setAddData] = useState('');
-  
-  const addField = () => {
-    if (addData && addData.length > 0) {
-      const timestamp = firebase.firestore.FieldValue.serverTimestamp();
-      const data = {
-        heading: addData,
-        createdAt: timestamp
-      };
+  const currentDate = new Date();
+  const startOfCurrentWeek = startOfWeek(currentDate, { weekStartsOn: 1 });
+  const daysOfWeek = [];
 
-      workout
-        .add(data)
-        .then(() => {
-          setAddData('');
-          Keyboard.dismiss();
-        })
-        .catch((error) => {
-          alert(error)
-        })
-    }
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(startOfCurrentWeek, i);
+    const dayName = format(day, 'EEEEE', { locale: nl });
+    const dayNumber = format(day, 'd');
+    const isCurrentDay = isSameDay(day, currentDate);
+
+    daysOfWeek.push({ dayName, dayNumber, isCurrentDay });
   }
+
   return (
     <View style={styles.container}>
-      <P
-      onPress={() => navigation.navigate('Detail')}
-      >Ga naar detail</P>
-
-    <TextInput
-      onChangeText={(heading) => setAddData(heading)}
-      value={addData}
-      multiline={true}
-    />
-
-    <TouchableOpacity onPress={addField}>
-      <P>Add</P>
-    </TouchableOpacity>
-
-
-      <StatusBar style="auto" />
+      <View style={styles.agendaContainer}>
+        {daysOfWeek.map((day, index) => (
+          <View key={index} style={styles.dayContainer}>
+            <P style={[styles.dayName, day.isCurrentDay && { color: '#FCAF58', fontFamily: 'FuturaCyrillicBold' }]}>
+              {day.dayName}
+            </P>
+            <P style={[styles.dayNumber, day.isCurrentDay && { color: '#FCAF58', fontFamily: 'FuturaCyrillicBold' }]}>
+              {day.dayNumber}
+            </P>
+          </View>
+        ))}
+      </View>
     </View>
   );
 }
 
-export default Home
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff"
+
+  },
+  agendaContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingTop: 20,
+  },
+  dayContainer: {
+    alignItems: 'center',
+  },
+  dayName: {
+    fontSize: 16,
+  },
+  dayNumber: {
+    fontSize: 20,
+  },
+  monthName: {
+    fontSize: 14,
   },
 });
+
+export default Home;
