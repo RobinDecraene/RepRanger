@@ -1,10 +1,11 @@
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { StatusBar, StyleSheet, View } from 'react-native';
 import React from 'react';
+import { P } from '../../Components/Text';
 
 const Tips = () => {
   return (
     <View style={styles.container}>
-      <Text>Ga naar detail</Text>
+      <P>Ga naar detail</P>
       <StatusBar style="auto" />
     </View>
   );

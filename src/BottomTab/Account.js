@@ -1,6 +1,6 @@
 import { Image, StyleSheet, View } from 'react-native';
 import React from 'react';
-import { P } from '../Components/Text';
+import { P } from '../../Components/Text';
 
 const Account = () => {
   return (

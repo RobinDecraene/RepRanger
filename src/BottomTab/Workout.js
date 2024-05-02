@@ -1,6 +1,6 @@
 import { Image, StyleSheet, View } from 'react-native';
 import React from 'react';
-import { Title } from '../Components/Title';
+import { Title } from '../../Components/Title';
 
 const Workout = () => {
   return (
