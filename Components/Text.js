@@ -1,10 +1,11 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { Text } from 'react-native';
 import { useFonts } from 'expo-font';
 
-export function P({ children }) {
+export function P({ children, style }) {
   const [fontsLoaded] = useFonts({
     'FuturaCyrillicBook': require('../assets/fonts/FuturaCyrillicBook.ttf'),
+    'FuturaCyrillicBold': require('../assets/fonts/FuturaCyrillicBold.ttf'),
   });
 
   if (!fontsLoaded) {
@@ -12,7 +13,7 @@ export function P({ children }) {
   }
 
   return (
-    <Text style={{ fontFamily: 'FuturaCyrillicBook', fontSize: 20 }}>
+    <Text style={[{ fontFamily: 'FuturaCyrillicBook', fontSize: 20 }, style]}>
       {children}
     </Text>
   );
