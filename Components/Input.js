@@ -4,7 +4,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useFonts } from 'expo-font';
 import { TextInput } from 'react-native-paper';
 
-export function Input({ placeholder, onPress, secureTextEntry }) {
+export function Input({ placeholder, onChangeText, autoCapitalize, secureTextEntry, keyboardType }) {
   const [fontsLoaded] = useFonts({
     'FuturaCyrillicBook': require('../assets/fonts/FuturaCyrillicBook.ttf'),
   });
@@ -12,12 +12,13 @@ export function Input({ placeholder, onPress, secureTextEntry }) {
   return (
     <TextInput
       placeholder={placeholder}
-      onChangeText={onPress}
-      autoCapitalize="none"
+      onChangeText={onChangeText}
+      autoCapitalize={autoCapitalize}
       autoCorrect={false}
       secureTextEntry={secureTextEntry}
       style={styles.input}
       underlineColor="transparent"
+      keyboardType={keyboardType}
       />
   );
 }
