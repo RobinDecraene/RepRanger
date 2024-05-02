@@ -1,9 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
-import { P } from '../../Components/Text';
 import { firebase } from '../../Firebase';
-import { TextInput } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Input } from '../../Components/Input';
 import { Button, ButtonLink } from '../../Components/Button';
 
@@ -18,13 +15,8 @@ const Registration = () => {
         .then(() => {
           firebase.auth().currentUser.sendEmailVerification({
             handleCodeInApp: true,
-            url: 'https://expo-33883.firebaseapp.com',
+            url: 'https://repranger-b8691.firebaseapp.com',
            })
-          .then(() => {
-                alert("Email sent")
-            }).catch((error) => {
-                alert(error)
-            })
             .then(() => {
               firebase.firestore().collection("users")
               .doc(firebase.auth().currentUser.uid)
@@ -60,6 +52,7 @@ const Registration = () => {
         placeholder="Email" 
         onChangeText={(email) => setEmail(email)}
         keyboardType="email-address"
+        autoCapitalize='none'
       />
 
       <Input

@@ -1,7 +1,5 @@
 import { StyleSheet, View } from 'react-native';
 import React from 'react';
-import { P } from '../../Components/Text';
-import { Link } from '@react-navigation/native';
 import { Button } from '../../Components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { Title } from '../../Components/Title';

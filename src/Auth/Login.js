@@ -1,10 +1,7 @@
 import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
-import { P } from '../../Components/Text';
 import { firebase } from '../../Firebase';
 import { useNavigation } from '@react-navigation/native';
-import { TextInput } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button, ButtonLink } from '../../Components/Button';
 import { Input } from '../../Components/Input';
 
@@ -13,35 +10,48 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  loginUser = async (email,password) => {
-      try{
-          await firebase.auth().signInWithEmailAndPassword(email,password)
-      } catch (error){
-        alert(error)
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+  
+  const loginUser = async (email,password) => {
+      try {
+          if (!isValidEmail(email)) {
+              throw new Error('Invalid email address');
+          }
+          await firebase.auth().signInWithEmailAndPassword(email,password);
+      } catch (error) {
+          alert(error.message);
       }
   }
-
-  // forget password
+  
   const forgetPassword = () => {
+      if (!isValidEmail(email)) {
+          alert('Invalid email address');
+          return;
+      }
       firebase.auth().sendPasswordResetEmail(email)
       .then(() => {
-          alert('Password reset email sent!')
+          alert('Password reset email sent!');
       })
       .catch(error => {
-          alert(error)
-      })
+          alert(error.message);
+      });
   }
+  
 
   return (
     <View style={styles.container}>
       <Input
         placeholder="Email" 
         onChangeText={(email) => setEmail(email)}
+        keyboardType="email-address"
+        autoCapitalize='none'
       />
 
       <Input
         placeholder="Wachtwoord" 
-        onChangeText={(email) => setEmail(email)}
+        onChangeText={(password)=> setPassword(password)}
         secureTextEntry={true}
       />
 
