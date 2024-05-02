@@ -22,6 +22,24 @@ export function Button({ children, onPress }) {
   );
 }
 
+export function ButtonLink({ children, onPress }) {
+  const [fontsLoaded] = useFonts({
+    'FuturaCyrillicBook': require('../assets/fonts/FuturaCyrillicBook.ttf'),
+  });
+  
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    }
+  };
+
+  return (
+    <TouchableOpacity onPress={handlePress}>
+      <Text style={{ fontFamily: 'FuturaCyrillicBook', color: "#FCAF58", fontSize: 20 }}>{ children }</Text>
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
   button: {
     backgroundColor:'#FCAF58',
@@ -31,5 +49,6 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     borderRadius: 50,
+    marginBottom: 10
   }
 });
