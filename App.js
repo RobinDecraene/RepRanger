@@ -5,14 +5,11 @@ import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navig
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from './Firebase';
-import { format } from 'date-fns'; 
-import { nl } from 'date-fns/locale';
 
 import Start from './src/Auth/Start';
 import Login from './src/Auth/Login';
 import Registration from './src/Auth/Registration';
 
-import Home from './src/BottomTab/Home';
 import Workout from './src/BottomTab/Workout';
 import Tips from './src/BottomTab/Tips';
 import Account from './src/BottomTab/Account';
@@ -40,11 +37,7 @@ function TabNavigator() {
 
 if (!user){
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitle: props => <Title {...props} />,
-      }}
-    >
+    <Stack.Navigator>
     <Stack.Screen
       name='Start'
       component={Start}
@@ -53,10 +46,12 @@ if (!user){
     <Stack.Screen
       name='Login'
       component={Login}
+      options={{ headerShown: false }}
     />
     <Stack.Screen
       name='Registration'
       component={Registration}
+      options={{ headerShown: false }}
     />
   </Stack.Navigator>
   )
@@ -64,7 +59,7 @@ if (!user){
 
   return (
     <Tab.Navigator
-      initialRouteName="Home"
+      initialRouteName="Workout"
       activeColor="#FCAF58"
       inactiveColor="#fff"
       barStyle={{ backgroundColor: '#4E598C', height: 100 }}
@@ -73,15 +68,6 @@ if (!user){
     >
       <Tab.Screen
         name='1'
-        component={StackNavigatorHome}
-        options={{
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="home" color={color} size={30} />
-            ),
-          }}
-      />
-      <Tab.Screen
-        name='2'
         component={StackNavigatorWorkout}
         options={{
             tabBarIcon: ({ color }) => (
@@ -90,7 +76,7 @@ if (!user){
           }}
       />
       <Tab.Screen
-        name='3'
+        name='2'
         component={StackNavigatorTips}
         options={{
             tabBarIcon: ({ color }) => (
@@ -99,7 +85,7 @@ if (!user){
           }}
       />
       <Tab.Screen
-        name='4'
+        name='3'
         component={StackNavigatorAccount}
         options={{
             tabBarIcon: ({ color }) => (
@@ -108,27 +94,6 @@ if (!user){
           }}
       />
     </Tab.Navigator>
-  )
-}
-
-function StackNavigatorHome() {
-  const currentMonth = format(new Date(), 'MMMM', { locale: nl });
-  const capitalizedMonth = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerTitle: props => <Title {...props} />,
-      }}
-    >
-      <Stack.Screen
-        name={capitalizedMonth}
-        component={Home}
-      />
-      <Stack.Screen
-        name='Detail'
-        component={Detail}
-      />
-    </Stack.Navigator>
   )
 }
 
@@ -156,6 +121,7 @@ function StackNavigatorTips() {
       }}
     >
       <Stack.Screen name='Tips' component={Tips}/>
+      <Stack.Screen name='Detail' component={Detail}/>
     </Stack.Navigator>
   )
 }
