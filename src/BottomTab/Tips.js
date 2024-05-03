@@ -8,7 +8,7 @@ const Tips = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <Button onPress={() => navigation.navigate('Detail')}>Ga naar detail</Button>
+      <Button onPress={() => navigation.navigate('DetailTip')}>Ga naar detail</Button>
       <StatusBar style="auto" />
     </View>
   );

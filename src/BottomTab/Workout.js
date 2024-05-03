@@ -1,12 +1,16 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import React from 'react';
 import { Title } from '../../Components/Title';
+import { useNavigation } from '@react-navigation/native';
 
 const Workout = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
 
-        <View style={styles.card}>
+      <Pressable
+        onPress={() => navigation.navigate('DetailWorkout')}
+        style={styles.card}>
           <View style={styles.images}>
             <Image
               style={styles.exercisesImg}
@@ -21,11 +25,11 @@ const Workout = () => {
           <View style={styles.cardInfo}>
             <Title>Naam workout</Title>
           </View>
-        </View>
+      </Pressable>
 
-
-
-        <View style={styles.card}>
+      <Pressable
+        onPress={() => navigation.navigate('DetailWorkout')}
+        style={styles.card}>
           <View style={styles.images}>
             <Image
               style={styles.exercisesImg}
@@ -40,7 +44,7 @@ const Workout = () => {
           <View style={styles.cardInfo}>
             <Title>Naam workout</Title>
           </View>
-        </View>
+      </Pressable>
 
     </View>
   );
@@ -78,9 +82,10 @@ const styles = StyleSheet.create({
   },
   images: {
     flexDirection: 'row',
-    height: 'auto',
     backgroundColor: 'transparent',
-    alignItems: 'baseline'
+    alignItems: 'baseline',
+    width: '100%',
+    justifyContent: 'space-between'
   },
   exercisesImg: {
     width: 140,

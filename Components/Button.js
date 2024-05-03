@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { P } from './Text';
 
-export function Button({ children, onPress }) {
+export function Button({ children, onPress, style }) {
   
   const handlePress = () => {
     if (onPress) {
@@ -12,13 +12,13 @@ export function Button({ children, onPress }) {
   };
 
   return (
-    <TouchableOpacity style={styles.button} onPress={handlePress}>
+    <TouchableOpacity style={[styles.button, style]} onPress={handlePress}>
       <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#fff", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
 }
 
-export function ButtonLink({ children, onPress }) {
+export function ButtonLink({ children, onPress, style }) {
   const handlePress = () => {
     if (onPress) {
       onPress();
@@ -26,7 +26,7 @@ export function ButtonLink({ children, onPress }) {
   };
 
   return (
-    <TouchableOpacity onPress={handlePress}>
+    <TouchableOpacity style={style} onPress={handlePress}>
       <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#FCAF58", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
@@ -37,9 +37,9 @@ const styles = StyleSheet.create({
     backgroundColor:'#FCAF58',
     alignItems:'center',
     justifyContent:'center',
-    padding: 10,
-    paddingLeft: 30,
-    paddingRight: 30,
+    padding: 15,
+    paddingLeft: 35,
+    paddingRight: 35,
     borderRadius: 50,
     marginBottom: 10
   }
