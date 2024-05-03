@@ -4,21 +4,15 @@ import { firebase } from '../../Firebase';
 import { useNavigation } from '@react-navigation/native';
 import { Button, ButtonLink } from '../../Components/Button';
 import { Input } from '../../Components/Input';
+import { Title } from '../../Components/Title';
 
 const Login = () => {
-  const navigation = useNavigation()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-
-  const isValidEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   
   const loginUser = async (email,password) => {
       try {
-          if (!isValidEmail(email)) {
-              throw new Error('Invalid email address');
-          }
           await firebase.auth().signInWithEmailAndPassword(email,password);
       } catch (error) {
           alert(error.message);
@@ -26,22 +20,19 @@ const Login = () => {
   }
   
   const forgetPassword = () => {
-      if (!isValidEmail(email)) {
-          alert('Invalid email address');
-          return;
-      }
-      firebase.auth().sendPasswordResetEmail(email)
-      .then(() => {
-          alert('Password reset email sent!');
-      })
-      .catch(error => {
-          alert(error.message);
-      });
+    firebase.auth().sendPasswordResetEmail(email)
+    .then(() => {
+        alert('Password reset email sent!');
+    })
+    .catch(error => {
+        alert(error.message);
+    });
   }
   
 
   return (
     <View style={styles.container}>
+      <Title style={styles.title}>Login</Title>
       <Input
         placeholder="Email" 
         onChangeText={(email) => setEmail(email)}
@@ -69,5 +60,9 @@ container: {
   flex:1,
   backgroundColor: '#fff',  
   alignItems:'center',
+  justifyContent: 'center'
+},
+title: {
+  marginBottom: 20
 }
 });

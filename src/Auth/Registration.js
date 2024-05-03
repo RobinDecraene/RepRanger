@@ -3,12 +3,16 @@ import React, { useState } from 'react';
 import { firebase } from '../../Firebase';
 import { Input } from '../../Components/Input';
 import { Button, ButtonLink } from '../../Components/Button';
+import { Title } from '../../Components/Title';
+import { useNavigation } from '@react-navigation/native';
 
 const Registration = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
+  const navigation = useNavigation();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
 
     registerUser = async (email,password, firstName, lastName) => {
         await firebase.auth().createUserWithEmailAndPassword(email,password)
@@ -38,6 +42,7 @@ const Registration = () => {
 
   return (
     <View style={styles.container}>
+      <Title style={styles.title}>Registreer</Title>
       <Input
         placeholder="First Name" 
         onChangeText={(firstName) => setFirstName(firstName)}
@@ -71,8 +76,12 @@ export default Registration
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    backgroundColor: '#fff',  
-    alignItems:'center',
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    marginBottom: 20
   }
 });
