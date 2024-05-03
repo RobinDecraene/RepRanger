@@ -2,57 +2,64 @@ import { Image, Pressable, StyleSheet, View } from 'react-native';
 import React from 'react';
 import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Workout = () => {
   const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.base}>
+      <View style={styles.container}>
 
-      <Pressable
-        onPress={() => navigation.navigate('DetailWorkout')}
-        style={styles.card}>
-          <View style={styles.images}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <Image
-              style={styles.exercisesImgSmaller}
-              source={require('../../assets/images/squat-down.png')}
-            />
-          </View>
+        <Pressable
+          onPress={() => navigation.navigate('DetailWorkout')}
+          style={styles.card}>
+            <View style={styles.images}>
+              <Image
+                style={styles.exercisesImg}
+                source={require('../../assets/images/squat-up.png')}
+              />
+              <Image
+                style={styles.exercisesImgSmaller}
+                source={require('../../assets/images/squat-down.png')}
+              />
+            </View>
 
-          <View style={styles.cardInfo}>
-            <Title>Naam workout</Title>
-          </View>
-      </Pressable>
+            <View style={styles.cardInfo}>
+              <Title>Naam workout</Title>
+            </View>
+        </Pressable>
 
-      <Pressable
-        onPress={() => navigation.navigate('DetailWorkout')}
-        style={styles.card}>
-          <View style={styles.images}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <Image
-              style={styles.exercisesImgSmaller}
-              source={require('../../assets/images/squat-down.png')}
-            />
-          </View>
+        <Pressable
+          onPress={() => navigation.navigate('DetailWorkout')}
+          style={styles.card}>
+            <View style={styles.images}>
+              <Image
+                style={styles.exercisesImg}
+                source={require('../../assets/images/squat-up.png')}
+              />
+              <Image
+                style={styles.exercisesImgSmaller}
+                source={require('../../assets/images/squat-down.png')}
+              />
+            </View>
 
-          <View style={styles.cardInfo}>
-            <Title>Naam workout</Title>
-          </View>
-      </Pressable>
+            <View style={styles.cardInfo}>
+              <Title>Naam workout</Title>
+            </View>
+        </Pressable>
 
-    </View>
+      </View>
+    </ScrollView>
   );
 }
 
 export default Workout
 
 const styles = StyleSheet.create({
+  base: {
+    backgroundColor: '#fff',
+    width: '100%'
+  },
   container: {
     flex: 1,
     alignItems: 'center',

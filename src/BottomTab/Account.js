@@ -4,6 +4,7 @@ import { firebase } from '../../Firebase';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { useNavigation } from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const Account = () => {
   const navigation = useNavigation();
@@ -37,22 +38,28 @@ const Account = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Image
-        style={styles.profileImg}
-        source={require('../../assets/images/no-img.png')}
-      />
-      {user && (
-        <P>{`${user.firstName} ${user.lastName}`}</P>
-      )}
-      <Button onPress={handleLogout}>Log uit</Button>
-    </View>
+    <ScrollView style={styles.base}>
+      <View style={styles.container}>
+        <Image
+          style={styles.profileImg}
+          source={require('../../assets/images/no-img.png')}
+        />
+        {user && (
+          <P>{`${user.firstName} ${user.lastName}`}</P>
+        )}
+        <Button onPress={handleLogout}>Log uit</Button>
+      </View>
+    </ScrollView>
   );
 }
 
 export default Account;
 
 const styles = StyleSheet.create({
+  base: {
+    backgroundColor: '#fff',
+    width: '100%'
+  },
   container: {
     flex: 1,
     alignItems: 'center',
