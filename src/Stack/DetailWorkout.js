@@ -5,62 +5,69 @@ import { SmallText } from '../../Components/SmallText';
 import { P } from '../../Components/Text';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from '../../Components/Button';
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 const DetailWorkout = () => {
   const navigation = useNavigation();
   return (
-    <View style={styles.container}>
-      <Pressable
-        onPress={() => navigation.navigate('DetailExercise')}
-        style={styles.card}>
-          <Image
-            style={styles.exercisesImg}
-            source={require('../../assets/images/squat-up.png')}
-          />
-          <View style={styles.cardInfo}>
-            <P>Naam workout</P>
-            <SmallText>Spiergroep</SmallText>
-          </View>
-          <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-      </Pressable>
+    <ScrollView style={styles.base}>
+      <View style={styles.container}>
+        <Pressable
+          onPress={() => navigation.navigate('DetailExercise')}
+          style={styles.card}>
+            <Image
+              style={styles.exercisesImg}
+              source={require('../../assets/images/squat-up.png')}
+            />
+            <View style={styles.cardInfo}>
+              <P>Naam workout</P>
+              <SmallText>Spiergroep</SmallText>
+            </View>
+            <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
+        </Pressable>
 
-      <Pressable
-        onPress={() => navigation.navigate('DetailExercise')}
-        style={styles.card}>
-          <Image
-            style={styles.exercisesImg}
-            source={require('../../assets/images/bench-press-up.png')}
-          />
-          <View style={styles.cardInfo}>
-            <P>Naam workout</P>
-            <SmallText>Spiergroep</SmallText>
-          </View>
-          <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-      </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate('DetailExercise')}
+          style={styles.card}>
+            <Image
+              style={styles.exercisesImg}
+              source={require('../../assets/images/bench-press-up.png')}
+            />
+            <View style={styles.cardInfo}>
+              <P>Naam workout</P>
+              <SmallText>Spiergroep</SmallText>
+            </View>
+            <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
+        </Pressable>
 
-      <Pressable
-        onPress={() => navigation.navigate('DetailExercise')}
-        style={styles.card}>
-          <Image
-            style={styles.exercisesImg}
-            source={require('../../assets/images/squat-up.png')}
-          />
-          <View style={styles.cardInfo}>
-            <P>Naam workout</P>
-            <SmallText>Spiergroep</SmallText>
-          </View>
-          <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-      </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate('DetailExercise')}
+          style={styles.card}>
+            <Image
+              style={styles.exercisesImg}
+              source={require('../../assets/images/squat-up.png')}
+            />
+            <View style={styles.cardInfo}>
+              <P>Naam workout</P>
+              <SmallText>Spiergroep</SmallText>
+            </View>
+            <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
+        </Pressable>
 
-      <Button style={styles.button}>Start workout</Button>
-    </View>
+        <Button style={styles.button}>Start workout</Button>
+      </View>
+    </ScrollView>
   );
 }
 
 export default DetailWorkout
 
 const styles = StyleSheet.create({
+  base: {
+    backgroundColor: '#fff',
+    width: '100%'
+  },
   container: {
     flex: 1,
     backgroundColor: '#fff',
