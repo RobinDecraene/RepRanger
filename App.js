@@ -5,6 +5,8 @@ import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navig
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from './Firebase';
+import { Title } from './Components/Title';
+import { useEffect, useState } from 'react';
 
 import Start from './src/Auth/Start';
 import Login from './src/Auth/Login';
@@ -13,9 +15,11 @@ import Registration from './src/Auth/Registration';
 import Workout from './src/BottomTab/Workout';
 import Tips from './src/BottomTab/Tips';
 import Account from './src/BottomTab/Account';
-import Detail from './src/Stack/Detail';
-import { Title } from './Components/Title';
-import { useEffect, useState } from 'react';
+
+import DetailTip from './src/Stack/DetailTip';
+import DetailExercise from './src/Stack/DetailExercise';
+import DetailWorkout from './src/Stack/DetailWorkout';
+import NiewWorkout from './src/Stack/NiewWorkout';
 
 const Tab = createMaterialBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -107,6 +111,19 @@ function StackNavigatorWorkout() {
       <Stack.Screen
         name='Workout'
         component={Workout}
+
+      />
+      <Stack.Screen
+        name='DetailWorkout'
+        component={DetailWorkout}
+      />
+      <Stack.Screen
+        name='DetailExercise'
+        component={DetailExercise}
+      />
+      <Stack.Screen
+        name='NiewWorkout'
+        component={NiewWorkout}
       />
     </Stack.Navigator>
   )
@@ -120,8 +137,14 @@ function StackNavigatorTips() {
         headerTitle: props => <Title {...props} />,
       }}
     >
-      <Stack.Screen name='Tips' component={Tips}/>
-      <Stack.Screen name='Detail' component={Detail}/>
+      <Stack.Screen
+        name='Tips'
+        component={Tips}
+      />
+      <Stack.Screen
+        name='DetailTip'
+        component={DetailTip}
+      />
     </Stack.Navigator>
   )
 }
@@ -134,7 +157,10 @@ function StackNavigatorAccount() {
         headerTitle: props => <Title {...props} />,
       }}
     >
-      <Stack.Screen name='Account' component={Account}/>
+      <Stack.Screen
+        name='Account'
+        component={Account}
+      />
     </Stack.Navigator>
   )
 }

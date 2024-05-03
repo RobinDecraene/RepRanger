@@ -1,16 +1,16 @@
 import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 
-const Detail = () => {
+const DetailTip = () => {
   return (
     <View style={styles.container}>
-      <Text>Detail</Text>
+      <Text>DetailTip</Text>
       <StatusBar style="auto" />
     </View>
   );
 }
 
-export default Detail
+export default DetailTip
 
 const styles = StyleSheet.create({
   container: {
