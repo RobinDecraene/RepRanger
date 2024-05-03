@@ -56,10 +56,12 @@ const DetailExercise = () => {
           </View>
         </Pressable>
 
-        <View>
+        <View style={styles.exerciseInfo}>
           <Image
+          style={styles.ranger}
             source={require('../../assets/images/ranger-head.png')}
           />
+          <P>tips voor een goede houding</P>
         </View>
 
       </View>
@@ -142,6 +144,17 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   setCardInfo: {
+    flexDirection: 'row',
+    width: '100%',
+    justifyContent: 'space-between',
+    marginTop: 10
+  },
+  ranger: {
+    width: 120,
+    height: 120,
+    resizeMode: 'contain'
+  },
+  exerciseInfo: {
     flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
