@@ -1,13 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useFonts } from 'expo-font';
-import { Link } from '@react-navigation/native';
+import { P } from './Text';
 
 export function Button({ children, onPress }) {
-  const [fontsLoaded] = useFonts({
-    'FuturaCyrillicBook': require('../assets/fonts/FuturaCyrillicBook.ttf'),
-  });
   
   const handlePress = () => {
     if (onPress) {
@@ -17,16 +13,12 @@ export function Button({ children, onPress }) {
 
   return (
     <TouchableOpacity style={styles.button} onPress={handlePress}>
-      <Text style={{ fontFamily: 'FuturaCyrillicBook', color: "#fff", fontSize: 20 }}>{ children }</Text>
+      <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#fff", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
 }
 
 export function ButtonLink({ children, onPress }) {
-  const [fontsLoaded] = useFonts({
-    'FuturaCyrillicBook': require('../assets/fonts/FuturaCyrillicBook.ttf'),
-  });
-  
   const handlePress = () => {
     if (onPress) {
       onPress();
@@ -35,7 +27,7 @@ export function ButtonLink({ children, onPress }) {
 
   return (
     <TouchableOpacity onPress={handlePress}>
-      <Text style={{ fontFamily: 'FuturaCyrillicBook', color: "#FCAF58", fontSize: 20 }}>{ children }</Text>
+      <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#FCAF58", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
 }
