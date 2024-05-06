@@ -6,6 +6,7 @@ import { P } from '../../Components/Text';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Card } from '../../Components/Card';
 
 
 const DetailWorkout = () => {
@@ -13,7 +14,7 @@ const DetailWorkout = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <Pressable
+        <Card
           onPress={() => navigation.navigate('DetailExercise')}
           style={styles.card}>
             <Image
@@ -25,9 +26,9 @@ const DetailWorkout = () => {
               <SmallText>Spiergroep</SmallText>
             </View>
             <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-        </Pressable>
+        </Card>
 
-        <Pressable
+        <Card
           onPress={() => navigation.navigate('DetailExercise')}
           style={styles.card}>
             <Image
@@ -39,9 +40,9 @@ const DetailWorkout = () => {
               <SmallText>Spiergroep</SmallText>
             </View>
             <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-        </Pressable>
+        </Card>
 
-        <Pressable
+        <Card
           onPress={() => navigation.navigate('DetailExercise')}
           style={styles.card}>
             <Image
@@ -53,7 +54,7 @@ const DetailWorkout = () => {
               <SmallText>Spiergroep</SmallText>
             </View>
             <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-        </Pressable>
+        </Card>
 
         <Button style={styles.button}>Start workout</Button>
       </View>
@@ -77,15 +78,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   card: {
-    backgroundColor: '#EBECF2',
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: 30,
-    width: '100%',
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
     marginBottom: 10
   },
   exercisesImg: {

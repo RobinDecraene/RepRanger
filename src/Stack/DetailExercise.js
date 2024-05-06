@@ -3,13 +3,14 @@ import React from 'react';
 import { P } from '../../Components/Text';
 import { Title } from '../../Components/Title';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Card } from '../../Components/Card';
 
 
 const DetailExercise = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <View style={styles.imagesCard}>
+        <Card style={styles.imagesCard}>
           <Image
             style={styles.exercisesImg}
             source={require('../../assets/images/squat-up.png')}
@@ -18,7 +19,7 @@ const DetailExercise = () => {
             style={styles.exercisesImgSmaller}
             source={require('../../assets/images/squat-down.png')}
           />
-        </View>
+        </Card>
 
         <View style={styles.setsRow}>
           <Pressable style={styles.sets}>
@@ -32,29 +33,29 @@ const DetailExercise = () => {
           </Pressable>
         </View>
 
-        <Pressable style={styles.setCard}>
+        <Card style={styles.setCard}>
           <Title>Set 1</Title>
           <View style={styles.setCardInfo}>
             <P>8 Reps</P>
             <P>40 kg</P>
           </View>
-        </Pressable>
+        </Card>
 
-        <Pressable style={styles.setCard}>
+        <Card style={styles.setCard}>
           <Title>Set 2</Title>
           <View style={styles.setCardInfo}>
             <P>8 Reps</P>
             <P>40 kg</P>
           </View>
-        </Pressable>
+        </Card>
 
-        <Pressable style={styles.setCard}>
+        <Card style={styles.setCard}>
           <Title>Set 3</Title>
           <View style={styles.setCardInfo}>
             <P>8 Reps</P>
             <P>40 kg</P>
           </View>
-        </Pressable>
+        </Card>
 
         <View style={styles.exerciseInfo}>
           <Image
@@ -86,14 +87,8 @@ const styles = StyleSheet.create({
   },
   imagesCard: {
     flexDirection: 'row',
-    backgroundColor: '#EBECF2',
     alignItems: 'baseline',
-    width: '100%',
     justifyContent: 'space-between',
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 30
   },
   exercisesImg: {
     width: 140,
@@ -135,12 +130,7 @@ const styles = StyleSheet.create({
     color: '#fff'
   },
   setCard: {
-    backgroundColor: '#EBECF2',
-    width: '100%',
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 30,
+    alignItems: 'flex-start',
     marginBottom: 10
   },
   setCardInfo: {

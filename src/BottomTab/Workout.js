@@ -3,6 +3,7 @@ import React from 'react';
 import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Card } from '../../Components/Card';
 
 const Workout = () => {
   const navigation = useNavigation();
@@ -10,43 +11,43 @@ const Workout = () => {
     <ScrollView style={styles.base}>
       <View style={styles.container}>
 
-        <Pressable
+        <Card
           onPress={() => navigation.navigate('DetailWorkout')}
-          style={styles.card}>
-            <View style={styles.images}>
-              <Image
-                style={styles.exercisesImg}
-                source={require('../../assets/images/squat-up.png')}
-              />
-              <Image
-                style={styles.exercisesImgSmaller}
-                source={require('../../assets/images/squat-down.png')}
-              />
-            </View>
+        >
+          <View style={styles.images}>
+            <Image
+              style={styles.exercisesImg}
+              source={require('../../assets/images/squat-up.png')}
+            />
+            <Image
+              style={styles.exercisesImgSmaller}
+              source={require('../../assets/images/squat-down.png')}
+            />
+          </View>
 
-            <View style={styles.cardInfo}>
-              <Title>Naam workout</Title>
-            </View>
-        </Pressable>
+          <View style={styles.cardInfo}>
+            <Title>Naam workout</Title>
+          </View>
+        </Card>
 
-        <Pressable
+        <Card
           onPress={() => navigation.navigate('DetailWorkout')}
-          style={styles.card}>
-            <View style={styles.images}>
-              <Image
-                style={styles.exercisesImg}
-                source={require('../../assets/images/squat-up.png')}
-              />
-              <Image
-                style={styles.exercisesImgSmaller}
-                source={require('../../assets/images/squat-down.png')}
-              />
-            </View>
+        >
+          <View style={styles.images}>
+            <Image
+              style={styles.exercisesImg}
+              source={require('../../assets/images/squat-up.png')}
+            />
+            <Image
+              style={styles.exercisesImgSmaller}
+              source={require('../../assets/images/squat-down.png')}
+            />
+          </View>
 
-            <View style={styles.cardInfo}>
-              <Title>Naam workout</Title>
-            </View>
-        </Pressable>
+          <View style={styles.cardInfo}>
+            <Title>Naam workout</Title>
+          </View>
+        </Card>
 
       </View>
     </ScrollView>
@@ -67,14 +68,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 20,
     backgroundColor: '#fff'
-  },
-  card: {
-    backgroundColor: '#EBECF2',
-    padding: 15,
-    borderRadius: 20,
-    minWidth: '100%',
-    alignItems: 'center',
-    marginBottom: 20
   },
   link: {
     height: 190,
