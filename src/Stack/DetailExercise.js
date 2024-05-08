@@ -6,9 +6,12 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useNavigation } from '@react-navigation/native';
 
 
 const DetailExercise = () => {
+  const navigation = useNavigation();
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -16,6 +19,12 @@ const DetailExercise = () => {
           <Title>Squat</Title>
           <SmallText>Been spieren</SmallText>
         </View>
+        <Pressable
+          onPress={() => navigation.navigate('DetailWorkout')}
+          style={styles.icon}
+        >
+          <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
+        </Pressable>
 
         <Card style={styles.imagesCard}>
           <Image
@@ -68,6 +77,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 25,
     marginBottom: 20
+  },
+  icon: {
+    position: 'absolute',
+    top: 55,
+    left: 20
   },
   imagesCard: {
     flexDirection: 'row',

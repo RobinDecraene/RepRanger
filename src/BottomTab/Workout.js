@@ -4,15 +4,24 @@ import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { SmallTitle } from '../../Components/SmallTitle';
 
 const Workout = () => {
   const navigation = useNavigation();
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <View style={styles.title}>
-          <Title>Mijn workouts</Title>
-        </View>
+
+          <Title style={styles.title}>Mijn workouts</Title>
+          <Pressable
+            onPress={() => navigation.navigate('NiewWorkout')}
+            style={styles.icon}
+          >
+            <MaterialCommunityIcons name="plus-circle" color='#4E598C' size={30} />
+          </Pressable>
+
+
 
         <Card
           onPress={() => navigation.navigate('DetailWorkout')}
@@ -29,7 +38,7 @@ const Workout = () => {
           </View>
 
           <View style={styles.cardInfo}>
-            <Title>Naam workout</Title>
+            <SmallTitle>Naam workout</SmallTitle>
           </View>
         </Card>
 
@@ -48,7 +57,7 @@ const Workout = () => {
           </View>
 
           <View style={styles.cardInfo}>
-            <Title>Naam workout</Title>
+            <SmallTitle>Naam workout</SmallTitle>
           </View>
         </Card>
 
@@ -73,9 +82,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   title: {
-    alignItems: 'center',
     marginTop: 25,
     marginBottom: 20
+  },
+  icon: {
+    position: 'absolute',
+    top: 55,
+    right: 20
   },
   link: {
     height: 190,
