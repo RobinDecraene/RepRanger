@@ -8,6 +8,8 @@ import { SmallText } from '../../Components/SmallText';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
+import { Set, SetPressed } from '../../Components/Sets';
+import { ButtonSecondary } from '../../Components/Button';
 
 const StartWorkout = () => {
   const navigation = useNavigation();
@@ -30,15 +32,9 @@ const StartWorkout = () => {
         </Card>
 
         <View style={styles.setsRow}>
-          <Pressable style={styles.sets}>
-            <P style={styles.setsText}>2 sets</P>
-          </Pressable>
-          <Pressable style={styles.setsPressed}>
-            <P style={styles.setsPressedText}>3 sets</P>
-          </Pressable>
-          <Pressable style={styles.sets}>
-            <P style={styles.setsText}>4 sets</P>
-          </Pressable>
+          <Set>2 sets</Set>
+          <SetPressed>3 sets</SetPressed>
+          <Set>4 sets</Set>
         </View>
 
         <Card style={styles.setCard}>
@@ -77,13 +73,7 @@ const StartWorkout = () => {
             </View>
             <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
         </Card>
-
-        <Pressable
-          onPress={() => navigation.navigate('DetailWorkout')}
-          style={[styles.sets, styles.margin]}
-        >
-            <P style={styles.setsText}>Stop Workout</P>
-        </Pressable>
+        <ButtonSecondary style={styles.margin} onPress={() => navigation.navigate('DetailWorkout')}>Stop Workout</ButtonSecondary>
 
       </View>
     </ScrollView>
@@ -125,38 +115,15 @@ const styles = StyleSheet.create({
     height: 120,
     resizeMode: 'contain'
   },
-  setsRow: {
-    flexDirection: 'row',
-    alignItems: 'center ',
-    width: '99%',
-    justifyContent: 'space-between',
-    marginTop: 20,
-    marginBottom: 20
-  },
-  sets: {
-    borderWidth: 1.5,
-    borderRadius: 40,
-    borderColor: '#FCAF58',
-    padding: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
-    backgroundColor: 'transparent'
-  },
   margin: {
     marginBottom: 20
   },
-  setsText: {
-    color: '#FCAF58'
-  },
-  setsPressed: {
-    backgroundColor: '#FCAF58',
-    borderRadius: 40,
-    padding: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
-  },
-  setsPressedText: {
-    color: '#fff'
+  setsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    marginBottom: 20
   },
   setCard: {
     alignItems: 'flex-start',
