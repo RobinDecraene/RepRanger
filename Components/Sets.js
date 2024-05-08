@@ -35,7 +35,7 @@ export function SetPressed({ children, onPress  }) {
 
 const styles = StyleSheet.create({
   sets: {
-    borderWidth: 1.5,
+    borderWidth: 1,
     borderRadius: 40,
     borderColor: '#FCAF58',
     padding: 5,
@@ -47,6 +47,8 @@ const styles = StyleSheet.create({
     color: '#FCAF58'
   },
   setsPressed: {
+    borderWidth: 1,
+    borderColor: '#FCAF58',
     backgroundColor: '#FCAF58',
     borderRadius: 40,
     padding: 5,
