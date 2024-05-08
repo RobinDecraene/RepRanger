@@ -12,7 +12,7 @@ export function Title({ children, style }) {
   }
 
   return (
-    <Text style={[{ fontFamily: 'BauhausRegular', color: '#4E598C', fontSize: 40 }, style]}>
+    <Text style={[{ fontFamily: 'BauhausRegular', color: '#4E598C', fontSize: 35 }, style]}>
       {children}
     </Text>
   );
