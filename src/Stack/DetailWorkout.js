@@ -7,6 +7,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
+import { Title } from '../../Components/Title';
 
 
 const DetailWorkout = () => {
@@ -14,6 +15,9 @@ const DetailWorkout = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
+      <View style={styles.title}>
+          <Title>Naam workout</Title>
+        </View>
         <Card
           onPress={() => navigation.navigate('DetailExercise')}
           style={styles.card}>
@@ -21,7 +25,7 @@ const DetailWorkout = () => {
               style={styles.exercisesImg}
               source={require('../../assets/images/squat-up.png')}
             />
-            <View style={styles.cardInfo}>
+            <View>
               <P>Naam workout</P>
               <SmallText>Spiergroep</SmallText>
             </View>
@@ -35,7 +39,7 @@ const DetailWorkout = () => {
               style={styles.exercisesImg}
               source={require('../../assets/images/bench-press-up.png')}
             />
-            <View style={styles.cardInfo}>
+            <View>
               <P>Naam workout</P>
               <SmallText>Spiergroep</SmallText>
             </View>
@@ -49,14 +53,19 @@ const DetailWorkout = () => {
               style={styles.exercisesImg}
               source={require('../../assets/images/squat-up.png')}
             />
-            <View style={styles.cardInfo}>
+            <View>
               <P>Naam workout</P>
               <SmallText>Spiergroep</SmallText>
             </View>
             <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
         </Card>
 
-        <Button style={styles.button}>Start workout</Button>
+        <Button
+          onPress={() => navigation.navigate('StartWorkout')}
+          style={styles.button}
+        >
+          Start workout
+        </Button>
       </View>
     </ScrollView>
   );
@@ -76,6 +85,11 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
+  },
+  title: {
+    alignItems: 'center',
+    marginTop: 25,
+    marginBottom: 20
   },
   card: {
     flexDirection: 'row',

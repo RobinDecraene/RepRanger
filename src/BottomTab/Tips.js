@@ -32,6 +32,8 @@ const Tips = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
+        <Title style={styles.title}>Tips</Title>
+
         <Card
           onPress={() => navigation.navigate('DetailTip')}
         >
@@ -70,5 +72,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  title: {
+    alignItems: 'center',
+    marginTop: 25,
+    marginBottom: 20
   },
 });

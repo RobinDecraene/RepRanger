@@ -4,12 +4,19 @@ import { P } from '../../Components/Text';
 import { Title } from '../../Components/Title';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
+import { SmallText } from '../../Components/SmallText';
+import { SmallTitle } from '../../Components/SmallTitle';
 
 
 const DetailExercise = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
+      <View style={styles.title}>
+          <Title>Squat</Title>
+          <SmallText>Been spieren</SmallText>
+        </View>
+
         <Card style={styles.imagesCard}>
           <Image
             style={styles.exercisesImg}
@@ -21,42 +28,6 @@ const DetailExercise = () => {
           />
         </Card>
 
-        <View style={styles.setsRow}>
-          <Pressable style={styles.sets}>
-            <P style={styles.setsText}>2 sets</P>
-          </Pressable>
-          <Pressable style={styles.setsPressed}>
-            <P style={styles.setsPressedText}>3 sets</P>
-          </Pressable>
-          <Pressable style={styles.sets}>
-            <P style={styles.setsText}>4 sets</P>
-          </Pressable>
-        </View>
-
-        <Card style={styles.setCard}>
-          <Title>Set 1</Title>
-          <View style={styles.setCardInfo}>
-            <P>8 Reps</P>
-            <P>40 kg</P>
-          </View>
-        </Card>
-
-        <Card style={styles.setCard}>
-          <Title>Set 2</Title>
-          <View style={styles.setCardInfo}>
-            <P>8 Reps</P>
-            <P>40 kg</P>
-          </View>
-        </Card>
-
-        <Card style={styles.setCard}>
-          <Title>Set 3</Title>
-          <View style={styles.setCardInfo}>
-            <P>8 Reps</P>
-            <P>40 kg</P>
-          </View>
-        </Card>
-
         <View style={styles.exerciseInfo}>
           <Image
           style={styles.ranger}
@@ -64,6 +35,14 @@ const DetailExercise = () => {
           />
           <P>tips voor een goede houding</P>
         </View>
+
+        <Card>
+          <SmallTitle>Gebruikte spieren</SmallTitle>
+          <Image
+            style={styles.muscles}
+              source={require('../../assets/images/used-muscles.png')}
+            />
+        </Card>
 
       </View>
     </ScrollView>
@@ -85,10 +64,16 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 20,
   },
+  title: {
+    alignItems: 'center',
+    marginTop: 25,
+    marginBottom: 20
+  },
   imagesCard: {
     flexDirection: 'row',
     alignItems: 'baseline',
     justifyContent: 'space-between',
+    backgroundColor: 'transparent'
   },
   exercisesImg: {
     width: 140,
@@ -100,44 +85,10 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: 'contain'
   },
-  setsRow: {
-    flexDirection: 'row',
-    alignItems: 'center ',
-    width: '99%',
-    justifyContent: 'space-between',
-    marginTop: 20,
-    marginBottom: 20
-  },
-  sets: {
-    borderWidth: 1.5,
-    borderRadius: 40,
-    borderColor: '#FCAF58',
-    padding: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
-  },
-  setsText: {
-    color: '#FCAF58'
-  },
-  setsPressed: {
-    backgroundColor: '#FCAF58',
-    borderRadius: 40,
-    padding: 10,
-    paddingLeft: 25,
-    paddingRight: 25,
-  },
-  setsPressedText: {
-    color: '#fff'
-  },
-  setCard: {
-    alignItems: 'flex-start',
-    marginBottom: 10
-  },
-  setCardInfo: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    marginTop: 10
+  muscles: {
+    width: 300,
+    height: 250,
+    resizeMode: 'contain'
   },
   ranger: {
     width: 120,

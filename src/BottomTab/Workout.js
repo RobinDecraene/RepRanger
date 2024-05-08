@@ -10,6 +10,9 @@ const Workout = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
+        <View style={styles.title}>
+          <Title>Mijn workouts</Title>
+        </View>
 
         <Card
           onPress={() => navigation.navigate('DetailWorkout')}
@@ -68,6 +71,11 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 20,
     backgroundColor: '#fff'
+  },
+  title: {
+    alignItems: 'center',
+    marginTop: 25,
+    marginBottom: 20
   },
   link: {
     height: 190,

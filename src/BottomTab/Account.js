@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: '60%',
     borderRadius: 120,
-    marginTop: 30,
+    marginTop: 60,
     marginBottom: 20,
   },
 });
