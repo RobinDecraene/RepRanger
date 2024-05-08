@@ -18,6 +18,21 @@ export function Button({ children, onPress, style }) {
   );
 }
 
+export function ButtonSecondary({ children, onPress, style }) {
+  
+  const handlePress = () => {
+    if (onPress) {
+      onPress();
+    }
+  };
+
+  return (
+    <TouchableOpacity style={[styles.buttonSecondary, style]} onPress={handlePress}>
+      <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#FCAF58", fontSize: 20 }}>{ children }</P>
+    </TouchableOpacity>
+  );
+}
+
 export function ButtonLink({ children, onPress, style }) {
   const handlePress = () => {
     if (onPress) {
@@ -35,6 +50,18 @@ export function ButtonLink({ children, onPress, style }) {
 const styles = StyleSheet.create({
   button: {
     backgroundColor:'#FCAF58',
+    alignItems:'center',
+    justifyContent:'center',
+    padding: 15,
+    paddingLeft: 35,
+    paddingRight: 35,
+    borderRadius: 50,
+    marginBottom: 10
+  },
+  buttonSecondary: {
+    backgroundColor:'transparent',
+    borderColor: '#FCAF58',
+    borderWidth: 1,
     alignItems:'center',
     justifyContent:'center',
     padding: 15,
