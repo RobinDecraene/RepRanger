@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "RepRanger",
-    "slug": "RepRanger",
+    "slug": "repranger",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -29,6 +29,12 @@
     },
     "plugins": [
       "expo-font"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "6b6e7ca7-eb19-4405-ab98-72c331798ee0"
+      }
+    },
+    "owner": "robindecraene"
   }
 }
