@@ -115,30 +115,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20
   },
-  sets: {
-    borderWidth: 1.5,
-    borderRadius: 40,
-    borderColor: '#FCAF58',
-    padding: 5,
-    paddingLeft: 20,
-    paddingRight: 20,
-    backgroundColor: 'transparent'
-  },
   margin: {
     marginBottom: 20
-  },
-  setsText: {
-    color: '#FCAF58'
-  },
-  setsPressed: {
-    backgroundColor: '#FCAF58',
-    borderRadius: 40,
-    padding: 5,
-    paddingLeft: 20,
-    paddingRight: 20,
-  },
-  setsPressedText: {
-    color: '#fff'
   },
   link: {
     height: 190,

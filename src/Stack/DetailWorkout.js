@@ -15,15 +15,21 @@ const DetailWorkout = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-
-        <Title style={styles.title}>Naam workout</Title>
-        <Pressable
+      <Pressable
           onPress={() => navigation.navigate('Workout')}
           style={styles.icon}
         >
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
         </Pressable>
-        
+
+        <Title style={styles.title}>Naam workout</Title>
+        <Pressable
+          onPress={() => navigation.navigate('EditWorkout')}
+          style={styles.iconRight}
+        >
+          <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
+        </Pressable>
+
         <Card
           onPress={() => navigation.navigate('DetailExercise')}
           style={styles.card}>
@@ -100,6 +106,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 55,
     left: 20
+  },
+  iconRight: {
+    position: 'absolute',
+    top: 55,
+    right: 20
   },
   card: {
     flexDirection: 'row',
