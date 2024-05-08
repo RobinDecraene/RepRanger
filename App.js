@@ -5,7 +5,6 @@ import { createMaterialBottomTabNavigator } from 'react-native-paper/react-navig
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from './Firebase';
-import { Title } from './Components/Title';
 import { useEffect, useState } from 'react';
 
 import Start from './src/Auth/Start';
