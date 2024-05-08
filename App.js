@@ -20,6 +20,10 @@ import DetailTip from './src/Stack/DetailTip';
 import DetailExercise from './src/Stack/DetailExercise';
 import DetailWorkout from './src/Stack/DetailWorkout';
 import NiewWorkout from './src/Stack/NiewWorkout';
+import EditWorkout from './src/Stack/EditWorkout';
+import EndWorkout from './src/Stack/EndWorkout';
+import StartWorkout from './src/Stack/StartWorkout';
+import Exercises from './src/Stack/Exercises';
 
 const Tab = createMaterialBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -41,21 +45,22 @@ function TabNavigator() {
 
 if (!user){
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
     <Stack.Screen
       name='Start'
       component={Start}
-      options={{ headerShown: false }}
     />
     <Stack.Screen
       name='Login'
       component={Login}
-      options={{ headerShown: false }}
     />
     <Stack.Screen
       name='Registration'
       component={Registration}
-      options={{ headerShown: false }}
     />
   </Stack.Navigator>
   )
@@ -105,7 +110,7 @@ function StackNavigatorWorkout() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerTitle: props => <Title {...props} />,
+        headerShown: false,
       }}
     >
       <Stack.Screen
@@ -125,6 +130,22 @@ function StackNavigatorWorkout() {
         name='NiewWorkout'
         component={NiewWorkout}
       />
+      <Stack.Screen
+        name='EditWorkout'
+        component={EditWorkout}
+      />
+      <Stack.Screen
+        name='EndWorkout'
+        component={EndWorkout}
+      />
+      <Stack.Screen
+        name='Exercises'
+        component={Exercises}
+      />
+      <Stack.Screen
+        name='StartWorkout'
+        component={StartWorkout}
+      />
     </Stack.Navigator>
   )
 }
@@ -133,9 +154,9 @@ function StackNavigatorWorkout() {
 function StackNavigatorTips() {
   return (
     <Stack.Navigator
-      screenOptions={{
-        headerTitle: props => <Title {...props} />,
-      }}
+    screenOptions={{
+      headerShown: false,
+    }}
     >
       <Stack.Screen
         name='Tips'
@@ -153,9 +174,9 @@ function StackNavigatorTips() {
 function StackNavigatorAccount() {
   return (
     <Stack.Navigator
-      screenOptions={{
-        headerTitle: props => <Title {...props} />,
-      }}
+    screenOptions={{
+      headerShown: false,
+    }}
     >
       <Stack.Screen
         name='Account'
