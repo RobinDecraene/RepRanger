@@ -23,6 +23,8 @@ import EditWorkout from './src/Stack/EditWorkout';
 import EndWorkout from './src/Stack/EndWorkout';
 import StartWorkout from './src/Stack/StartWorkout';
 import Exercises from './src/Stack/Exercises';
+import WorkoutMotivation from './src/Stack/WorkoutMotivation';
+import EndWorkoutRecord from './src/Stack/EndWorkoutRecord';
 
 const Tab = createMaterialBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -144,6 +146,14 @@ function StackNavigatorWorkout() {
       <Stack.Screen
         name='StartWorkout'
         component={StartWorkout}
+      />
+      <Stack.Screen
+        name='WorkoutMotivation'
+        component={WorkoutMotivation}
+      />
+      <Stack.Screen
+        name='EndWorkoutRecord'
+        component={EndWorkoutRecord}
       />
     </Stack.Navigator>
   )
