@@ -15,7 +15,7 @@ const DetailWorkout = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-      <Pressable
+        <Pressable
           onPress={() => navigation.navigate('Workout')}
           style={styles.icon}
         >

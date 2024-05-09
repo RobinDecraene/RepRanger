@@ -1,4 +1,4 @@
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { firebase } from '../../Firebase';
 import { P } from '../../Components/Text';
@@ -9,6 +9,7 @@ import { Title } from '../../Components/Title';
 import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Account = () => {
   const navigation = useNavigation();
@@ -44,6 +45,13 @@ const Account = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
+        <Pressable
+          onPress={() => navigation.navigate('EditAccount')}
+          style={styles.icon}
+        >
+          <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
+        </Pressable>
+      
         <Image
           style={styles.profileImg}
           source={require('../../assets/images/no-img.png')}
@@ -137,10 +145,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 20,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
   profileImg: {
     height: null,
     aspectRatio: 1,
@@ -177,5 +181,10 @@ const styles = StyleSheet.create({
   },
   orange: {
     color: '#FCAF58'
+  },
+  icon: {
+    position: 'absolute',
+    top: 55,
+    right: 20
   },
 });

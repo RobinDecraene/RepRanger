@@ -18,7 +18,7 @@ const EndWorkout = () => {
           source={require('../../assets/images/ranger-hands-up.png')}
         />
         <Title>Goed gedaan</Title>
-        <P>je hebt een volledige workout gedaan!</P>
+        <P>Je hebt een volledige workout gedaan!</P>
 
         <Card style={styles.numbersCard}>
           <View style={styles.numbers}>
