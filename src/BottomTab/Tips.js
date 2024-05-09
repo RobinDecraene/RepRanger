@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Image } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -6,6 +6,9 @@ import { Card } from '../../Components/Card';
 import { Title } from '../../Components/Title';
 import { firebase } from '../../Firebase';
 import { Button } from '../../Components/Button';
+import { P } from '../../Components/Text';
+import { SmallTitle } from '../../Components/SmallTitle';
+import { FAQ } from '../../Components/Faq';
 
 const Tips = () => {
   const navigation = useNavigation();
@@ -32,25 +35,22 @@ const Tips = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <Title style={styles.title}>Tips</Title>
-
-        <Card
-          onPress={() => navigation.navigate('DetailTip')}
-        >
-          <Title>Hoe stel je een goede workout op?</Title>
+        <Title style={styles.title}>Tip van de dag</Title>
+        <Card style={styles.exerciseInfo}>
+          <P>
+          Je moet even veel gram proteinen op een dag eten als lichaams gewicht dat je hebt. BV als je 60kg 
+          weegt dan moet je 60g proteienen eten.
+          </P>
+          <Image
+          style={styles.ranger}
+            source={require('../../assets/images/ranger-head.png')}
+          />
         </Card>
-
-        <Card
-          onPress={() => navigation.navigate('DetailTip')}
-        >
-          <Title>Wat zijn sets en reps?</Title>
-        </Card>
-
-        <Card
-          onPress={() => navigation.navigate('DetailTip')}
-        >
-          <Title>Hoeveel proteinen moet ik op een dag eten?</Title>
-        </Card>
+        <SmallTitle>Veel gestelde vragen</SmallTitle>
+        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
+        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
+        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
+        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
 
       </View>
     </ScrollView>
@@ -78,4 +78,19 @@ const styles = StyleSheet.create({
     marginTop: 25,
     marginBottom: 20
   },
+  ranger: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    position: 'absolute',
+    bottom: -45,
+    left: -10
+  },
+  exerciseInfo: {
+    width: '100%',
+    justifyContent: 'space-between',
+    paddingBottom: 50,
+    alignItems: 'flex-start',
+    marginBottom: 60
+  }
 });

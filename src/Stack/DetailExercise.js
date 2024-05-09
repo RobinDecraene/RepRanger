@@ -37,15 +37,20 @@ const DetailExercise = () => {
           />
         </Card>
 
-        <View style={styles.exerciseInfo}>
+        <Card style={styles.exerciseInfo}>
+          <SmallTitle>Hoe doe je de oefening?</SmallTitle>
+          <P>
+            Je zorgt dat je benen op schouderhoogte staan, je voeten een klein beetje naar buiten draaien
+            en de baar mooi op je schouderbladen leggen. Vergeet niet voor je te kijken en de grond
+            van je weg te duwen met je voeten als je terug naar boven gaat.
+          </P>
           <Image
           style={styles.ranger}
             source={require('../../assets/images/ranger-head.png')}
           />
-          <P>tips voor een goede houding</P>
-        </View>
+        </Card>
 
-        <Card>
+        <Card style={styles.alignLeft}>
           <SmallTitle>Gebruikte spieren</SmallTitle>
           <Image
             style={styles.muscles}
@@ -91,12 +96,12 @@ const styles = StyleSheet.create({
   },
   exercisesImg: {
     width: 140,
-    height: 160,
+    height: 180,
     resizeMode: 'contain'
   },
   exercisesImgSmaller: {
     width: 140,
-    height: 100,
+    height: 120,
     resizeMode: 'contain'
   },
   muscles: {
@@ -105,14 +110,18 @@ const styles = StyleSheet.create({
     resizeMode: 'contain'
   },
   ranger: {
-    width: 120,
-    height: 120,
-    resizeMode: 'contain'
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    position: 'absolute',
+    bottom: -45,
+    left: -10
   },
   exerciseInfo: {
-    flexDirection: 'row',
     width: '100%',
     justifyContent: 'space-between',
-    marginTop: 10
+    paddingBottom: 50,
+    alignItems: 'flex-start',
+    marginBottom: 60
   }
 });
