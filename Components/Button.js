@@ -13,7 +13,7 @@ export function Button({ children, onPress, style }) {
 
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={handlePress}>
-      <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#fff", fontSize: 20 }}>{ children }</P>
+      <P style={{ color: "#fff", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
 }
@@ -28,7 +28,7 @@ export function ButtonSecondary({ children, onPress, style }) {
 
   return (
     <TouchableOpacity style={[styles.buttonSecondary, style]} onPress={handlePress}>
-      <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#FCAF58", fontSize: 20 }}>{ children }</P>
+      <P style={{ color: "#FCAF58", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
 }
@@ -42,7 +42,7 @@ export function ButtonLink({ children, onPress, style }) {
 
   return (
     <TouchableOpacity style={style} onPress={handlePress}>
-      <P style={{ fontFamily: 'FuturaCyrillicBook', color: "#FCAF58", fontSize: 20 }}>{ children }</P>
+      <P style={{ color: "#FCAF58", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
 }
