@@ -1,13 +1,43 @@
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
 import { ScrollView } from 'react-native-gesture-handler';
+import { Title } from '../../Components/Title';
+import { P } from '../../Components/Text';
+import { Button } from '../../Components/Button';
+import { useNavigation } from '@react-navigation/native';
+import { SmallText } from '../../Components/SmallText';
 
 const EndWorkout = () => {
+  const navigation = useNavigation();
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <Text>EndWorkout</Text>
-        <StatusBar style="auto" />
+      <Image
+          style={styles.ranger}
+          source={require('../../assets/images/ranger-hands-up.png')}
+        />
+        <Title>Goed gedaan</Title>
+        <P>je hebt een volledige workout gedaan!</P>
+
+        <View style={styles.numbersCard}>
+          <View style={styles.numbers}>
+            <P>6</P>
+            <SmallText>Oef</SmallText>
+          </View>
+
+          <View style={styles.numbers}>
+            <P>300</P>
+            <SmallText>Cal</SmallText>
+          </View>
+
+          <View style={styles.numbers}>
+            <P>25:45</P>
+            <SmallText>Min</SmallText>
+          </View>
+        </View>
+
+
+        <Button onPress={() => navigation.navigate('Workout')}>Mijn workouts</Button>
       </View>
     </ScrollView>
   );
@@ -24,6 +54,25 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 20,
+  },
+  ranger: {
+    width: 200,
+    height: 400,
+    resizeMode: 'contain',
+    marginTop: 40
+  },
+  numbers: {
+    alignItems: 'center'
+  },
+  numbersCard: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '90%',
+    marginBottom: 40,
+    marginTop: 20
   },
 });

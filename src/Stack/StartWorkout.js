@@ -62,6 +62,7 @@ const StartWorkout = () => {
         </Card>
 
         <Card
+          onPress={() => navigation.navigate('WorkoutMotivation')}
           style={styles.nextExercises}>
             <Image
               style={styles.nextExercisesImg}
