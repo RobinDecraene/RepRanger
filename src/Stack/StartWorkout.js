@@ -153,8 +153,8 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   nextExercisesImg: {
-    width: 80,
-    height: 100,
+    width: 60,
+    height: 80,
     resizeMode: 'contain'
   }
 });

@@ -118,8 +118,8 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   exercisesImg: {
-    width: 80,
-    height: 100,
+    width: 60,
+    height: 80,
     resizeMode: 'contain'
   },
   button: {

@@ -7,6 +7,7 @@ import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from '@react-navigation/native';
+import { SmallTitle } from '../../Components/SmallTitle';
 
 const WorkoutMotivation = () => {
   const navigation = useNavigation();
@@ -17,12 +18,13 @@ const WorkoutMotivation = () => {
           <Title>Squat</Title>
           <P>5:12</P>
         </View>
-
-        <P>Halverwegen je workout goed bezig!</P>
         <Image
           style={styles.ranger}
           source={require('../../assets/images/ranger.png')}
         />
+
+        <SmallTitle>Halverwegen</SmallTitle>
+        <P>Doe zo verder je bent er bijna!</P>
 
         <Card
           onPress={() => navigation.navigate('EndWorkout')}
@@ -72,8 +74,8 @@ const styles = StyleSheet.create({
     marginTop: 20
   },
   nextExercisesImg: {
-    width: 80,
-    height: 100,
+    width: 60,
+    height: 80,
     resizeMode: 'contain'
   }
 });

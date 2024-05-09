@@ -6,6 +6,7 @@ import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { SmallText } from '../../Components/SmallText';
+import { Card } from '../../Components/Card';
 
 const EndWorkout = () => {
   const navigation = useNavigation();
@@ -19,7 +20,7 @@ const EndWorkout = () => {
         <Title>Goed gedaan</Title>
         <P>je hebt een volledige workout gedaan!</P>
 
-        <View style={styles.numbersCard}>
+        <Card style={styles.numbersCard}>
           <View style={styles.numbers}>
             <P>6</P>
             <SmallText>Oef</SmallText>
@@ -34,7 +35,7 @@ const EndWorkout = () => {
             <P>25:45</P>
             <SmallText>Min</SmallText>
           </View>
-        </View>
+        </Card>
 
 
         <Button onPress={() => navigation.navigate('Workout')}>Mijn workouts</Button>
@@ -71,7 +72,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '90%',
     marginBottom: 40,
     marginTop: 20
   },

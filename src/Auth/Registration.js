@@ -44,12 +44,12 @@ const Registration = () => {
     <View style={styles.container}>
       <Title style={styles.title}>Registreer</Title>
       <Input
-        placeholder="First Name" 
+        placeholder="Voornaam" 
         onChangeText={(firstName) => setFirstName(firstName)}
       />
 
       <Input
-        placeholder="Last Name" 
+        placeholder="Achternaam" 
         onChangeText={(lastName) => setLastName(lastName)}
       />
 
@@ -61,7 +61,7 @@ const Registration = () => {
       />
 
       <Input
-        placeholder="Password" 
+        placeholder="Wachtwoord" 
         onChangeText={(password)=> setPassword(password)}
         secureTextEntry={true}
       />
