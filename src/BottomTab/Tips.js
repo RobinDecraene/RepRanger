@@ -43,7 +43,7 @@ const Tips = () => {
           </P>
           <Image
           style={styles.ranger}
-            source={require('../../assets/images/ranger-head.png')}
+            source={require('../../assets/images/ranger-head.png')} 
           />
         </Card>
         <SmallTitle>Veel gestelde vragen</SmallTitle>
