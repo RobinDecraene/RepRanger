@@ -1,63 +1,74 @@
-import { StyleSheet, View, Image } from 'react-native';
-import React from 'react';
+import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { Title } from '../../Components/Title';
 import { firebase } from '../../Firebase';
-import { Button } from '../../Components/Button';
 import { P } from '../../Components/Text';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { FAQ } from '../../Components/Faq';
 
 const Tips = () => {
   const navigation = useNavigation();
+  const [tipsData, setTipsData] = useState([]);
+  const [faqData, setFaqData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const workout = firebase.firestore().collection('exercises');
+  useEffect(() => {
+    const fetchTipsAndFAQ = async () => {
+      try {
+        const tipsSnapshot = await firebase.firestore().collection('tips').get();
+        const tipsData = tipsSnapshot.docs.map(doc => doc.data());
+        setTipsData(tipsData);
 
-  const fetchData = () => {
-    workout
-      .where("muscle_group", "!=", null) // Filter out exercises without a muscle group
-      .get()
-      .then((querySnapshot) => {
-        const data = [];
-        querySnapshot.forEach((doc) => {
-          data.push({ id: doc.id, ...doc.data() });
-        });
-        // Now 'data' contains only exercises with a muscle group
-        console.log(data); // Or do something else with the data
-      })
-      .catch((error) => {
-        alert(error);
-      });
-};
+        const faqSnapshot = await firebase.firestore().collection('faq').get();
+        const faqData = faqSnapshot.docs.map(doc => doc.data());
+        setFaqData(faqData);
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchTipsAndFAQ();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4E598C" />
+      </View>
+    );
+  }
+
+  const randomTipIndex = Math.floor(Math.random() * tipsData.length);
+  const randomTip = tipsData[randomTipIndex];
 
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
         <Title style={styles.title}>Tip van de dag</Title>
         <Card style={styles.exerciseInfo}>
-          <P>
-          Je moet even veel gram proteinen op een dag eten als lichaams gewicht dat je hebt. BV als je 60kg 
-          weegt dan moet je 60g proteienen eten.
-          </P>
+          <P>{randomTip.tip}</P>
           <Image
-          style={styles.ranger}
-            source={require('../../assets/images/ranger-head.png')} 
+            style={styles.ranger}
+            source={require('../../assets/images/ranger-head.png')}
           />
         </Card>
         <SmallTitle>Veel gestelde vragen</SmallTitle>
-        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
-        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
-        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
-        <FAQ onPress={() => navigation.navigate('DetailTip')}>Wat zijn stets en reps?</FAQ>
-
+        {faqData.map((faq, index) => (
+          <FAQ key={index} onPress={() => navigation.navigate('DetailTip', {title: faq.title, description: faq.description})}>
+            {faq.title}
+          </FAQ>
+        ))}
       </View>
     </ScrollView>
   );
 }
 
-export default Tips
+export default Tips;
 
 const styles = StyleSheet.create({
   base: {
@@ -83,7 +94,7 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: 'contain',
     position: 'absolute',
-    bottom: -45,
+    bottom: -50,
     left: -10
   },
   exerciseInfo: {
@@ -91,6 +102,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 50,
     alignItems: 'flex-start',
-    marginBottom: 60
-  }
+    marginBottom: 70,
+    backgroundColor: '#FEEDD9'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });
