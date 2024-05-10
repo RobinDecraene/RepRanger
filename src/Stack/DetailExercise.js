@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: 'contain',
     position: 'absolute',
-    bottom: -45,
+    bottom: -50,
     left: -10
   },
   exerciseInfo: {
@@ -122,6 +122,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 50,
     alignItems: 'flex-start',
-    marginBottom: 60
+    marginBottom: 70
   }
 });

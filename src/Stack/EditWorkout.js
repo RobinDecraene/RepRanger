@@ -16,7 +16,7 @@ const EditWorkout = () => {
     <ScrollView style={styles.base}>
       <View style={styles.container}>
       <Pressable
-          onPress={() => navigation.navigate('Workout')}
+          onPress={() => navigation.goBack()}
           style={styles.icon}
         >
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />

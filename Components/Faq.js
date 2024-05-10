@@ -14,7 +14,7 @@ export function FAQ({ children, onPress, style }) {
 
   return (
     <TouchableOpacity style={[styles.faq, style]} onPress={handlePress}>
-      <P style={{ fontSize: 20 }}>{ children }</P>
+      <P style={{ fontSize: 20, maxWidth: '90%' }}>{ children }</P>
       <MaterialCommunityIcons name="arrow-right" color='#9CA2BF' size={30} />
     </TouchableOpacity>
   );
@@ -26,10 +26,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems:'center',
     justifyContent: 'space-between',
-    width: '100%',
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
+    minWidth: '100%',
+    maxWidth: '100%',
+    padding: 15,
+    paddingLeft: 25,
+    paddingRight: 25,
     borderRadius: 50,
     marginTop: 10
   }

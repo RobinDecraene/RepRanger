@@ -1,11 +1,10 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
+import { Image, Pressable, StyleSheet, View, ActivityIndicator } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { firebase } from '../../Firebase';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { Title } from '../../Components/Title';
 import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
@@ -14,6 +13,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 const Account = () => {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const currentUser = firebase.auth().currentUser;
@@ -29,6 +29,8 @@ const Account = () => {
         }
       }).catch((error) => {
         console.log('Error getting document:', error);
+      }).finally(() => {
+        setLoading(false);
       });
     }
   }, []);
@@ -41,6 +43,14 @@ const Account = () => {
       console.error('Error logging out:', error);
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4E598C" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.base}>
@@ -172,7 +182,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FEF6EC',
+    backgroundColor: '#FEEDD9',
     marginTop: 10,
     marginBottom: 20
   },
@@ -186,5 +196,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 55,
     right: 20
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

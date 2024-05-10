@@ -13,7 +13,7 @@ const EditAccount = () => {
     <ScrollView style={styles.base}>
       <View style={styles.container}>
         <Pressable
-          onPress={() => navigation.navigate('Account')}
+          onPress={() => navigation.goBack()}
           style={styles.icon}
         >
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
