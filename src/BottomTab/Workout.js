@@ -1,14 +1,49 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import React from 'react';
+import { Image, Pressable, StyleSheet, View, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SmallTitle } from '../../Components/SmallTitle';
+import { firebase } from '../../Firebase';
 
 const Workout = () => {
   const navigation = useNavigation();
+  const [myWorkoutData, setMyWorkoutData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        const myWorkout = await firebase.firestore().collection('saved_workouts').get();
+        const myWorkoutData = await Promise.all(myWorkout.docs.map(async doc => {
+          const workout = doc.data();
+          const myWorkoutRef = workout.workout;
+          const myWorkoutDoc = await myWorkoutRef.get();
+          const myWorkoutData = myWorkoutDoc.data();
+          return { ...workout, workout: myWorkoutData };
+        }));
+        setMyWorkoutData(myWorkoutData);
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetch();
+  }, []);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4E598C" />
+      </View>
+    );
+  }
+
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -22,10 +57,11 @@ const Workout = () => {
           </Pressable>
 
 
-
-        <Card
-          onPress={() => navigation.navigate('DetailWorkout')}
-        >
+          {myWorkoutData.map((workout, index) => (
+          <Card
+            key={index}
+            onPress={() => navigation.navigate('DetailWorkout')}
+          >
           <View style={styles.images}>
             <Image
               style={styles.exercisesImg}
@@ -38,28 +74,10 @@ const Workout = () => {
           </View>
 
           <View style={styles.cardInfo}>
-            <SmallTitle>Naam workout</SmallTitle>
+            <SmallTitle>{workout.workout.name}</SmallTitle>
           </View>
         </Card>
-
-        <Card
-          onPress={() => navigation.navigate('DetailWorkout')}
-        >
-          <View style={styles.images}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <Image
-              style={styles.exercisesImgSmaller}
-              source={require('../../assets/images/squat-down.png')}
-            />
-          </View>
-
-          <View style={styles.cardInfo}>
-            <SmallTitle>Naam workout</SmallTitle>
-          </View>
-        </Card>
+        ))}
 
       </View>
     </ScrollView>
