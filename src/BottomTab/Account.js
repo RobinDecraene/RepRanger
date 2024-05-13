@@ -44,7 +44,13 @@ const Account = () => {
           const historyDoc = await historyRef.get();
           const historyData = historyDoc.data();
 
-          return { ...workout, workout: historyData};
+          const exercisesPromises = historyData.exercises.map(async exerciseRef => {
+            const exerciseDoc = await exerciseRef.get();
+            return exerciseDoc.data();
+          });
+          const exercises = await Promise.all(exercisesPromises);
+
+          return { ...workout, workout: historyData, exercises};
         }));
         setHistoryData(historyData);
 
@@ -116,7 +122,7 @@ const Account = () => {
           <View>
             <P>{history.workout.name}</P>
             <View style={styles.cardInfo}>
-              <SmallText>6 oef</SmallText>
+            <SmallText>{history.exercises.length} oef</SmallText>
               <SmallText>{history.cal} cal</SmallText>
               <SmallText>{history.time} min</SmallText>
             </View>
