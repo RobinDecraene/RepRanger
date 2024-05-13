@@ -12,6 +12,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 
 const Account = () => {
   const navigation = useNavigation();
+  const [historyData, setHistoryData] = useState([]);
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +34,27 @@ const Account = () => {
         setLoading(false);
       });
     }
+
+    const fetch = async () => {
+      try {
+        const history = await firebase.firestore().collection('history').get();
+        const historyData = await Promise.all(history.docs.map(async doc => {
+          const workout = doc.data();
+          const historyRef = workout.workout;
+          const historyDoc = await historyRef.get();
+          const historyData = historyDoc.data();
+
+          return { ...workout, workout: historyData};
+        }));
+        setHistoryData(historyData);
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetch();
   }, []);
 
   const handleLogout = async () => {
@@ -83,56 +105,25 @@ const Account = () => {
         </Card>
 
         <SmallTitle>Workout historiek</SmallTitle>
+        {historyData.map((history, index) => (
         <Card
+          key={index}
           style={styles.card}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/bench-press-up.png')}
-            />
-            <View>
-              <P>Naam workout</P>
-              <View style={styles.cardInfo}>
-                <SmallText>6 oef</SmallText>
-                <SmallText>300 cal</SmallText>
-                <SmallText>5:20 min</SmallText>
-              </View>
-              
+          <Image
+            style={styles.exercisesImg}
+            source={require('../../assets/images/bench-press-up.png')}
+          />
+          <View>
+            <P>{history.workout.name}</P>
+            <View style={styles.cardInfo}>
+              <SmallText>6 oef</SmallText>
+              <SmallText>{history.cal} cal</SmallText>
+              <SmallText>{history.time} min</SmallText>
             </View>
-        </Card>
-
-        <Card
-          style={styles.card}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/bench-press-up.png')}
-            />
-            <View>
-              <P>Naam workout</P>
-              <View style={styles.cardInfo}>
-                <SmallText>6 oef</SmallText>
-                <SmallText>300 cal</SmallText>
-                <SmallText>5:20 min</SmallText>
-              </View>
-              
-            </View>
-        </Card>
-
-        <Card
-          style={styles.card}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/bench-press-up.png')}
-            />
-            <View>
-              <P>Naam workout</P>
-              <View style={styles.cardInfo}>
-                <SmallText>6 oef</SmallText>
-                <SmallText>300 cal</SmallText>
-                <SmallText>5:20 min</SmallText>
-              </View>
-              
-            </View>
-        </Card>
+            
+          </View>
+      </Card>
+        ))}
 
         <Button onPress={handleLogout}>Log uit</Button>
       </View>
@@ -203,5 +194,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  },
+  }
 });

@@ -145,5 +145,10 @@ const styles = StyleSheet.create({
     width: 140,
     height: 100,
     resizeMode: 'contain'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });
