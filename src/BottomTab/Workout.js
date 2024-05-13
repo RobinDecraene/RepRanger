@@ -8,7 +8,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { SmallTitle } from '../../Components/SmallTitle';
 import { firebase } from '../../Firebase';
 import { SmallText } from '../../Components/SmallText';
-import { P } from '../../Components/Text';
+
 
 const Workout = () => {
   const navigation = useNavigation();

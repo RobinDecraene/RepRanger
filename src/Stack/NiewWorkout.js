@@ -27,7 +27,15 @@ const NiewWorkout = () => {
           const muscleGroupRef = workout.muscle_group;
           const muscleGroupDoc = await muscleGroupRef.get();
           const muscleGroupData = muscleGroupDoc.data();
-          return { ...workout, muscle_group: muscleGroupData };
+
+          const exercisesPromises = workout.exercises.map(async exerciseRef => {
+            const exerciseDoc = await exerciseRef.get();
+            return exerciseDoc.data();
+          });
+          
+          const exercises = await Promise.all(exercisesPromises);
+
+          return { ...workout, muscle_group: muscleGroupData, exercises };
         }));
   
         setWorkoutData(workoutData);
@@ -100,7 +108,7 @@ const NiewWorkout = () => {
             return (
               <Card
                 key={index}
-                onPress={() => navigation.navigate('DetailWorkout', {name: workout.name})}
+                onPress={() => navigation.navigate('DetailWorkout', {name: workout.name, exercises: workout.exercises})}
               >
                 <View style={styles.images}>
                   <Image
