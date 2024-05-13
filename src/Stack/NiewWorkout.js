@@ -1,19 +1,69 @@
-import { Image, Pressable, StyleSheet, View } from 'react-native';
-import React from 'react';
+import { Image, Pressable, StyleSheet, View, ActivityIndicator } from 'react-native';
+import React, { useState, useEffect } from 'react';
 import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SmallTitle } from '../../Components/SmallTitle';
-import { P } from '../../Components/Text';
 import { SmallText } from '../../Components/SmallText';
 import { Set, SetPressed } from '../../Components/Sets';
+import { firebase } from '../../Firebase';
 
 const NiewWorkout = () => {
   const navigation = useNavigation();
+  const [workoutData, setWorkoutData] = useState([]);
+  const [muscleData, setMuscleData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedMuscle, setSelectedMuscle] = useState('Alles');
+
+  useEffect(() => {
+    const fetchWorkout = async () => {
+      try {
+        const workoutSnapshot = await firebase.firestore().collection('workouts').get();
+  
+        const workoutData = await Promise.all(workoutSnapshot.docs.map(async doc => {
+          const workout = doc.data();
+          const muscleGroupRef = workout.muscle_group;
+          const muscleGroupDoc = await muscleGroupRef.get();
+          const muscleGroupData = muscleGroupDoc.data();
+          return { ...workout, muscle_group: muscleGroupData };
+        }));
+  
+        setWorkoutData(workoutData);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+  
+    const muscleGroupsRef = firebase.firestore().collection('muscle_groups');
+    const unsubscribe = muscleGroupsRef.onSnapshot(snapshot => {
+      const muscleData = snapshot.docs.map(doc => doc.data());
+      setMuscleData(muscleData);
+    });
+  
+    fetchWorkout();
+  
+    // Cleanup function to unsubscribe from snapshot listener
+    return () => unsubscribe();
+  }, []);
+
+  const handleFilterPress = (muscleName) => {
+    setSelectedMuscle(muscleName === selectedMuscle ? 'All' : muscleName);
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4E598C" />
+      </View>
+    );
+  }
+
+
   return (
-<ScrollView style={styles.base}>
+  <ScrollView style={styles.base}>
       <View style={styles.container}>
         <Pressable
           onPress={() => navigation.goBack()}
@@ -23,61 +73,60 @@ const NiewWorkout = () => {
         </Pressable>
 
         <Title style={styles.title}>Alle workouts</Title>
-
         <View style={styles.setsRow}>
-          <SetPressed>All</SetPressed>
-          <Set>Benen</Set>
-          <Set>Armen</Set>
-          <Set>Rug</Set>
+          {muscleData
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((muscle, index) => (
+            muscle.name === selectedMuscle ? (
+              <SetPressed
+                key={index}
+                onPress={() => handleFilterPress(muscle.name)}
+              >
+                {muscle.name}
+              </SetPressed>
+            ) : (
+              <Set
+                key={index}
+                onPress={() => handleFilterPress(muscle.name)}
+              >
+                {muscle.name}
+              </Set>
+            )
+          ))}
         </View>
 
-        <Card
-          onPress={() => navigation.navigate('DetailWorkout')}
-        >
-          <View style={styles.images}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <Image
-              style={styles.exercisesImgSmaller}
-              source={require('../../assets/images/squat-down.png')}
-            />
-          </View>
 
-          <View style={styles.cardInfo}>
-            <View>
-              <SmallTitle>Naam workout</SmallTitle>
-              <SmallText>Spiergroep</SmallText>
-            </View>
-
-            <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
-          </View>
-        </Card>
-
-        <Card
-          onPress={() => navigation.navigate('DetailWorkout')}
-        >
-          <View style={styles.images}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <Image
-              style={styles.exercisesImgSmaller}
-              source={require('../../assets/images/squat-down.png')}
-            />
-          </View>
-
-          <View style={styles.cardInfo}>
-            <View>
-              <SmallTitle>Naam workout</SmallTitle>
-              <SmallText>Spiergroep</SmallText>
-            </View>
-            <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
-          </View>
-        </Card>
-
+        {workoutData.map((workout, index) => {
+          if (selectedMuscle === 'Alles' || workout.muscle_group.name === selectedMuscle) {
+            return (
+              <Card
+                key={index}
+                onPress={() => navigation.navigate('DetailWorkout', {name: workout.name})}
+              >
+                <View style={styles.images}>
+                  <Image
+                    style={styles.exercisesImg}
+                    source={require('../../assets/images/squat-up.png')}
+                  />
+                  <Image
+                    style={styles.exercisesImgSmaller}
+                    source={require('../../assets/images/squat-down.png')}
+                  />
+                </View>
+  
+                <View style={styles.cardInfo}>
+                  <View>
+                    <SmallTitle>{workout.name}</SmallTitle>
+                    <SmallText>{workout.muscle_group.name}</SmallText>
+                  </View>
+  
+                  <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
+                </View>
+              </Card>
+            );
+          }
+          return null;
+        })}
       </View>
     </ScrollView>
   );
