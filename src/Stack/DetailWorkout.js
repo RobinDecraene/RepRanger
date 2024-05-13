@@ -26,7 +26,7 @@ const DetailWorkout = () => {
 
         <Title style={styles.title}>{name}</Title>
         <Pressable
-          onPress={() => navigation.navigate('EditWorkout')}
+          onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises })}
           style={styles.iconRight}
         >
           <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
@@ -34,6 +34,7 @@ const DetailWorkout = () => {
 
         {exercises.map((exercise, index) => (
           <Card
+            key={index}
             onPress={() => navigation.navigate('DetailExercise' , { name: exercise.name, how_to: exercise.how_to })}
             style={styles.card}>
               <Image
@@ -41,7 +42,7 @@ const DetailWorkout = () => {
                 source={require('../../assets/images/squat-up.png')}
               />
 
-              <P>{exercise.name}</P>
+              <P style={styles.cardName}>{exercise.name}</P>
 
               <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
           </Card>
@@ -91,6 +92,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10
+  },
+  cardName: {
+    width: '65%'
   },
   exercisesImg: {
     width: 60,

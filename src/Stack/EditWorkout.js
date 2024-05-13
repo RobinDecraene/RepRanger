@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, View, Image } from 'react-native';
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { SmallText } from '../../Components/SmallText';
 import { P } from '../../Components/Text';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,6 +12,8 @@ import { Title } from '../../Components/Title';
 
 const EditWorkout = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { name, exercises } = route.params;
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -22,46 +24,22 @@ const EditWorkout = () => {
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
         </Pressable>
 
-        <Title style={styles.title}>Naam workout</Title>
+        <Title style={styles.title}>{name}</Title>
 
-        <Card
-          style={styles.card}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <View>
-              <P>Naam workout</P>
-              <SmallText>Spiergroep</SmallText>
-            </View>
-            <MaterialCommunityIcons name="close" color="#B0B5CB" size={25} />
-        </Card>
+        {exercises.map((exercise, index) => (
+          <Card
+            key={index}
+            style={styles.card}>
+              <Image
+                style={styles.exercisesImg}
+                source={require('../../assets/images/squat-up.png')}
+              />
 
-        <Card
-          style={styles.card}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/bench-press-up.png')}
-            />
-            <View>
-              <P>Naam workout</P>
-              <SmallText>Spiergroep</SmallText>
-            </View>
-            <MaterialCommunityIcons name="close" color="#B0B5CB" size={25} />
-        </Card>
+              <P style={styles.cardName}>{exercise.name}</P>
 
-        <Card
-          style={styles.card}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <View>
-              <P>Naam workout</P>
-              <SmallText>Spiergroep</SmallText>
-            </View>
-            <MaterialCommunityIcons name="close" color="#B0B5CB" size={25} />
-        </Card>
+              <MaterialCommunityIcons name="close" color="#B0B5CB" size={25} />
+          </Card>
+        ))}
 
         <Button
           onPress={() => navigation.navigate('Exercises')}
@@ -107,6 +85,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 10
+  },
+  cardName: {
+    width: '65%'
   },
   exercisesImg: {
     width: 60,

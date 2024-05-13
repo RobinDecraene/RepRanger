@@ -25,7 +25,6 @@ const Workout = () => {
           const myWorkoutDoc = await myWorkoutRef.get();
           const myWorkoutData = myWorkoutDoc.data();
 
-          // Fetch exercises for each workout
           const exercisesPromises = myWorkoutData.exercises.map(async exerciseRef => {
             const exerciseDoc = await exerciseRef.get();
             return exerciseDoc.data();
