@@ -18,8 +18,8 @@ const Tips = () => {
   useEffect(() => {
     const fetchTipsAndFAQ = async () => {
       try {
-        const tipsSnapshot = await firebase.firestore().collection('tips').get();
-        const tipsData = tipsSnapshot.docs.map(doc => doc.data());
+        const tips = await firebase.firestore().collection('tips').get();
+        const tipsData = tips.docs.map(doc => doc.data());
         setTipsData(tipsData);
 
         const faqSnapshot = await firebase.firestore().collection('faq').get();

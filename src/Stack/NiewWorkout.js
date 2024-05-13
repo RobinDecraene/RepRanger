@@ -20,9 +20,9 @@ const NiewWorkout = () => {
   useEffect(() => {
     const fetchWorkout = async () => {
       try {
-        const workoutSnapshot = await firebase.firestore().collection('workouts').get();
+        const workout = await firebase.firestore().collection('workouts').get();
   
-        const workoutData = await Promise.all(workoutSnapshot.docs.map(async doc => {
+        const workoutData = await Promise.all(workout.docs.map(async doc => {
           const workout = doc.data();
           const muscleGroupRef = workout.muscle_group;
           const muscleGroupDoc = await muscleGroupRef.get();
@@ -45,7 +45,6 @@ const NiewWorkout = () => {
   
     fetchWorkout();
   
-    // Cleanup function to unsubscribe from snapshot listener
     return () => unsubscribe();
   }, []);
 
