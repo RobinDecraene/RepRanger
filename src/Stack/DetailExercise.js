@@ -7,20 +7,19 @@ import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 
 const DetailExercise = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { name, how_to } = route.params;
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-      <View style={styles.title}>
-          <Title>Squat</Title>
-          <SmallText>Been spieren</SmallText>
-        </View>
+        <Title style={styles.title}>{name}</Title>
         <Pressable
-          onPress={() => navigation.navigate('DetailWorkout')}
+          onPress={() => navigation.goBack()}
           style={styles.icon}
         >
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
@@ -39,11 +38,7 @@ const DetailExercise = () => {
 
         <Card style={styles.exerciseInfo}>
           <SmallTitle>Hoe doe je de oefening?</SmallTitle>
-          <P>
-            Je zorgt dat je benen op schouderhoogte staan, je voeten een klein beetje naar buiten draaien
-            en de baar mooi op je schouderbladen leggen. Vergeet niet voor je te kijken en de grond
-            van je weg te duwen met je voeten als je terug naar boven gaat.
-          </P>
+          <P>{how_to}</P>
           <Image
           style={styles.ranger}
             source={require('../../assets/images/ranger-head.png')}
@@ -81,7 +76,9 @@ const styles = StyleSheet.create({
   title: {
     alignItems: 'center',
     marginTop: 25,
-    marginBottom: 20
+    marginBottom: 20,
+    width: '80%',
+    textAlign: 'center'
   },
   icon: {
     position: 'absolute',

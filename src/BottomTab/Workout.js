@@ -7,6 +7,8 @@ import { Card } from '../../Components/Card';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { firebase } from '../../Firebase';
+import { SmallText } from '../../Components/SmallText';
+import { P } from '../../Components/Text';
 
 const Workout = () => {
   const navigation = useNavigation();
@@ -22,7 +24,19 @@ const Workout = () => {
           const myWorkoutRef = workout.workout;
           const myWorkoutDoc = await myWorkoutRef.get();
           const myWorkoutData = myWorkoutDoc.data();
-          return { ...workout, workout: myWorkoutData };
+
+          // Fetch exercises for each workout
+          const exercisesPromises = myWorkoutData.exercises.map(async exerciseRef => {
+            const exerciseDoc = await exerciseRef.get();
+            return exerciseDoc.data();
+          });
+          const exercises = await Promise.all(exercisesPromises);
+
+          const muscleGroupRef = myWorkoutData.muscle_group;
+          const muscleGroupDoc = await muscleGroupRef.get();
+          const muscleGroupData = muscleGroupDoc.data();
+
+          return { ...workout, workout: myWorkoutData, muscleGroup: muscleGroupData, exercises };
         }));
         setMyWorkoutData(myWorkoutData);
 
@@ -43,48 +57,45 @@ const Workout = () => {
     );
   }
 
-
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
+        <Title style={styles.title}>Mijn workouts</Title>
+        <Pressable
+          onPress={() => navigation.navigate('NiewWorkout')}
+          style={styles.icon}
+        >
+          <MaterialCommunityIcons name="plus-circle" color='#4E598C' size={30} />
+        </Pressable>
 
-          <Title style={styles.title}>Mijn workouts</Title>
-          <Pressable
-            onPress={() => navigation.navigate('NiewWorkout')}
-            style={styles.icon}
-          >
-            <MaterialCommunityIcons name="plus-circle" color='#4E598C' size={30} />
-          </Pressable>
-
-
-          {myWorkoutData.map((workout, index) => (
+        {myWorkoutData.map((workout, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailWorkout')}
+            onPress={() => navigation.navigate('DetailWorkout', { name: workout.workout.name, exercises: workout.exercises })}
           >
-          <View style={styles.images}>
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <Image
-              style={styles.exercisesImgSmaller}
-              source={require('../../assets/images/squat-down.png')}
-            />
-          </View>
+            <View style={styles.images}>
+              <Image
+                style={styles.exercisesImg}
+                source={require('../../assets/images/squat-up.png')}
+              />
+              <Image
+                style={styles.exercisesImgSmaller}
+                source={require('../../assets/images/squat-down.png')}
+              />
+            </View>
 
-          <View style={styles.cardInfo}>
-            <SmallTitle>{workout.workout.name}</SmallTitle>
-          </View>
-        </Card>
+            <View style={styles.cardInfo}>
+              <SmallTitle>{workout.workout.name}</SmallTitle>
+              <SmallText>{workout.muscleGroup.name}</SmallText>
+            </View>
+          </Card>
         ))}
-
       </View>
     </ScrollView>
   );
 }
 
-export default Workout
+export default Workout;
 
 const styles = StyleSheet.create({
   base: {
