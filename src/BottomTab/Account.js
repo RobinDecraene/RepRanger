@@ -64,7 +64,7 @@ const Account = () => {
       
         <Image
           style={styles.profileImg}
-          source={require('../../assets/images/no-img.png')}
+          source={require('../../assets/images/no-profil.png')}
         />
         {user && (
           <P>{`${user.firstName} ${user.lastName}`}</P>
@@ -162,6 +162,8 @@ const styles = StyleSheet.create({
     borderRadius: 120,
     marginTop: 40,
     marginBottom: 20,
+    borderColor: '#4E598C',
+    borderWidth: 1
   },
   card: {
     flexDirection: 'row'
