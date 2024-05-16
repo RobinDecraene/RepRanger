@@ -20,10 +20,8 @@ import DetailExercise from './src/Stack/DetailExercise';
 import DetailWorkout from './src/Stack/DetailWorkout';
 import NiewWorkout from './src/Stack/NiewWorkout';
 import EditWorkout from './src/Stack/EditWorkout';
-import EndWorkout from './src/Stack/EndWorkout';
 import StartWorkout from './src/Stack/StartWorkout';
 import Exercises from './src/Stack/Exercises';
-import WorkoutMotivation from './src/Stack/WorkoutMotivation';
 import EndWorkoutRecord from './src/Stack/EndWorkoutRecord';
 import EditAccount from './src/Stack/EditAccount';
 
@@ -137,20 +135,12 @@ function StackNavigatorWorkout() {
         component={EditWorkout}
       />
       <Stack.Screen
-        name='EndWorkout'
-        component={EndWorkout}
-      />
-      <Stack.Screen
         name='Exercises'
         component={Exercises}
       />
       <Stack.Screen
         name='StartWorkout'
         component={StartWorkout}
-      />
-      <Stack.Screen
-        name='WorkoutMotivation'
-        component={WorkoutMotivation}
       />
       <Stack.Screen
         name='EndWorkoutRecord'
