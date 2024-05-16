@@ -1,5 +1,5 @@
 import { StyleSheet, View, Image, ScrollView } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { P } from '../../Components/Text';
 import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
@@ -16,17 +16,49 @@ const StartWorkout = () => {
   const { exercises } = route.params;
 
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const intervalIdRef = useRef(null);
   const scrollViewRef = useRef(null);
 
   const handleNextExercise = () => {
-    setCurrentExerciseIndex((prevIndex) => prevIndex + 1);
+    setCurrentExerciseIndex(prevIndex => prevIndex + 1);
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  };
+
+  useEffect(() => {
+    if (isTimerRunning) {
+      intervalIdRef.current = setInterval(() => {
+        setElapsedTime(prevTime => prevTime + 1);
+      }, 1000);
+    } else {
+      clearInterval(intervalIdRef.current);
+    }
+
+    return () => clearInterval(intervalIdRef.current);
+  }, [isTimerRunning]);
+
+  useEffect(() => {
+    setIsTimerRunning(true);
+  }, []);
+
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
+  const handleStopWorkout = () => {
+    setIsTimerRunning(false);
+    navigation.navigate('DetailWorkout');
   };
 
   const halfwayIndex = Math.ceil(exercises.length / 2);
   const isHalfway = currentExerciseIndex === halfwayIndex;
   const isEnd = currentExerciseIndex === exercises.length + 1;
   const currentExercise = exercises[currentExerciseIndex - (currentExerciseIndex > halfwayIndex ? 1 : 0)];
+
+  
 
   return (
     <ScrollView ref={scrollViewRef} style={styles.base}>
@@ -57,13 +89,13 @@ const StartWorkout = () => {
               </View>
             </Card>
 
-            <Button onPress={() => navigation.navigate('Workout')}>Mijn workouts</Button>
+            <Button onPress={() => { handleStopWorkout(); navigation.navigate('Workout'); }}>Mijn workouts</Button>
           </View>
         ) : isHalfway ? (
           <View style={styles.container}>
             <View style={styles.title}>
               <Title>Halverwegen</Title>
-              <P>5:12</P>
+              <P>{formatTime(elapsedTime)}</P>
             </View>
             <Image
               style={styles.ranger}
@@ -83,7 +115,7 @@ const StartWorkout = () => {
               </View>
               <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
             </Card>
-            <ButtonSecondary style={styles.margin} onPress={() => navigation.navigate('DetailWorkout')}>
+            <ButtonSecondary style={styles.margin} onPress={() => { handleStopWorkout(); navigation.navigate('Workout'); }}>
               Stop Workout
             </ButtonSecondary>
           </View>
@@ -93,7 +125,7 @@ const StartWorkout = () => {
               <>
                 <View style={styles.title}>
                   <Title>{currentExercise.name}</Title>
-                  <P>5:12</P>
+                  <P>{formatTime(elapsedTime)}</P>
                 </View>
                 <Card style={styles.imagesCard}>
                   <Image
@@ -150,7 +182,7 @@ const StartWorkout = () => {
                   <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
                 </Card>
 
-                <ButtonSecondary style={styles.margin} onPress={() => navigation.navigate('DetailWorkout')}>
+                <ButtonSecondary style={styles.margin} onPress={() => { handleStopWorkout(); navigation.navigate('Workout'); }}>
                   Stop Workout
                 </ButtonSecondary>
               </>
