@@ -18,6 +18,7 @@ const StartWorkout = () => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [selectedSets, setSelectedSets] = useState(2);
   const intervalIdRef = useRef(null);
   const scrollViewRef = useRef(null);
 
@@ -137,36 +138,26 @@ const StartWorkout = () => {
                     source={require('../../assets/images/squat-down.png')}
                   />
                 </Card>
-
+                
                 <View style={styles.setsRow}>
-                  <Set>2 sets</Set>
-                  <SetPressed>3 sets</SetPressed>
-                  <Set>4 sets</Set>
+                  {[2, 3, 4].map((sets, index) => (
+                    selectedSets === sets ? (
+                      <SetPressed key={index} onPress={() => setSelectedSets(sets)}>{`${sets} sets`}</SetPressed>
+                    ) : (
+                    <Set key={index} onPress={() => setSelectedSets(sets)}>{`${sets} sets`}</Set>
+                    )
+                  ))}
                 </View>
 
-                <Card style={styles.setCard}>
-                  <SmallTitle>Set 1</SmallTitle>
-                  <View style={styles.setCardInfo}>
-                    <P>8 Reps</P>
-                    <P>40 kg</P>
-                  </View>
-                </Card>
-
-                <Card style={styles.setCard}>
-                  <SmallTitle>Set 2</SmallTitle>
-                  <View style={styles.setCardInfo}>
-                    <P>8 Reps</P>
-                    <P>40 kg</P>
-                  </View>
-                </Card>
-
-                <Card style={styles.setCard}>
-                  <SmallTitle>Set 3</SmallTitle>
-                  <View style={styles.setCardInfo}>
-                    <P>8 Reps</P>
-                    <P>40 kg</P>
-                  </View>
-                </Card>
+                  {Array.from({ length: selectedSets }).map((_, index) => (
+                    <Card key={index} style={styles.setCard}>
+                      <SmallTitle>{`Set ${index + 1}`}</SmallTitle>
+                      <View style={styles.setCardInfo}>
+                        <P>8 Reps</P>
+                        <P>40 kg</P>
+                      </View>
+                    </Card>
+                  ))}
 
                 <Card onPress={handleNextExercise} style={styles.nextExercises}>
                   <Image
