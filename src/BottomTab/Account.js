@@ -151,6 +151,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
+    marginBottom: 40
   },
   profileImg: {
     height: null,

@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 40
   },
   title: {
     alignItems: 'center',

@@ -1,87 +1,168 @@
-import { StyleSheet, View, Image, Pressable } from 'react-native';
-import React from 'react';
+import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import React, { useState, useRef } from 'react';
 import { P } from '../../Components/Text';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { SmallText } from '../../Components/SmallText';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Title } from '../../Components/Title';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { Set, SetPressed } from '../../Components/Sets';
-import { ButtonSecondary } from '../../Components/Button';
+import { Button, ButtonSecondary } from '../../Components/Button';
 
 const StartWorkout = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  const { exercises } = route.params;
+
+  const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
+  const scrollViewRef = useRef(null);
+
+  const handleNextExercise = () => {
+    setCurrentExerciseIndex((prevIndex) => prevIndex + 1);
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  };
+
+  const halfwayIndex = Math.ceil(exercises.length / 2);
+  const isHalfway = currentExerciseIndex === halfwayIndex;
+  const isEnd = currentExerciseIndex === exercises.length + 1;
+  const currentExercise = exercises[currentExerciseIndex - (currentExerciseIndex > halfwayIndex ? 1 : 0)];
+
   return (
-  <ScrollView style={styles.base}>
-      <View style={styles.container}>
-        <View style={styles.title}>
-          <Title>Squat</Title>
-          <P>5:12</P>
-        </View>
-        <Card style={styles.imagesCard}>
-          <Image
-            style={styles.exercisesImg}
-            source={require('../../assets/images/squat-up.png')}
-          />
-          <Image
-            style={styles.exercisesImgSmaller}
-            source={require('../../assets/images/squat-down.png')}
-          />
-        </Card>
-
-        <View style={styles.setsRow}>
-          <Set>2 sets</Set>
-          <SetPressed>3 sets</SetPressed>
-          <Set>4 sets</Set>
-        </View>
-
-        <Card style={styles.setCard}>
-          <SmallTitle>Set 1</SmallTitle>
-          <View style={styles.setCardInfo}>
-            <P>8 Reps</P>
-            <P>40 kg</P>
-          </View>
-        </Card>
-
-        <Card style={styles.setCard}>
-          <SmallTitle>Set 2</SmallTitle>
-          <View style={styles.setCardInfo}>
-            <P>8 Reps</P>
-            <P>40 kg</P>
-          </View>
-        </Card>
-
-        <Card style={styles.setCard}>
-          <SmallTitle>Set 3</SmallTitle>
-          <View style={styles.setCardInfo}>
-            <P>8 Reps</P>
-            <P>40 kg</P>
-          </View>
-        </Card>
-
-        <Card
-          onPress={() => navigation.navigate('WorkoutMotivation')}
-          style={styles.nextExercises}>
+    <ScrollView ref={scrollViewRef} style={styles.base}>
+      
+        {isEnd ? (
+          <View style={styles.container}>
             <Image
-              style={styles.nextExercisesImg}
-              source={require('../../assets/images/squat-up.png')}
+              style={styles.ranger}
+              source={require('../../assets/images/ranger-hands-up.png')}
             />
-            <View>
-              <P>Volgende oefening</P>
-              <SmallText>Naam oefening</SmallText>
-            </View>
-            <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-        </Card>
-        <ButtonSecondary style={styles.margin} onPress={() => navigation.navigate('DetailWorkout')}>Stop Workout</ButtonSecondary>
+            <Title>Goed gedaan</Title>
+            <P>Je hebt een volledige workout gedaan!</P>
 
-      </View>
+            <Card style={styles.numbersCard}>
+              <View style={styles.numbers}>
+                <P>6</P>
+                <SmallText>Oef</SmallText>
+              </View>
+
+              <View style={styles.numbers}>
+                <P>300</P>
+                <SmallText>Cal</SmallText>
+              </View>
+
+              <View style={styles.numbers}>
+                <P>25:45</P>
+                <SmallText>Min</SmallText>
+              </View>
+            </Card>
+
+            <Button onPress={() => navigation.navigate('Workout')}>Mijn workouts</Button>
+          </View>
+        ) : isHalfway ? (
+          <View style={styles.container}>
+            <View style={styles.title}>
+              <Title>Halverwegen</Title>
+              <P>5:12</P>
+            </View>
+            <Image
+              style={styles.ranger}
+              source={require('../../assets/images/ranger.png')}
+            />
+            <P>Doe zo verder je bent er bijna!</P>
+            <Card onPress={handleNextExercise} style={styles.nextExercises}>
+              <Image
+                style={styles.nextExercisesImg}
+                source={require('../../assets/images/squat-up.png')}
+              />
+              <View>
+                <P>Volgende oefening</P>
+                {exercises[halfwayIndex] && (
+                  <SmallText>{exercises[halfwayIndex].name}</SmallText>
+                )}
+              </View>
+              <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
+            </Card>
+            <ButtonSecondary style={styles.margin} onPress={() => navigation.navigate('DetailWorkout')}>
+              Stop Workout
+            </ButtonSecondary>
+          </View>
+        ) : (
+          <View style={styles.container}>
+            {currentExercise && (
+              <>
+                <View style={styles.title}>
+                  <Title>{currentExercise.name}</Title>
+                  <P>5:12</P>
+                </View>
+                <Card style={styles.imagesCard}>
+                  <Image
+                    style={styles.exercisesImg}
+                    source={require('../../assets/images/squat-up.png')}
+                  />
+                  <Image
+                    style={styles.exercisesImgSmaller}
+                    source={require('../../assets/images/squat-down.png')}
+                  />
+                </Card>
+
+                <View style={styles.setsRow}>
+                  <Set>2 sets</Set>
+                  <SetPressed>3 sets</SetPressed>
+                  <Set>4 sets</Set>
+                </View>
+
+                <Card style={styles.setCard}>
+                  <SmallTitle>Set 1</SmallTitle>
+                  <View style={styles.setCardInfo}>
+                    <P>8 Reps</P>
+                    <P>40 kg</P>
+                  </View>
+                </Card>
+
+                <Card style={styles.setCard}>
+                  <SmallTitle>Set 2</SmallTitle>
+                  <View style={styles.setCardInfo}>
+                    <P>8 Reps</P>
+                    <P>40 kg</P>
+                  </View>
+                </Card>
+
+                <Card style={styles.setCard}>
+                  <SmallTitle>Set 3</SmallTitle>
+                  <View style={styles.setCardInfo}>
+                    <P>8 Reps</P>
+                    <P>40 kg</P>
+                  </View>
+                </Card>
+
+                <Card onPress={handleNextExercise} style={styles.nextExercises}>
+                  <Image
+                    style={styles.nextExercisesImg}
+                    source={require('../../assets/images/squat-up.png')}
+                  />
+                  <View>
+                    <P>Volgende oefening</P>
+                    {exercises[currentExerciseIndex + 1] && (
+                      <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>
+                    )}
+                  </View>
+                  <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
+                </Card>
+
+                <ButtonSecondary style={styles.margin} onPress={() => navigation.navigate('DetailWorkout')}>
+                  Stop Workout
+                </ButtonSecondary>
+              </>
+            )}
+          </View>
+        )}
+      
     </ScrollView>
   );
-}
+};
 
-export default StartWorkout
+export default StartWorkout;
 
 const styles = StyleSheet.create({
   base: {
@@ -104,7 +185,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'baseline',
     justifyContent: 'space-between',
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    marginBottom: 40
   },
   exercisesImg: {
     width: 140,
@@ -141,12 +223,6 @@ const styles = StyleSheet.create({
     height: 120,
     resizeMode: 'contain'
   },
-  exerciseInfo: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-between',
-    marginTop: 10
-  },
   nextExercises: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -156,5 +232,21 @@ const styles = StyleSheet.create({
     width: 60,
     height: 80,
     resizeMode: 'contain'
-  }
+  },
+  ranger: {
+    width: 200,
+    height: 400,
+    resizeMode: 'contain',
+    marginTop: 40
+  },
+  numbers: {
+    alignItems: 'center'
+  },
+  numbersCard: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 40,
+    marginTop: 20
+  },
 });

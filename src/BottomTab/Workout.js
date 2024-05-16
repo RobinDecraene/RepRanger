@@ -84,8 +84,11 @@ const Workout = () => {
             </View>
 
             <View style={styles.cardInfo}>
-              <SmallTitle>{workout.workout.name}</SmallTitle>
-              <SmallText>{workout.muscleGroup.name}</SmallText>
+              <View>
+                <SmallTitle>{workout.workout.name}</SmallTitle>
+                <SmallText>{workout.muscleGroup.name}</SmallText>
+              </View>
+              <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
             </View>
           </Card>
         ))}
@@ -107,7 +110,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    marginBottom: 40
   },
   title: {
     marginTop: 25,
@@ -123,6 +127,9 @@ const styles = StyleSheet.create({
     marginBottom: 10
   },
   cardInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: 'rgba(235, 236, 242, 0.5)',
     position: 'absolute',
     width: '100%',
