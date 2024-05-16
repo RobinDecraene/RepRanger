@@ -18,35 +18,71 @@ const Workout = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const myWorkout = await firebase.firestore().collection('saved_workouts').get();
+        const myWorkout = await firebase.firestore().collection('workouts').where('saved_workout', '==', true).get();
         const myWorkoutData = await Promise.all(myWorkout.docs.map(async doc => {
           const workout = doc.data();
-          const myWorkoutRef = workout.workout;
-          const myWorkoutDoc = await myWorkoutRef.get();
-          const myWorkoutData = myWorkoutDoc.data();
-
-          const exercisesPromises = myWorkoutData.exercises.map(async exerciseRef => {
+          const workoutId = doc.id;
+  
+          const exercisesPromises = workout.exercises.map(async exerciseRef => {
             const exerciseDoc = await exerciseRef.get();
             return exerciseDoc.data();
           });
           const exercises = await Promise.all(exercisesPromises);
-
-          const muscleGroupRef = myWorkoutData.muscle_group;
+  
+          const muscleGroupRef = workout.muscle_group;
           const muscleGroupDoc = await muscleGroupRef.get();
           const muscleGroupData = muscleGroupDoc.data();
-
-          return { ...workout, workout: myWorkoutData, muscleGroup: muscleGroupData, exercises };
+  
+          return { ...workout, id: workoutId, muscleGroup: muscleGroupData, exercises };
         }));
         setMyWorkoutData(myWorkoutData);
-
+  
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetch();
   }, []);
+  
+  const toggleSavedWorkout = async (index) => {
+    try {
+      const updatedWorkoutData = [...myWorkoutData];
+      const workoutId = updatedWorkoutData[index].id;
+      updatedWorkoutData[index].saved_workout = !updatedWorkoutData[index].saved_workout;
+      setMyWorkoutData(updatedWorkoutData);
+      
+      // Update Firestore
+      await firebase.firestore().collection('workouts').doc(workoutId).update({
+        saved_workout: updatedWorkoutData[index].saved_workout
+      });
+  
+      // Refetch data
+      const myWorkout = await firebase.firestore().collection('workouts').where('saved_workout', '==', true).get();
+      const updatedMyWorkoutData = await Promise.all(myWorkout.docs.map(async doc => {
+        const workout = doc.data();
+        const workoutId = doc.id;
+  
+        const exercisesPromises = workout.exercises.map(async exerciseRef => {
+          const exerciseDoc = await exerciseRef.get();
+          return exerciseDoc.data();
+        });
+        const exercises = await Promise.all(exercisesPromises);
+  
+        const muscleGroupRef = workout.muscle_group;
+        const muscleGroupDoc = await muscleGroupRef.get();
+        const muscleGroupData = muscleGroupDoc.data();
+  
+        return { ...workout, id: workoutId, muscleGroup: muscleGroupData, exercises };
+      }));
+      setMyWorkoutData(updatedMyWorkoutData);
+    } catch (error) {
+      console.error('Error toggling saved workout:', error);
+    }
+  };
+  
+  
 
   if (loading) {
     return (
@@ -70,7 +106,7 @@ const Workout = () => {
         {myWorkoutData.map((workout, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailWorkout', { name: workout.workout.name, exercises: workout.exercises })}
+            onPress={() => navigation.navigate('DetailWorkout', { name: workout.name, exercises: workout.exercises })}
           >
             <View style={styles.images}>
               <Image
@@ -85,10 +121,14 @@ const Workout = () => {
 
             <View style={styles.cardInfo}>
               <View>
-                <SmallTitle>{workout.workout.name}</SmallTitle>
+                <SmallTitle>{workout.name}</SmallTitle>
                 <SmallText>{workout.muscleGroup.name}</SmallText>
               </View>
-              <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
+              {workout.saved_workout ? (
+                <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart" color='#4E598C' size={30} />
+              ) : (
+                <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart-outline" color='#4E598C' size={30} />
+              )}
             </View>
           </Card>
         ))}

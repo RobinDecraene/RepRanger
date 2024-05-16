@@ -24,6 +24,7 @@ const NiewWorkout = () => {
   
         const workoutData = await Promise.all(workout.docs.map(async doc => {
           const workout = doc.data();
+          const workoutId = doc.id;
           const muscleGroupRef = workout.muscle_group;
           const muscleGroupDoc = await muscleGroupRef.get();
           const muscleGroupData = muscleGroupDoc.data();
@@ -35,7 +36,7 @@ const NiewWorkout = () => {
           
           const exercises = await Promise.all(exercisesPromises);
 
-          return { ...workout, muscle_group: muscleGroupData, exercises };
+          return { ...workout, id: workoutId, muscle_group: muscleGroupData, exercises };
         }));
   
         setWorkoutData(workoutData);
@@ -59,6 +60,23 @@ const NiewWorkout = () => {
   const handleFilterPress = (muscleName) => {
     setSelectedMuscle(muscleName === selectedMuscle ? 'All' : muscleName);
   };
+
+  const toggleSavedWorkout = async (index) => {
+    try {
+      const updatedWorkoutData = [...workoutData];
+      const workoutId = updatedWorkoutData[index].id;
+      updatedWorkoutData[index].saved_workout = !updatedWorkoutData[index].saved_workout;
+      setWorkoutData(updatedWorkoutData);
+      
+      // Update Firestore
+      await firebase.firestore().collection('workouts').doc(workoutId).update({
+        saved_workout: updatedWorkoutData[index].saved_workout
+      });
+    } catch (error) {
+      console.error('Error toggling saved workout:', error);
+    }
+  };
+
 
   if (loading) {
     return (
@@ -127,7 +145,11 @@ const NiewWorkout = () => {
                     <SmallText>{workout.muscle_group.name}</SmallText>
                   </View>
   
-                  <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
+                  {workout.saved_workout ? (
+                    <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart" color='#4E598C' size={30} />
+                  ) : (
+                    <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart-outline" color='#4E598C' size={30} />
+                  )}
                 </View>
               </Card>
             );
