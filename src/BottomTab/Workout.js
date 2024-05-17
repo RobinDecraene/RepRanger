@@ -53,12 +53,10 @@ const Workout = () => {
       updatedWorkoutData[index].saved_workout = !updatedWorkoutData[index].saved_workout;
       setMyWorkoutData(updatedWorkoutData);
       
-      // Update Firestore
       await firebase.firestore().collection('workouts').doc(workoutId).update({
         saved_workout: updatedWorkoutData[index].saved_workout
       });
   
-      // Refetch data
       const myWorkout = await firebase.firestore().collection('workouts').where('saved_workout', '==', true).get();
       const updatedMyWorkoutData = await Promise.all(myWorkout.docs.map(async doc => {
         const workout = doc.data();

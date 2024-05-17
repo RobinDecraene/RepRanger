@@ -68,7 +68,6 @@ const NiewWorkout = () => {
       updatedWorkoutData[index].saved_workout = !updatedWorkoutData[index].saved_workout;
       setWorkoutData(updatedWorkoutData);
       
-      // Update Firestore
       await firebase.firestore().collection('workouts').doc(workoutId).update({
         saved_workout: updatedWorkoutData[index].saved_workout
       });

@@ -9,6 +9,8 @@ import { Title } from '../../Components/Title';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Set, SetPressed } from '../../Components/Sets';
 import { Button, ButtonSecondary } from '../../Components/Button';
+import { TextInput } from 'react-native-gesture-handler';
+import RNPickerSelect from 'react-native-picker-select';
 
 const StartWorkout = () => {
   const navigation = useNavigation();
@@ -153,8 +155,31 @@ const StartWorkout = () => {
                     <Card key={index} style={styles.setCard}>
                       <SmallTitle>{`Set ${index + 1}`}</SmallTitle>
                       <View style={styles.setCardInfo}>
-                        <P>8 Reps</P>
-                        <P>40 kg</P>
+                        <View style={styles.setCardInputRow}>
+                        <RNPickerSelect
+                          style={ pickerSelectStyles }
+                          placeholder={{
+                            label: ' ',
+                            value: null,
+                          }}
+                          onValueChange={(value) => console.log(value)}
+                          items={[
+                            { label: '8', value: '8' },
+                            { label: '9', value: '9' },
+                            { label: '10', value: '10' },
+                            { label: '11', value: '11' },
+                            { label: '12', value: '12' },
+                          ]}
+                        />
+                          <P style={styles.setCardMargin}>Reps</P>
+                        </View>
+                        <View style={styles.setCardInputRow}>
+                        <TextInput
+                            style={styles.setCardInput}
+                            keyboardType='numeric'
+                          />
+                          <P>kg</P>
+                        </View>
                       </View>
                     </Card>
                   ))}
@@ -241,6 +266,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 10
   },
+  setCardInputRow: {
+    flexDirection: 'row',
+    width: '40%',
+  },
+  setCardInput: {
+    backgroundColor: '#C4C7D8',
+    color: '#191D2F',
+    marginLeft: 10,
+    alignItems:'center',
+    justifyContent:'center',
+    textAlign: 'center',
+    borderRadius: 30,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    marginRight: 10,
+    padding: 5,
+    paddingLeft: 35,
+    paddingRight: 35
+  },
+  setCardMargin: {
+    marginLeft: 10
+  },
   ranger: {
     width: 120,
     height: 120,
@@ -271,5 +318,36 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 40,
     marginTop: 20
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    backgroundColor: '#C4C7D8',
+    color: '#191D2F',
+    width: '100%',
+    alignItems:'center',
+    justifyContent:'center',
+    textAlign: 'center',
+    borderRadius: 30,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    padding: 5,
+    paddingLeft: 35,
+    paddingRight: 35
+  },
+  inputAndroid: {
+    backgroundColor: '#C4C7D8',
+    color: '#191D2F',
+    width: '100%',
+    alignItems:'center',
+    justifyContent:'center',
+    textAlign: 'center',
+    borderRadius: 30,
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    padding: 5,
+    paddingLeft: 35,
+    paddingRight: 35
   },
 });
