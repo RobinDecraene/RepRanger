@@ -24,6 +24,7 @@ import StartWorkout from './src/Stack/StartWorkout';
 import Exercises from './src/Stack/Exercises';
 import EndWorkoutRecord from './src/Stack/EndWorkoutRecord';
 import EditAccount from './src/Stack/EditAccount';
+import DetailHistory from './src/Stack/DetailHistory';
 
 const Tab = createMaterialBottomTabNavigator()
 const Stack = createStackNavigator()
@@ -182,10 +183,13 @@ function StackNavigatorAccount() {
         name='Account'
         component={Account}
       />
-
       <Stack.Screen
         name='EditAccount'
         component={EditAccount}
+      />
+      <Stack.Screen
+        name='DetailHistory'
+        component={DetailHistory}
       />
     </Stack.Navigator>
   )

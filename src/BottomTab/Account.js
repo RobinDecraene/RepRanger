@@ -114,6 +114,7 @@ const Account = () => {
         {historyData.map((history, index) => (
         <Card
           key={index}
+          onPress={() => navigation.navigate('DetailHistory')}
           style={styles.card}>
           <Image
             style={styles.exercisesImg}
