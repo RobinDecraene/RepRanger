@@ -58,6 +58,22 @@ const Workout = () => {
     fetchUserData();
   }, []);
 
+  const removeWorkout = async (workoutId) => {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId);
+
+    try {
+      await userRef.delete();
+      setMyWorkoutData(prevWorkouts => prevWorkouts.filter(workout => workout.id !== workoutId));
+    } catch (error) {
+      console.error('Error removing workout:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -99,7 +115,9 @@ const Workout = () => {
                 <SmallTitle>{workout.workout.name}</SmallTitle>
                 <SmallText>{workout.muscleGroup.name}</SmallText>
               </View>
-              <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
+              <Pressable onPress={() => removeWorkout(workout.id)}>
+                <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />
+              </Pressable>
             </View>
           </Card>
         ))}
