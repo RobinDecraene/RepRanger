@@ -1,8 +1,7 @@
-import { Image, Pressable, StyleSheet, View, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, Image, ActivityIndicator, Pressable } from 'react-native';
 import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SmallTitle } from '../../Components/SmallTitle';
@@ -20,62 +19,81 @@ const NiewWorkout = () => {
   useEffect(() => {
     const fetchWorkout = async () => {
       try {
-        const workout = await firebase.firestore().collection('workouts').get();
-  
-        const workoutData = await Promise.all(workout.docs.map(async doc => {
+        const workoutSnapshot = await firebase.firestore().collection('workouts').get();
+
+        const workoutData = await Promise.all(workoutSnapshot.docs.map(async doc => {
           const workout = doc.data();
           const workoutId = doc.id;
           const muscleGroupRef = workout.muscle_group;
           const muscleGroupDoc = await muscleGroupRef.get();
           const muscleGroupData = muscleGroupDoc.data();
 
+          const currentUser = firebase.auth().currentUser;
+          let isSaved = false;
+          if (currentUser) {
+            const savedWorkoutRef = await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId).get();
+            isSaved = savedWorkoutRef.exists;
+          }
+
           const exercisesPromises = workout.exercises.map(async exerciseRef => {
             const exerciseDoc = await exerciseRef.get();
             return exerciseDoc.data();
           });
-          
+
           const exercises = await Promise.all(exercisesPromises);
 
-          return { ...workout, id: workoutId, muscle_group: muscleGroupData, exercises };
+          return { ...workout, id: workoutId, muscle_group: muscleGroupData, exercises, saved_workout: isSaved };
         }));
-  
+
         setWorkoutData(workoutData);
         setLoading(false);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     const muscleGroupsRef = firebase.firestore().collection('muscle_groups');
     const unsubscribe = muscleGroupsRef.onSnapshot(snapshot => {
       const muscleData = snapshot.docs.map(doc => doc.data());
       setMuscleData(muscleData);
     });
-  
+
     fetchWorkout();
-  
+
     return () => unsubscribe();
   }, []);
 
   const handleFilterPress = (muscleName) => {
-    setSelectedMuscle(muscleName === selectedMuscle ? 'All' : muscleName);
+    setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
   };
 
-  const toggleSavedWorkout = async (index) => {
+  const toggleSavedWorkout = async (workoutId, isSaved) => {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
+    const savedWorkoutsRef = userRef.collection('saved_workouts').doc(workoutId);
+
     try {
-      const updatedWorkoutData = [...workoutData];
-      const workoutId = updatedWorkoutData[index].id;
-      updatedWorkoutData[index].saved_workout = !updatedWorkoutData[index].saved_workout;
-      setWorkoutData(updatedWorkoutData);
-      
-      await firebase.firestore().collection('workouts').doc(workoutId).update({
-        saved_workout: updatedWorkoutData[index].saved_workout
-      });
+      if (isSaved) {
+        await savedWorkoutsRef.delete();
+      } else {
+        await savedWorkoutsRef.set({ workout: firebase.firestore().doc(`workouts/${workoutId}`) });
+      }
+
+      setWorkoutData(prevWorkoutData => prevWorkoutData.map(workout => {
+        if (workout.id === workoutId) {
+          return { ...workout, saved_workout: !isSaved };
+        }
+        return workout;
+      }));
     } catch (error) {
       console.error('Error toggling saved workout:', error);
     }
   };
-
 
   if (loading) {
     return (
@@ -85,9 +103,8 @@ const NiewWorkout = () => {
     );
   }
 
-
   return (
-  <ScrollView style={styles.base}>
+    <ScrollView style={styles.base}>
       <View style={styles.container}>
         <Pressable
           onPress={() => navigation.goBack()}
@@ -101,31 +118,31 @@ const NiewWorkout = () => {
           {muscleData
             .sort((a, b) => a.name.localeCompare(b.name))
             .map((muscle, index) => (
-            muscle.name === selectedMuscle ? (
-              <SetPressed
-                key={index}
-                onPress={() => handleFilterPress(muscle.name)}
-              >
-                {muscle.name}
-              </SetPressed>
-            ) : (
-              <Set
-                key={index}
-                onPress={() => handleFilterPress(muscle.name)}
-              >
-                {muscle.name}
-              </Set>
-            )
-          ))}
+              muscle.name === selectedMuscle ? (
+                <SetPressed
+                  key={index}
+                  onPress={() => handleFilterPress(muscle.name)}
+                >
+                  {muscle.name}
+                </SetPressed>
+              ) : (
+                <Set
+                  key={index}
+                  onPress={() => handleFilterPress(muscle.name)}
+                >
+                  {muscle.name}
+                </Set>
+              )
+            ))}
         </View>
-
 
         {workoutData.map((workout, index) => {
           if (selectedMuscle === 'Alles' || workout.muscle_group.name === selectedMuscle) {
+            const isSaved = workout.saved_workout;
             return (
               <Card
                 key={index}
-                onPress={() => navigation.navigate('DetailWorkout', {name: workout.name, exercises: workout.exercises})}
+                onPress={() => navigation.navigate('DetailWorkout', { name: workout.name, exercises: workout.exercises })}
               >
                 <View style={styles.images}>
                   <Image
@@ -137,18 +154,17 @@ const NiewWorkout = () => {
                     source={require('../../assets/images/squat-down.png')}
                   />
                 </View>
-  
+
                 <View style={styles.cardInfo}>
                   <View>
                     <SmallTitle>{workout.name}</SmallTitle>
                     <SmallText>{workout.muscle_group.name}</SmallText>
                   </View>
-  
-                  {workout.saved_workout ? (
-                    <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart" color='#4E598C' size={30} />
-                  ) : (
-                    <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart-outline" color='#4E598C' size={30} />
-                  )}
+
+                  <Pressable onPress={() => toggleSavedWorkout(workout.id, isSaved)}>
+                    <MaterialCommunityIcons name={isSaved ? "heart" : "heart-outline"} color='#4E598C' size={30} />
+                  </Pressable>
+
                 </View>
               </Card>
             );
