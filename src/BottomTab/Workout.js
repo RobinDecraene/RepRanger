@@ -98,7 +98,7 @@ const Workout = () => {
         {myWorkoutData.map((workout, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workout.name, exercises: workout.exercises, source: 'Workout' })}
+            onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workout.name, exercises: workout.exercises, source: 'Workout', workout: workout })}
           >
             <View style={styles.images}>
               <Image

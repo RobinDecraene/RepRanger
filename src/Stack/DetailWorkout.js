@@ -12,28 +12,7 @@ import { Title } from '../../Components/Title';
 const DetailWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, exercises, source } = route.params;
-
-  const renderIcon = () => {
-    if (source === 'Workout') {
-      return (
-        <Pressable
-          onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises })}
-          style={styles.iconRight}
-        >
-          <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
-        </Pressable>
-      );
-    } else {
-      return (
-        <Pressable
-          style={styles.iconRight}
-        >
-          <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
-        </Pressable>
-      );
-    }
-  };
+  const { name, exercises, source, workout } = route.params;
   
   return (
     <ScrollView style={styles.base}>
@@ -47,7 +26,20 @@ const DetailWorkout = () => {
 
         <Title style={styles.title}>{name}</Title>
 
-        {renderIcon()}
+        {source === 'Workout' ? (
+          <Pressable
+            onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises })}
+            style={styles.iconRight}
+          >
+            <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
+          </Pressable>
+        ): (
+          <Pressable
+            style={styles.iconRight}
+          >
+            <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
+          </Pressable>
+        )}
 
         {exercises.map((exercise, index) => (
           <Card
@@ -65,12 +57,18 @@ const DetailWorkout = () => {
           </Card>
         ))}
 
-        <Button
-          onPress={() => navigation.navigate('StartWorkout', { exercises: exercises })}
-          style={styles.button}
-        >
-          Start workout
-        </Button>
+        {source === 'Workout' ? (
+          <Button
+            onPress={() => navigation.navigate('StartWorkout', { exercises: exercises, workout })}
+            style={styles.button}
+          >
+            Start workout
+          </Button>
+        ): (
+        <></>
+        )}
+
+
       </View>
     </ScrollView>
   );

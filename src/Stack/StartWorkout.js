@@ -11,11 +11,12 @@ import { Set, SetPressed } from '../../Components/Sets';
 import { Button, ButtonSecondary } from '../../Components/Button';
 import { TextInput } from 'react-native-gesture-handler';
 import RNPickerSelect from 'react-native-picker-select';
+import { firebase } from '../../Firebase';
 
 const StartWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { exercises } = route.params;
+  const { exercises, workout } = route.params;
 
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -51,11 +52,39 @@ const StartWorkout = () => {
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
-  const handleStopWorkout = () => {
+  const handleStopWorkout = async () => {
     setIsTimerRunning(false);
-    navigation.navigate('DetailWorkout');
-  };
+  
+    const addWorkoutToHistory = async (workoutId) => {
+      const currentUser = firebase.auth().currentUser;
+      if (!currentUser) {
+        console.error('User not authenticated');
+        return;
+      }
+    
+      const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('history');
+      const workoutRef = firebase.firestore().doc(`workouts/${workoutId}`);
+    
+      try {
+        await userRef.add({
+          workout: workoutRef,
+          elapsedTime,
+          date: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log('Workout added to history');
+      } catch (error) {
+        console.error('Error adding workout to history:', error);
+      }
+    };
+    
 
+    const workoutId = workout.id;
+    addWorkoutToHistory(workoutId);
+    
+  
+    navigation.navigate('Workout');
+  };
+  
   const halfwayIndex = Math.ceil(exercises.length / 2);
   const isHalfway = currentExerciseIndex === halfwayIndex;
   const isEnd = currentExerciseIndex === exercises.length + 1;
@@ -87,7 +116,7 @@ const StartWorkout = () => {
               </View>
 
               <View style={styles.numbers}>
-                <P>25:45</P>
+                <P>{elapsedTime}</P>
                 <SmallText>Min</SmallText>
               </View>
             </Card>
