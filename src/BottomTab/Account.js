@@ -29,20 +29,26 @@ const Account = () => {
             setUser(userDoc.data());
             const historyCollection = await userRef.collection('history').get();
             const historyData = await Promise.all(historyCollection.docs.map(async doc => {
-              const workout = doc.data();
-              const historyRef = workout.workout;
-              const historyDoc = await historyRef.get();
-              const historyData = historyDoc.data();
-
-              const exercisesPromises = historyData.exercises.map(async exerciseRef => {
-                const exerciseDoc = await exerciseRef.get();
-                return exerciseDoc.data();
-              });
-              const exercises = await Promise.all(exercisesPromises);
-
-              return { ...workout, workout: historyData, exercises };
+              const historyItem = doc.data();
+              const historyRef = historyItem.workout;
+              
+              if (historyRef && typeof historyRef.get === 'function') {
+                const historyDoc = await historyRef.get();
+                const workoutData = historyDoc.data();
+                
+                const exercisesPromises = workoutData.exercises.map(async exerciseRef => {
+                  const exerciseDoc = await exerciseRef.get();
+                  return exerciseDoc.data();
+                });
+                const exercises = await Promise.all(exercisesPromises);
+  
+                return { id: doc.id, ...historyItem, workout: workoutData, exercises };
+              } else {
+                console.error('Invalid workout reference');
+                return null;
+              }
             }));
-            setHistoryData(historyData);
+            setHistoryData(historyData.filter(item => item !== null));
           } 
         } catch (error) {
           console.log('Error getting document:', error);
@@ -105,7 +111,9 @@ const Account = () => {
         </Card>
 
         <SmallTitle>Workout historiek</SmallTitle>
-        {historyData.map((history, index) => (
+        {historyData
+          .sort((a, b) => b.date - a.date)
+          .map((history, index) => (
           <Card
             key={index}
             onPress={() => navigation.navigate('DetailHistory')}
@@ -119,8 +127,8 @@ const Account = () => {
               <P>{history.workout.name}</P>
               <View style={styles.cardInfo}>
                 <SmallText>{history.exercises.length} oef</SmallText>
-                <SmallText>{history.cal} cal</SmallText>
-                <SmallText>{history.time} min</SmallText>
+                <SmallText> cal</SmallText>
+                <SmallText>{history.elapsedTime} min</SmallText>
               </View>
             </View>
           </Card>
