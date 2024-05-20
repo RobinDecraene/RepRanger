@@ -1,7 +1,6 @@
 import { Pressable, StyleSheet, View, Image } from 'react-native';
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { SmallText } from '../../Components/SmallText';
 import { P } from '../../Components/Text';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from '../../Components/Button';
@@ -13,7 +12,29 @@ import { Title } from '../../Components/Title';
 const DetailWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, exercises } = route.params;
+  const { name, exercises, source } = route.params;
+
+  const renderIcon = () => {
+    if (source === 'Workout') {
+      return (
+        <Pressable
+          onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises })}
+          style={styles.iconRight}
+        >
+          <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
+        </Pressable>
+      );
+    } else {
+      return (
+        <Pressable
+          style={styles.iconRight}
+        >
+          <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
+        </Pressable>
+      );
+    }
+  };
+  
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -25,12 +46,8 @@ const DetailWorkout = () => {
         </Pressable>
 
         <Title style={styles.title}>{name}</Title>
-        <Pressable
-          onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises })}
-          style={styles.iconRight}
-        >
-          <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
-        </Pressable>
+
+        {renderIcon()}
 
         {exercises.map((exercise, index) => (
           <Card

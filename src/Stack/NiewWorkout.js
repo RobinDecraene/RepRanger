@@ -19,38 +19,39 @@ const NiewWorkout = () => {
   useEffect(() => {
     const fetchWorkout = async () => {
       try {
-        const workoutSnapshot = await firebase.firestore().collection('workouts').get();
-
-        const workoutData = await Promise.all(workoutSnapshot.docs.map(async doc => {
-          const workout = doc.data();
-          const workoutId = doc.id;
-          const muscleGroupRef = workout.muscle_group;
-          const muscleGroupDoc = await muscleGroupRef.get();
-          const muscleGroupData = muscleGroupDoc.data();
-
-          const currentUser = firebase.auth().currentUser;
-          let isSaved = false;
-          if (currentUser) {
-            const savedWorkoutRef = await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId).get();
-            isSaved = savedWorkoutRef.exists;
-          }
-
-          const exercisesPromises = workout.exercises.map(async exerciseRef => {
-            const exerciseDoc = await exerciseRef.get();
-            return exerciseDoc.data();
-          });
-
-          const exercises = await Promise.all(exercisesPromises);
-
-          return { ...workout, id: workoutId, muscle_group: muscleGroupData, exercises, saved_workout: isSaved };
-        }));
-
-        setWorkoutData(workoutData);
-        setLoading(false);
+          const workoutSnapshot = await firebase.firestore().collection('workouts').get();
+  
+          const workoutData = await Promise.all(workoutSnapshot.docs.map(async doc => {
+              const workout = doc.data();
+              const workoutId = doc.id;
+              const muscleGroupRef = workout.muscle_group;
+              const muscleGroupDoc = await muscleGroupRef.get();
+              const muscleGroupData = muscleGroupDoc.data();
+  
+              const currentUser = firebase.auth().currentUser;
+              let isSaved = false;
+              if (currentUser) {
+                  const savedWorkoutRef = await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId).get();
+                  isSaved = savedWorkoutRef.exists;
+              }
+  
+              const exercisesPromises = workout.exercises.map(async exerciseRef => {
+                  const exerciseDoc = await exerciseRef.get();
+                  return exerciseDoc.data();
+              });
+  
+              const exercises = await Promise.all(exercisesPromises);
+  
+              return { ...workout, id: workoutId, muscle_group: muscleGroupData, exercises, saved_workout: isSaved };
+          }));
+  
+          setWorkoutData(workoutData);
+          setLoading(false);
       } catch (error) {
-        console.error('Error fetching data:', error);
+          console.error('Error fetching data:', error);
       }
-    };
+  };
+  
 
     const muscleGroupsRef = firebase.firestore().collection('muscle_groups');
     const unsubscribe = muscleGroupsRef.onSnapshot(snapshot => {
@@ -142,7 +143,7 @@ const NiewWorkout = () => {
             return (
               <Card
                 key={index}
-                onPress={() => navigation.navigate('DetailWorkout', { name: workout.name, exercises: workout.exercises })}
+                onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.name, exercises: workout.exercises })}
               >
                 <View style={styles.images}>
                   <Image

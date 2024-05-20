@@ -26,23 +26,24 @@ const Workout = () => {
             const savedWorkoutCollection = await userRef.collection('saved_workouts').get();
             const myWorkoutData = await Promise.all(savedWorkoutCollection.docs.map(async doc => {
               const workout = doc.data();
+              const workoutId = doc.id;
               const savedWorkoutRef = workout.workout;
               const savedWorkoutDoc = await savedWorkoutRef.get();
               const myWorkoutData = savedWorkoutDoc.data();
-
+              
               const muscleGroupRef = myWorkoutData.muscle_group;
               const muscleGroupDoc = await muscleGroupRef.get();
               const muscleGroupData = muscleGroupDoc.data();
           
               const exercisesPromises = myWorkoutData.exercises.map(async exerciseRef => {
-                const exerciseDoc = await exerciseRef.get();
-                return exerciseDoc.data();
+                  const exerciseDoc = await exerciseRef.get();
+                  return exerciseDoc.data();
               });
               const exercises = await Promise.all(exercisesPromises);
           
-              return { ...workout, workout: myWorkoutData, muscleGroup: muscleGroupData, exercises };
-
-            }));
+              return { id: workoutId, ...workout, workout: myWorkoutData, muscleGroup: muscleGroupData, exercises };
+          }));
+          
             setMyWorkoutData(myWorkoutData);
           } 
         } catch (error) {
@@ -97,7 +98,7 @@ const Workout = () => {
         {myWorkoutData.map((workout, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailWorkout', { name: workout.workout.name, exercises: workout.exercises })}
+            onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workout.name, exercises: workout.exercises, source: 'Workout' })}
           >
             <View style={styles.images}>
               <Image
