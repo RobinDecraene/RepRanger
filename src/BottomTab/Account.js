@@ -17,50 +17,46 @@ const Account = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const currentUser = firebase.auth().currentUser;
-    if (currentUser) {
-      const db = firebase.firestore();
-      const userRef = db.collection('users').doc(currentUser.uid);
+    const fetchUserData = async () => {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        const db = firebase.firestore();
+        const userRef = db.collection('users').doc(currentUser.uid);
 
-      userRef.get().then((doc) => {
-        if (doc.exists) {
-          setUser(doc.data());
-        } else {
-          console.log('No such document!');
+        try {
+          const userDoc = await userRef.get();
+          if (userDoc.exists) {
+            setUser(userDoc.data());
+            const historyCollection = await userRef.collection('history').get();
+            const historyData = await Promise.all(historyCollection.docs.map(async doc => {
+              const workout = doc.data();
+              const historyRef = workout.workout;
+              const historyDoc = await historyRef.get();
+              const historyData = historyDoc.data();
+
+              const exercisesPromises = historyData.exercises.map(async exerciseRef => {
+                const exerciseDoc = await exerciseRef.get();
+                return exerciseDoc.data();
+              });
+              const exercises = await Promise.all(exercisesPromises);
+
+              return { ...workout, workout: historyData, exercises };
+            }));
+            setHistoryData(historyData);
+          } else {
+            console.log('No such document!');
+          }
+        } catch (error) {
+          console.log('Error getting document:', error);
+        } finally {
+          setLoading(false);
         }
-      }).catch((error) => {
-        console.log('Error getting document:', error);
-      }).finally(() => {
+      } else {
         setLoading(false);
-      });
-    }
-
-    const fetch = async () => {
-      try {
-        const history = await firebase.firestore().collection('history').get();
-        const historyData = await Promise.all(history.docs.map(async doc => {
-          const workout = doc.data();
-          const historyRef = workout.workout;
-          const historyDoc = await historyRef.get();
-          const historyData = historyDoc.data();
-
-          const exercisesPromises = historyData.exercises.map(async exerciseRef => {
-            const exerciseDoc = await exerciseRef.get();
-            return exerciseDoc.data();
-          });
-          const exercises = await Promise.all(exercisesPromises);
-
-          return { ...workout, workout: historyData, exercises};
-        }));
-        setHistoryData(historyData);
-
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
 
-    fetch();
+    fetchUserData();
   }, []);
 
   const handleLogout = async () => {
@@ -112,38 +108,38 @@ const Account = () => {
 
         <SmallTitle>Workout historiek</SmallTitle>
         {historyData.map((history, index) => (
-        <Card
-          key={index}
-          onPress={() => navigation.navigate('DetailHistory')}
-          style={styles.card}>
-          <Image
-            style={styles.exercisesImg}
-            source={require('../../assets/images/bench-press-up.png')}
-          />
-          <View>
-            <P>{history.workout.name}</P>
-            <View style={styles.cardInfo}>
-            <SmallText>{history.exercises.length} oef</SmallText>
-              <SmallText>{history.cal} cal</SmallText>
-              <SmallText>{history.time} min</SmallText>
+          <Card
+            key={index}
+            onPress={() => navigation.navigate('DetailHistory')}
+            style={styles.card}
+          >
+            <Image
+              style={styles.exercisesImg}
+              source={require('../../assets/images/bench-press-up.png')}
+            />
+            <View>
+              <P>{history.workout.name}</P>
+              <View style={styles.cardInfo}>
+                <SmallText>{history.exercises.length} oef</SmallText>
+                <SmallText>{history.cal} cal</SmallText>
+                <SmallText>{history.time} min</SmallText>
+              </View>
             </View>
-            
-          </View>
-      </Card>
+          </Card>
         ))}
 
         <Button onPress={handleLogout}>Log uit</Button>
       </View>
     </ScrollView>
   );
-}
+};
 
 export default Account;
 
 const styles = StyleSheet.create({
   base: {
     backgroundColor: '#fff',
-    width: '100%'
+    width: '100%',
   },
   container: {
     flex: 1,
@@ -152,7 +148,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    marginBottom: 40
+    marginBottom: 40,
   },
   profileImg: {
     height: null,
@@ -162,22 +158,22 @@ const styles = StyleSheet.create({
     marginTop: 40,
     marginBottom: 20,
     borderColor: '#4E598C',
-    borderWidth: 1
+    borderWidth: 1,
   },
   card: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   exercisesImg: {
     width: 60,
     height: 80,
     resizeMode: 'contain',
-    marginRight: 20
+    marginRight: 20,
   },
   cardInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '80%'
+    width: '80%',
   },
   infoCard: {
     flexDirection: 'row',
@@ -185,22 +181,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#FEEDD9',
     marginTop: 10,
-    marginBottom: 20
+    marginBottom: 20,
   },
   infoCardText: {
-    alignItems: 'center'
+    alignItems: 'center',
   },
   orange: {
-    color: '#FCAF58'
+    color: '#FCAF58',
   },
   icon: {
     position: 'absolute',
     top: 55,
-    right: 20
+    right: 20,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-  }
+  },
 });
