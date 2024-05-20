@@ -1,14 +1,12 @@
-import { Image, Pressable, StyleSheet, View, ActivityIndicator } from 'react-native';
+import { Image, Pressable, StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
-import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { firebase } from '../../Firebase';
 import { SmallText } from '../../Components/SmallText';
-
 
 const Workout = () => {
   const navigation = useNavigation();
@@ -16,71 +14,50 @@ const Workout = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const myWorkout = await firebase.firestore().collection('workouts').where('saved_workout', '==', true).get();
-        const myWorkoutData = await Promise.all(myWorkout.docs.map(async doc => {
-          const workout = doc.data();
-          const workoutId = doc.id;
-  
-          const exercisesPromises = workout.exercises.map(async exerciseRef => {
-            const exerciseDoc = await exerciseRef.get();
-            return exerciseDoc.data();
-          });
-          const exercises = await Promise.all(exercisesPromises);
-  
-          const muscleGroupRef = workout.muscle_group;
-          const muscleGroupDoc = await muscleGroupRef.get();
-          const muscleGroupData = muscleGroupDoc.data();
-  
-          return { ...workout, id: workoutId, muscleGroup: muscleGroupData, exercises };
-        }));
-        setMyWorkoutData(myWorkoutData);
-  
+    const fetchUserData = async () => {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        const db = firebase.firestore();
+        const userRef = db.collection('users').doc(currentUser.uid);
+
+        try {
+          const userDoc = await userRef.get();
+          if (userDoc.exists) {
+            const savedWorkoutCollection = await userRef.collection('saved_workouts').get();
+            const myWorkoutData = await Promise.all(savedWorkoutCollection.docs.map(async doc => {
+              const workout = doc.data();
+              const savedWorkoutRef = workout.workout;
+              const savedWorkoutDoc = await savedWorkoutRef.get();
+              const myWorkoutData = savedWorkoutDoc.data();
+
+              const muscleGroupRef = myWorkoutData.muscle_group;
+              const muscleGroupDoc = await muscleGroupRef.get();
+              const muscleGroupData = muscleGroupDoc.data();
+          
+              const exercisesPromises = myWorkoutData.exercises.map(async exerciseRef => {
+                const exerciseDoc = await exerciseRef.get();
+                return exerciseDoc.data();
+              });
+              const exercises = await Promise.all(exercisesPromises);
+          
+              return { ...workout, workout: myWorkoutData, muscleGroup: muscleGroupData, exercises };
+
+            }));
+            setMyWorkoutData(myWorkoutData);
+          } 
+        } catch (error) {
+          console.log('Error getting document:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
         setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
       }
     };
-  
-    fetch();
+
+    fetchUserData();
   }, []);
-  
-  const toggleSavedWorkout = async (index) => {
-    try {
-      const updatedWorkoutData = [...myWorkoutData];
-      const workoutId = updatedWorkoutData[index].id;
-      updatedWorkoutData[index].saved_workout = !updatedWorkoutData[index].saved_workout;
-      setMyWorkoutData(updatedWorkoutData);
-      
-      await firebase.firestore().collection('workouts').doc(workoutId).update({
-        saved_workout: updatedWorkoutData[index].saved_workout
-      });
-  
-      const myWorkout = await firebase.firestore().collection('workouts').where('saved_workout', '==', true).get();
-      const updatedMyWorkoutData = await Promise.all(myWorkout.docs.map(async doc => {
-        const workout = doc.data();
-        const workoutId = doc.id;
-  
-        const exercisesPromises = workout.exercises.map(async exerciseRef => {
-          const exerciseDoc = await exerciseRef.get();
-          return exerciseDoc.data();
-        });
-        const exercises = await Promise.all(exercisesPromises);
-  
-        const muscleGroupRef = workout.muscle_group;
-        const muscleGroupDoc = await muscleGroupRef.get();
-        const muscleGroupData = muscleGroupDoc.data();
-  
-        return { ...workout, id: workoutId, muscleGroup: muscleGroupData, exercises };
-      }));
-      setMyWorkoutData(updatedMyWorkoutData);
-    } catch (error) {
-      console.error('Error toggling saved workout:', error);
-    }
-  };
-  
-  
+
 
   if (loading) {
     return (
@@ -104,7 +81,7 @@ const Workout = () => {
         {myWorkoutData.map((workout, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailWorkout', { name: workout.name, exercises: workout.exercises })}
+            onPress={() => navigation.navigate('DetailWorkout', { name: workout.workout.name, exercises: workout.exercises })}
           >
             <View style={styles.images}>
               <Image
@@ -119,17 +96,14 @@ const Workout = () => {
 
             <View style={styles.cardInfo}>
               <View>
-                <SmallTitle>{workout.name}</SmallTitle>
+                <SmallTitle>{workout.workout.name}</SmallTitle>
                 <SmallText>{workout.muscleGroup.name}</SmallText>
               </View>
-              {workout.saved_workout ? (
-                <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart" color='#4E598C' size={30} />
-              ) : (
-                <MaterialCommunityIcons onPress={() => toggleSavedWorkout(index)} name="heart-outline" color='#4E598C' size={30} />
-              )}
+              <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
             </View>
           </Card>
         ))}
+
       </View>
     </ScrollView>
   );
