@@ -1,7 +1,8 @@
-import { StyleSheet, View, Image } from 'react-native';
 import React from 'react';
-import { Button } from '../../Components/Button';
 import { useNavigation } from '@react-navigation/native';
+
+import { StyleSheet, View, Image } from 'react-native';
+import { Button } from '../../Components/Button';
 import { Title } from '../../Components/Title';
 import { SmallText } from '../../Components/SmallText';
 

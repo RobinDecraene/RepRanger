@@ -1,7 +1,8 @@
-import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
-import { firebase } from '../../Firebase';
 import { useNavigation } from '@react-navigation/native';
+import { firebase } from '../../Firebase';
+
+import { StyleSheet, View } from 'react-native';
 import { Button, ButtonLink } from '../../Components/Button';
 import { Input } from '../../Components/Input';
 import { Title } from '../../Components/Title';

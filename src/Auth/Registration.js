@@ -1,10 +1,12 @@
-import { StyleSheet, View } from 'react-native';
 import React, { useState } from 'react';
+import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../Firebase';
+
+import { StyleSheet, View } from 'react-native';
 import { Input } from '../../Components/Input';
 import { Button, ButtonLink } from '../../Components/Button';
 import { Title } from '../../Components/Title';
-import { useNavigation } from '@react-navigation/native';
+
 
 const Registration = () => {
   const navigation = useNavigation();
