@@ -1,10 +1,11 @@
-import { Pressable, StyleSheet, View, Image } from 'react-native';
 import React from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { Pressable, StyleSheet, View, Image } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import { Title } from '../../Components/Title';
 import { Set, SetPressed } from '../../Components/Sets';
-import { useNavigation } from '@react-navigation/native';
 import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';

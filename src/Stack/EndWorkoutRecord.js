@@ -1,10 +1,11 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+
+import { Image, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Title } from '../../Components/Title';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
-import { useNavigation } from '@react-navigation/native';
 import { SmallText } from '../../Components/SmallText';
 import { Card } from '../../Components/Card';
 

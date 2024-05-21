@@ -1,11 +1,12 @@
-import { Pressable, Image, StyleSheet, View } from 'react-native';
 import React from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { Pressable, Image, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Title } from '../../Components/Title';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Card } from '../../Components/Card';
 import { P } from '../../Components/Text';
-import { useNavigation, useRoute } from '@react-navigation/native';
 
 const DetailTip = () => {
   const navigation = useNavigation();

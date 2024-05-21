@@ -15,14 +15,16 @@ import Workout from './src/BottomTab/Workout';
 import Tips from './src/BottomTab/Tips';
 import Account from './src/BottomTab/Account';
 
-import DetailTip from './src/Stack/DetailTip';
-import DetailExercise from './src/Stack/DetailExercise';
 import DetailWorkout from './src/Stack/DetailWorkout';
 import NiewWorkout from './src/Stack/NiewWorkout';
 import EditWorkout from './src/Stack/EditWorkout';
 import StartWorkout from './src/Stack/StartWorkout';
 import Exercises from './src/Stack/Exercises';
+import DetailExercise from './src/Stack/DetailExercise';
 import EndWorkoutRecord from './src/Stack/EndWorkoutRecord';
+
+import DetailTip from './src/Stack/DetailTip';
+
 import EditAccount from './src/Stack/EditAccount';
 import DetailHistory from './src/Stack/DetailHistory';
 

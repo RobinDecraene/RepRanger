@@ -1,9 +1,10 @@
-import { Pressable, StyleSheet, View, Image } from 'react-native';
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { Pressable, StyleSheet, View, Image } from 'react-native';
 import { SmallText } from '../../Components/SmallText';
 import { P } from '../../Components/Text';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';

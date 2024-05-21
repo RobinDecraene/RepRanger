@@ -1,17 +1,18 @@
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import RNPickerSelect from 'react-native-picker-select';
+import { firebase } from '../../Firebase';
+
+import { StyleSheet, View, Image, ScrollView } from 'react-native';
 import { P } from '../../Components/Text';
 import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { SmallText } from '../../Components/SmallText';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Title } from '../../Components/Title';
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { Set, SetPressed } from '../../Components/Sets';
 import { Button, ButtonSecondary } from '../../Components/Button';
 import { TextInput } from 'react-native-gesture-handler';
-import RNPickerSelect from 'react-native-picker-select';
-import { firebase } from '../../Firebase';
 
 const StartWorkout = () => {
   const navigation = useNavigation();

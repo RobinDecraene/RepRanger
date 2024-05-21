@@ -1,11 +1,12 @@
-import { Image, Pressable, StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { Title } from '../../Components/Title';
 import { useNavigation } from '@react-navigation/native';
-import { Card } from '../../Components/Card';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { SmallTitle } from '../../Components/SmallTitle';
 import { firebase } from '../../Firebase';
+
+import { Image, Pressable, StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
+import { Title } from '../../Components/Title';
+import { Card } from '../../Components/Card';
+import { SmallTitle } from '../../Components/SmallTitle';
 import { SmallText } from '../../Components/SmallText';
 
 const Workout = () => {

@@ -1,10 +1,11 @@
-import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { firebase } from '../../Firebase';
+
+import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { Title } from '../../Components/Title';
-import { firebase } from '../../Firebase';
 import { P } from '../../Components/Text';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { FAQ } from '../../Components/Faq';

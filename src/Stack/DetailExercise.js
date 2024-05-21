@@ -1,14 +1,13 @@
-import { StyleSheet, View, Image, Pressable } from 'react-native';
 import React from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import { StyleSheet, View, Image, Pressable } from 'react-native';
 import { P } from '../../Components/Text';
 import { Title } from '../../Components/Title';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
-import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation, useRoute } from '@react-navigation/native';
-
 
 const DetailExercise = () => {
   const navigation = useNavigation();
