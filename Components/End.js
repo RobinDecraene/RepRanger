@@ -4,6 +4,7 @@ import { Title } from './Title';
 import { P } from './Text';
 import { Card } from './Card';
 import { Button } from './Button';
+import { SmallText } from './SmallText';
 
 const End = ({ elapsedTime, handleStopWorkout }) => {
   const formatTime = (seconds) => {
@@ -21,15 +22,15 @@ const End = ({ elapsedTime, handleStopWorkout }) => {
       <Card style={styles.numbersCard}>
         <View style={styles.numbers}>
           <P>6</P>
-          <P>Oef</P>
+          <SmallText>Oef</SmallText>
         </View>
         <View style={styles.numbers}>
           <P>300</P>
-          <P>Cal</P>
+          <SmallText>Cal</SmallText>
         </View>
         <View style={styles.numbers}>
           <P>{formatTime(elapsedTime)}</P>
-          <P>Min</P>
+          <SmallText>Min</SmallText>
         </View>
       </Card>
 
