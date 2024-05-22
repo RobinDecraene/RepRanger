@@ -11,8 +11,10 @@ import { SmallTitle } from '../../Components/SmallTitle';
 import { SmallText } from '../../Components/SmallText';
 import { Title } from '../../Components/Title';
 import { Set, SetPressed } from '../../Components/Sets';
-import { Button, ButtonSecondary } from '../../Components/Button';
+import { ButtonSecondary } from '../../Components/Button';
 import { TextInput } from 'react-native-gesture-handler';
+import End from '../../Components/End';
+import Halfway from '../../Components/Halfway';
 
 const StartWorkout = () => {
   const navigation = useNavigation();
@@ -23,12 +25,15 @@ const StartWorkout = () => {
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [selectedSets, setSelectedSets] = useState(2);
+  const [workoutData, setWorkoutData] = useState([]);
+  const [currentExerciseData, setCurrentExerciseData] = useState([]);
   const intervalIdRef = useRef(null);
   const scrollViewRef = useRef(null);
 
-  const handleNextExercise = () => {
-    setCurrentExerciseIndex(prevIndex => prevIndex + 1);
-    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
   useEffect(() => {
@@ -47,195 +52,137 @@ const StartWorkout = () => {
     setIsTimerRunning(true);
   }, []);
 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  const handleNextExercise = () => {
+    const currentExercise = exercises[currentExerciseIndex];
+    
+    setWorkoutData(prevData => [
+      ...prevData,
+      { exerciseName: currentExercise.name, sets: currentExerciseData }
+    ]);
+
+    setCurrentExerciseIndex(prevIndex => prevIndex + 1);
+    setCurrentExerciseData([]);
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   };
 
   const handleStopWorkout = async () => {
     setIsTimerRunning(false);
-  
-    const addWorkoutToHistory = async (workoutId) => {
-      const currentUser = firebase.auth().currentUser;
-      if (!currentUser) {
-        console.error('User not authenticated');
-        return;
-      }
-    
-      const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('history');
-      const workoutRef = firebase.firestore().doc(`workouts/${workoutId}`);
-    
-      try {
-        await userRef.add({
-          workout: workoutRef,
-          elapsedTime,
-          date: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        console.log('Workout added to history');
-      } catch (error) {
-        console.error('Error adding workout to history:', error);
-      }
-    };
-    
 
-    const workoutId = workout.id;
-    addWorkoutToHistory(workoutId);
-    
-  
-    navigation.navigate('Workout');
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('history');
+
+    const finalWorkoutData = [
+      ...workoutData,
+      { exerciseName: exercises[currentExerciseIndex]?.name, sets: currentExerciseData }
+    ].filter(item => item.exerciseName);
+
+    try {
+      await userRef.add({
+        workout: firebase.firestore().doc(`workouts/${workout.id}`),
+        exercises: finalWorkoutData,
+        elapsedTime,
+        date: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      console.log('Workout added to history');
+      navigation.navigate('Workout');
+    } catch (error) {
+      console.error('Error adding workout to history:', error);
+    }
   };
-  
-  const halfwayIndex = Math.ceil(exercises.length / 2);
-  const isHalfway = currentExerciseIndex === halfwayIndex;
-  const isEnd = currentExerciseIndex === exercises.length + 1;
-  const currentExercise = exercises[currentExerciseIndex - (currentExerciseIndex > halfwayIndex ? 1 : 0)];
 
-  
+  const handleSetDataChange = (setIndex, field, value) => {
+    setCurrentExerciseData(prevData => {
+      const newData = [...prevData];
+      if (!newData[setIndex]) {
+        newData[setIndex] = { reps: '', kg: '' };
+      }
+      newData[setIndex][field] = value;
+      return newData;
+    });
+  };
+
+  const isEnd = currentExerciseIndex === exercises.length;
+  const currentExercise = exercises[currentExerciseIndex];
 
   return (
     <ScrollView ref={scrollViewRef} style={styles.base}>
-      
-        {isEnd ? (
-          <View style={styles.container}>
-            <Image
-              style={styles.ranger}
-              source={require('../../assets/images/ranger-hands-up.png')}
-            />
-            <Title>Goed gedaan</Title>
-            <P>Je hebt een volledige workout gedaan!</P>
-
-            <Card style={styles.numbersCard}>
-              <View style={styles.numbers}>
-                <P>6</P>
-                <SmallText>Oef</SmallText>
+      {isEnd ? (
+        <End elapsedTime={elapsedTime} handleStopWorkout={handleStopWorkout} />
+      ) : (
+        <View style={styles.container}>
+          {currentExercise && (
+            <>
+              <View style={styles.title}>
+                <Title>{currentExercise.name}</Title>
+                <P>{formatTime(elapsedTime)}</P>
               </View>
+              <Card style={styles.imagesCard}>
+                <Image style={styles.exercisesImg} source={require('../../assets/images/squat-up.png')} />
+                <Image style={styles.exercisesImgSmaller} source={require('../../assets/images/squat-down.png')} />
+              </Card>
 
-              <View style={styles.numbers}>
-                <P>300</P>
-                <SmallText>Cal</SmallText>
-              </View>
-
-              <View style={styles.numbers}>
-                <P>{elapsedTime}</P>
-                <SmallText>Min</SmallText>
-              </View>
-            </Card>
-
-            <Button onPress={() => { handleStopWorkout(); navigation.navigate('Workout'); }}>Mijn workouts</Button>
-          </View>
-        ) : isHalfway ? (
-          <View style={styles.container}>
-            <View style={styles.title}>
-              <Title>Halverwegen</Title>
-              <P>{formatTime(elapsedTime)}</P>
-            </View>
-            <Image
-              style={styles.ranger}
-              source={require('../../assets/images/ranger.png')}
-            />
-            <P>Doe zo verder je bent er bijna!</P>
-            <Card onPress={handleNextExercise} style={styles.nextExercises}>
-              <Image
-                style={styles.nextExercisesImg}
-                source={require('../../assets/images/squat-up.png')}
-              />
-              <View>
-                <P>Volgende oefening</P>
-                {exercises[halfwayIndex] && (
-                  <SmallText>{exercises[halfwayIndex].name}</SmallText>
-                )}
-              </View>
-              <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
-            </Card>
-            <ButtonSecondary style={styles.margin} onPress={() => { handleStopWorkout(); navigation.navigate('Workout'); }}>
-              Stop Workout
-            </ButtonSecondary>
-          </View>
-        ) : (
-          <View style={styles.container}>
-            {currentExercise && (
-              <>
-                <View style={styles.title}>
-                  <Title>{currentExercise.name}</Title>
-                  <P>{formatTime(elapsedTime)}</P>
-                </View>
-                <Card style={styles.imagesCard}>
-                  <Image
-                    style={styles.exercisesImg}
-                    source={require('../../assets/images/squat-up.png')}
-                  />
-                  <Image
-                    style={styles.exercisesImgSmaller}
-                    source={require('../../assets/images/squat-down.png')}
-                  />
-                </Card>
-                
-                <View style={styles.setsRow}>
-                  {[2, 3, 4].map((sets, index) => (
-                    selectedSets === sets ? (
-                      <SetPressed key={index} onPress={() => setSelectedSets(sets)}>{`${sets} sets`}</SetPressed>
-                    ) : (
+              <View style={styles.setsRow}>
+                {[2, 3, 4].map((sets, index) => (
+                  selectedSets === sets ? (
+                    <SetPressed key={index} onPress={() => setSelectedSets(sets)}>{`${sets} sets`}</SetPressed>
+                  ) : (
                     <Set key={index} onPress={() => setSelectedSets(sets)}>{`${sets} sets`}</Set>
-                    )
-                  ))}
-                </View>
+                  )
+                ))}
+              </View>
 
-                  {Array.from({ length: selectedSets }).map((_, index) => (
-                    <Card key={index} style={styles.setCard}>
-                      <SmallTitle>{`Set ${index + 1}`}</SmallTitle>
-                      <View style={styles.setCardInfo}>
-                        <View style={styles.setCardInputRow}>
-                        <RNPickerSelect
-                          style={ pickerSelectStyles }
-                          placeholder={{
-                            label: ' ',
-                            value: null,
-                          }}
-                          onValueChange={(value) => console.log(value)}
-                          items={[
-                            { label: '8', value: '8' },
-                            { label: '9', value: '9' },
-                            { label: '10', value: '10' },
-                            { label: '11', value: '11' },
-                            { label: '12', value: '12' },
-                          ]}
-                        />
-                          <P style={styles.setCardMargin}>Reps</P>
-                        </View>
-                        <View style={styles.setCardInputRow}>
-                        <TextInput
-                            style={styles.setCardInput}
-                            keyboardType='numeric'
-                          />
-                          <P>kg</P>
-                        </View>
-                      </View>
-                    </Card>
-                  ))}
-
-                <Card onPress={handleNextExercise} style={styles.nextExercises}>
-                  <Image
-                    style={styles.nextExercisesImg}
-                    source={require('../../assets/images/squat-up.png')}
-                  />
-                  <View>
-                    <P>Volgende oefening</P>
-                    {exercises[currentExerciseIndex + 1] && (
-                      <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>
-                    )}
+              {Array.from({ length: selectedSets }).map((_, index) => (
+                <Card key={index} style={styles.setCard}>
+                  <SmallTitle>{`Set ${index + 1}`}</SmallTitle>
+                  <View style={styles.setCardInfo}>
+                    <View style={styles.setCardInputRow}>
+                      <RNPickerSelect
+                        style={pickerSelectStyles}
+                        placeholder={{ label: ' ', value: null }}
+                        onValueChange={(value) => handleSetDataChange(index, 'reps', value)}
+                        items={[
+                          { label: '8', value: '8' },
+                          { label: '9', value: '9' },
+                          { label: '10', value: '10' },
+                          { label: '11', value: '11' },
+                          { label: '12', value: '12' },
+                        ]}
+                      />
+                      <P style={styles.setCardMargin}>Reps</P>
+                    </View>
+                    <View style={styles.setCardInputRow}>
+                      <TextInput 
+                        style={styles.setCardInput} 
+                        keyboardType='numeric'
+                        onChangeText={(value) => handleSetDataChange(index, 'kg', value)}
+                      />
+                      <P>kg</P>
+                    </View>
                   </View>
-                  <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
                 </Card>
+              ))}
 
-                <ButtonSecondary style={styles.margin} onPress={() => { handleStopWorkout(); navigation.navigate('Workout'); }}>
-                  Stop Workout
-                </ButtonSecondary>
-              </>
-            )}
-          </View>
-        )}
-      
+              <Card onPress={handleNextExercise} style={styles.nextExercises}>
+                <Image style={styles.nextExercisesImg} source={require('../../assets/images/squat-up.png')} />
+                <View>
+                  <P>Volgende oefening</P>
+                  {exercises[currentExerciseIndex + 1] && <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>}
+                </View>
+                <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
+              </Card>
+
+              <ButtonSecondary style={styles.margin} onPress={handleStopWorkout}>
+                Stop Workout
+              </ButtonSecondary>
+            </>
+          )}
+        </View>
+      )}
     </ScrollView>
   );
 };
@@ -317,11 +264,6 @@ const styles = StyleSheet.create({
   },
   setCardMargin: {
     marginLeft: 10
-  },
-  ranger: {
-    width: 120,
-    height: 120,
-    resizeMode: 'contain'
   },
   nextExercises: {
     flexDirection: 'row',
