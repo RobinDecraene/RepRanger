@@ -18,6 +18,12 @@ const Account = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       const currentUser = firebase.auth().currentUser;
@@ -130,7 +136,7 @@ const Account = () => {
               <View style={styles.cardInfo}>
                 <SmallText>{history.exercises.length} oef</SmallText>
                 <SmallText> cal</SmallText>
-                <SmallText>{history.elapsedTime} min</SmallText>
+                <SmallText>{formatTime(history.elapsedTime)} min</SmallText>
               </View>
             </View>
           </Card>
