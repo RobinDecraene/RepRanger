@@ -84,7 +84,7 @@ const StartWorkout = () => {
     try {
       await userRef.add({
         workout: firebase.firestore().doc(`workouts/${workout.id}`),
-        exercises: finalWorkoutData,
+        exercisesArray: finalWorkoutData,
         elapsedTime,
         date: firebase.firestore.FieldValue.serverTimestamp()
       });

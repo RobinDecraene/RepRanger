@@ -24,6 +24,14 @@ const Account = () => {
     return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
   };
 
+  const formatDate = (timestamp) => {
+    const date = timestamp.toDate();
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
   useEffect(() => {
     const fetchUserData = async () => {
       const currentUser = firebase.auth().currentUser;
@@ -124,15 +132,15 @@ const Account = () => {
           .map((history, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailHistory')}
+            onPress={() => navigation.navigate('DetailHistory', {history: history, workout: history.workout})}
             style={styles.card}
           >
             <Image
               style={styles.exercisesImg}
               source={require('../../assets/images/bench-press-up.png')}
             />
-            <View>
-              <P>{history.workout.name}</P>
+            <View style={styles.spacebetween}>
+              <P>{history.workout.name} {formatDate(history.date)}</P>
               <View style={styles.cardInfo}>
                 <SmallText>{history.exercises.length} oef</SmallText>
                 <SmallText> cal</SmallText>
@@ -213,4 +221,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  spacebetween: {
+    justifyContent: 'space-between',
+    height: 58
+  }
 });
