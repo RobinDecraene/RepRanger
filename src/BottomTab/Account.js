@@ -19,12 +19,6 @@ const Account = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const formatTime = (seconds) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-  };
-
   const formatDate = (timestamp) => {
     const date = timestamp.toDate();
     const day = date.getDate();
@@ -142,7 +136,7 @@ const Account = () => {
               style={styles.exercisesImg}
               source={require('../../assets/images/bench-press-up.png')}
             />
-            <P>{history.workout.name} {formatDate(history.date)}</P>
+            <P style={styles.exercisesName}>{history.workout.name} {formatDate(history.date)}</P>
             <MaterialCommunityIcons name="arrow-right" color='#4E598C' size={30} />
           </Card>
         ))}
@@ -180,16 +174,20 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
   title: {
-    width: '90%'
+    width: '85%'
   },
   card: {
     flexDirection: 'row',
+    alignItems: 'center'
   },
   exercisesImg: {
     width: 60,
     height: 80,
     resizeMode: 'contain',
     marginRight: 20,
+  },
+  exercisesName: {
+    width: '65%'
   },
   cardInfo: {
     flexDirection: 'row',

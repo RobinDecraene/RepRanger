@@ -159,7 +159,7 @@ const NiewWorkout = () => {
 
                 <View style={styles.cardInfo}>
                   <View>
-                    <SmallTitle>{workout.name}</SmallTitle>
+                    <SmallTitle style={styles.cardInfoTitle}>{workout.name}</SmallTitle>
                     <SmallText>{workout.muscle_group.name}</SmallText>
                   </View>
 
@@ -223,6 +223,9 @@ const styles = StyleSheet.create({
     width: '100%',
     bottom: 10,
     left: 15,
+  },
+  cardInfoTitle: {
+    marginBottom: 0
   },
   images: {
     flexDirection: 'row',

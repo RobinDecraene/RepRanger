@@ -40,7 +40,7 @@ const DetailHistory = () => {
         </Pressable>
 
         <View style={styles.title}>
-          <Title>{workout.name}</Title>
+          <Title style={styles.titleName}>{workout.name}</Title>
           <SmallText>{formatDate(history.date)}</SmallText>
         </View>
 
@@ -48,33 +48,31 @@ const DetailHistory = () => {
 
         <Card style={styles.numbersCard}>
           <View style={styles.numbers}>
-            <P>6</P>
+            <P style={styles.orange}>6</P>
             <SmallText style={styles.orange}>Oef</SmallText>
           </View>
           <View style={styles.numbers}>
-            <P>300</P>
+            <P style={styles.orange}>300</P>
             <SmallText style={styles.orange}>Cal</SmallText>
           </View>
           <View style={styles.numbers}>
-            <P>{formatTime(history.elapsedTime)}</P>
+            <P style={styles.orange}>{formatTime(history.elapsedTime)}</P>
             <SmallText style={styles.orange}>Min</SmallText>
           </View>
         </Card>
         
         {history.exercisesArray.map((exercises, index) => (
         <Card key={index}>
-          <View style={styles.exercise}>
-            <Image
-              style={styles.exerciseImg}
-              source={require('../../assets/images/bench-press-up.png')}
-            />
-            <SmallTitle style={styles.exerciseTitle}>{exercises.exerciseName}</SmallTitle>
-          </View>
+          <SmallTitle>{exercises.exerciseName}</SmallTitle>
 
           {exercises.sets.map((set, idx) => (
             <View style={styles.sets} key={idx}>
-              <P>Set {idx + 1}</P>
-              <P>{set.reps} x {set.kg}kg</P>
+              <SmallTitle style={styles.set}>Set {idx + 1}</SmallTitle>
+              <View style={styles.setInfo}>
+                <P>{set.reps} reps</P>
+                <P>{set.kg}kg</P>
+              </View>
+             
             </View>
           ))}
          
@@ -108,6 +106,10 @@ const styles = StyleSheet.create({
     width: '78%',
     alignItems: 'center'
   },
+  titleName: {
+    marginBottom: 0,
+    marginTop: 0
+  },
   icon: {
     position: 'absolute',
     top: 55,
@@ -128,26 +130,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#FEEDD9'
   },
   orange: {
-    color: '#FCAF58',
-  },
-  exerciseImg: {
-    width: 80,
-    height: 100,
-    resizeMode: 'contain'
-  },
-  exercise: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20
-  },
-  exerciseTitle: {
-    width: '65%',
-    marginLeft: 25
+    color: '#C76A02',
   },
   sets: {
+    marginBottom: 15,
+  },
+  set: {
+    fontSize: 20,
+    marginBottom: 5
+  },
+  setInfo: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
+    width: '100%'
   }
 });

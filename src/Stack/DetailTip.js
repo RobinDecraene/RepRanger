@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   title: {
-    width: '78%'
+    width: '85%'
   },
   icon: {
     position: 'absolute',

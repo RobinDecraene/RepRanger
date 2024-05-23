@@ -3,7 +3,6 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { Pressable, StyleSheet, View, Image } from 'react-native';
-import { SmallText } from '../../Components/SmallText';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -38,7 +37,7 @@ const EditWorkout = () => {
 
               <P style={styles.cardName}>{exercise.name}</P>
 
-              <MaterialCommunityIcons name="close" color="#B0B5CB" size={25} />
+              <MaterialCommunityIcons name="close" color="#4E598C" size={25} />
           </Card>
         ))}
 

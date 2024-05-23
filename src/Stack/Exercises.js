@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { firebase } from '../../Firebase';
 
 import { Pressable, StyleSheet, View, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -11,7 +12,24 @@ import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
 
 const Exercises = () => {
+  const [exercises, setExercises] = useState([]);
   const navigation = useNavigation();
+
+  useEffect(() => {
+    const fetchExercises = async () => {
+      try {
+        const exercises = await firebase.firestore().collection('exercises').get();
+        const exercisesData = exercises.docs.map(doc => doc.data());
+        setExercises(exercisesData);
+        console.log(exercisesData)
+
+      } catch (error) {
+        console.error('Error fetching exercises: ', error);
+      }
+    };
+
+    fetchExercises();
+  }, []);
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -32,61 +50,25 @@ const Exercises = () => {
         </View>
 
       <View style={styles.exercises}>
-        <Card style={styles.card}>
-          <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <View style={styles.cardInfo}>
-              <View>
-                <SmallTitle>Squat</SmallTitle>
-                <SmallText>Spiergroep</SmallText>
+        {exercises.map((exercise, index) => (
+          <Card
+            style={styles.card}
+            key={index}
+          >
+            <Image
+                style={styles.exercisesImg}
+                source={require('../../assets/images/squat-up.png')}
+              />
+              <View style={styles.cardInfo}>
+                <SmallTitle style={styles.cardTitle}>{exercise.name}</SmallTitle>
+                <View style={styles.cardHeart}>
+                  <SmallText>Spiergroep</SmallText>
+                  <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
+                </View>
+                
               </View>
-              <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
-            </View>
-        </Card>
-
-        <Card style={styles.card}>
-          <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <View style={styles.cardInfo}>
-              <View>
-                <SmallTitle>Squat</SmallTitle>
-                <SmallText>Spiergroep</SmallText>
-              </View>
-              <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
-            </View>
-        </Card>
-
-        <Card style={styles.card}>
-          <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <View style={styles.cardInfo}>
-              <View>
-                <SmallTitle>Squat</SmallTitle>
-                <SmallText>Spiergroep</SmallText>
-              </View>
-              <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
-            </View>
-        </Card>
-
-        <Card style={styles.card}>
-          <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/squat-up.png')}
-            />
-            <View style={styles.cardInfo}>
-              <View>
-                <SmallTitle>Squat</SmallTitle>
-                <SmallText>Spiergroep</SmallText>
-              </View>
-              <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
-            </View>
-        </Card>
+          </Card>
+        ))}
       </View>
 
       </View>
@@ -144,8 +126,13 @@ const styles = StyleSheet.create({
     width: '100%',
     bottom: 10,
     left: 15,
+  },
+  cardTitle: {
+    marginBottom: 5
+  },
+  cardHeart: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
-  },
+  }
 });

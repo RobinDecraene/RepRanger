@@ -173,7 +173,7 @@ const StartWorkout = () => {
                   <P>Volgende oefening</P>
                   {exercises[currentExerciseIndex + 1] && <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>}
                 </View>
-                <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
+                <MaterialCommunityIcons name="arrow-right" color="#4E598C" size={25} />
               </Card>
 
               <ButtonSecondary style={styles.margin} onPress={handleStopWorkout}>
