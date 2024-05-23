@@ -13,7 +13,7 @@ export function Button({ children, onPress, style }) {
 
   return (
     <TouchableOpacity style={[styles.button, style]} onPress={handlePress}>
-      <P style={{ color: "#fff", fontSize: 20 }}>{ children }</P>
+      <P style={{ color: "#FAFAFC", fontSize: 20 }}>{ children }</P>
     </TouchableOpacity>
   );
 }

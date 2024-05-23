@@ -40,12 +40,12 @@ export default DetailTip
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%'
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     alignItems: 'center',
     paddingLeft: 20,
     paddingRight: 20,
@@ -53,9 +53,6 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   title: {
-    marginTop: 25,
-    marginBottom: 20,
-    textAlign: 'center',
     width: '78%'
   },
   icon: {

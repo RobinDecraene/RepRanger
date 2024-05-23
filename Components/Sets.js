@@ -56,6 +56,6 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   setsPressedText: {
-    color: '#fff'
+    color: '#FAFAFC'
   }
 });

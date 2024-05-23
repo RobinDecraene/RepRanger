@@ -61,12 +61,12 @@ export default DetailExercise
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%'
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     alignItems: 'center',
     paddingLeft: 20,
     paddingRight: 20,
@@ -74,9 +74,6 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   title: {
-    alignItems: 'center',
-    marginTop: 25,
-    marginBottom: 20,
     width: '80%',
     textAlign: 'center'
   },

@@ -44,7 +44,7 @@ const Registration = () => {
 
   return (
     <View style={styles.container}>
-      <Title style={styles.title}>Registreer</Title>
+      <Title>Registreer</Title>
       <Input
         placeholder="Voornaam" 
         onChangeText={(firstName) => setFirstName(firstName)}
@@ -79,11 +79,11 @@ export default Registration
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  title: {
-    marginBottom: 20
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 20,
   }
 });

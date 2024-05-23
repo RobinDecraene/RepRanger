@@ -3,12 +3,14 @@ import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../Firebase';
 
 import { StyleSheet, View, Image, ActivityIndicator } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView, TextInput } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { Title } from '../../Components/Title';
 import { P } from '../../Components/Text';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { FAQ } from '../../Components/Faq';
+import { Input } from '../../Components/Input';
+import { SearchBar } from '../../Components/SearchBar';
 
 const Tips = () => {
   const navigation = useNavigation();
@@ -50,9 +52,9 @@ const Tips = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <Title style={styles.title}>Tip van de dag</Title>
-        <Card style={styles.exerciseInfo}>
-          <P>{randomTip.tip}</P>
+        <Title>Tip van de dag</Title>
+        <Card style={styles.tip}>
+          <P style={styles.tipText}>{randomTip.tip}</P>
           <Image
             style={styles.ranger}
             source={require('../../assets/images/ranger-head.png')}
@@ -73,7 +75,7 @@ export default Tips;
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%',
     paddingLeft: 20,
     paddingRight: 20,
@@ -81,15 +83,10 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 40
-  },
-  title: {
-    alignItems: 'center',
-    marginTop: 25,
-    marginBottom: 20
   },
   ranger: {
     width: 100,
@@ -99,13 +96,16 @@ const styles = StyleSheet.create({
     bottom: -50,
     left: -10
   },
-  exerciseInfo: {
+  tip: {
     width: '100%',
     justifyContent: 'space-between',
-    paddingBottom: 50,
+    paddingBottom: 60,
     alignItems: 'flex-start',
-    marginBottom: 70,
-    backgroundColor: '#FEEDD9'
+    marginBottom: 80,
+    backgroundColor: '#FEEDD9',
+  },
+  tipText: {
+    color: '#C76A02'
   },
   loadingContainer: {
     flex: 1,

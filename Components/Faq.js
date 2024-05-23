@@ -15,7 +15,7 @@ export function FAQ({ children, onPress, style }) {
   return (
     <TouchableOpacity style={[styles.faq, style]} onPress={handlePress}>
       <P style={{ fontSize: 20, maxWidth: '90%' }}>{ children }</P>
-      <MaterialCommunityIcons name="arrow-right" color='#9CA2BF' size={30} />
+      <MaterialCommunityIcons name="arrow-right" color='#4E598C' size={30} />
     </TouchableOpacity>
   );
 }
@@ -23,6 +23,7 @@ export function FAQ({ children, onPress, style }) {
 const styles = StyleSheet.create({
   faq: {
     backgroundColor:'#EBECF2',
+    
     flexDirection: 'row',
     alignItems:'center',
     justifyContent: 'space-between',
@@ -32,6 +33,6 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     paddingRight: 25,
     borderRadius: 50,
-    marginTop: 10
+    marginBottom: 15
   }
 });

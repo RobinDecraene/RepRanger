@@ -22,7 +22,7 @@ const Exercises = () => {
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
         </Pressable>
 
-        <Title style={styles.title}>Oefeningen</Title>
+        <Title>Oefeningen</Title>
 
         <View style={styles.setsRow}>
           <SetPressed>All</SetPressed>
@@ -98,7 +98,7 @@ export default Exercises
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%'
   },
   container: {
@@ -107,13 +107,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     marginBottom: 40
-
-  },
-  title: {
-    marginTop: 25,
-    marginBottom: 20
   },
   exercises: {
     flexDirection: 'row',

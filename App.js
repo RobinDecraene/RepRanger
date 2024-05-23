@@ -73,7 +73,7 @@ if (!user){
     <Tab.Navigator
       initialRouteName="Workout"
       activeColor="#FCAF58"
-      inactiveColor="#fff"
+      inactiveColor="#FAFAFC"
       barStyle={{ backgroundColor: '#4E598C', height: 100 }}
       theme={{colors: {secondaryContainer: 'transparent'}}}
       labeled={false}

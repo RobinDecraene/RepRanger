@@ -13,7 +13,7 @@ export function P({ children, style }) {
   }
 
   return (
-    <Text style={[{ fontFamily: 'FuturaCyrillicBook', fontSize: 20 }, style]}>
+    <Text style={[{ fontFamily: 'FuturaCyrillicBook', fontSize: 20, color: '#4E598C' }, style]}>
       {children}
     </Text>
   );

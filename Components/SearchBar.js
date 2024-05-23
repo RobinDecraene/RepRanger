@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { useFonts } from 'expo-font';
 import { TextInput } from 'react-native-paper';
 
-export function Input({ placeholder, onChangeText, autoCapitalize, secureTextEntry, keyboardType }) {
+export function SearchBar({ placeholder, onChangeText }) {
   const [fontsLoaded] = useFonts({
     'FuturaCyrillicBook': require('../assets/fonts/FuturaCyrillicBook.ttf'),
   });
@@ -12,18 +12,15 @@ export function Input({ placeholder, onChangeText, autoCapitalize, secureTextEnt
     <TextInput
       placeholder={placeholder}
       onChangeText={onChangeText}
-      autoCapitalize={autoCapitalize}
       autoCorrect={false}
-      secureTextEntry={secureTextEntry}
       style={styles.input}
-      keyboardType={keyboardType}
       mode="outlined"
-      outlineColor="transparent"
+      outlineColor="#8990B2"
       theme={{
         roundness: 30,
         colors: {
-          primary: '#8990B2',
-          placeholder: '#757DA5'
+          primary: '#4E598C',
+          placeholder: '#757DA5',
         },
       }}
       />
@@ -32,7 +29,7 @@ export function Input({ placeholder, onChangeText, autoCapitalize, secureTextEnt
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor:'#EBECF2',
+    backgroundColor:'transparent',
     alignItems:'center',
     justifyContent:'center',
     borderRadius: 30,
@@ -40,6 +37,5 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 30,
     marginBottom: 15,
     width: '100%',
-    color: '#4E598C'
   }
 });

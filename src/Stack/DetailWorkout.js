@@ -25,7 +25,7 @@ const DetailWorkout = () => {
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
         </Pressable>
 
-        <Title style={styles.title}>{name}</Title>
+        <Title>{name}</Title>
 
         {source === 'Workout' ? (
           <Pressable
@@ -79,21 +79,17 @@ export default DetailWorkout
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%'
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     alignItems: 'center',
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
     marginBottom: 40
-  },
-  title: {
-    marginTop: 25,
-    marginBottom: 20
   },
   icon: {
     position: 'absolute',
@@ -108,7 +104,6 @@ const styles = StyleSheet.create({
   card: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 10
   },
   cardName: {
     width: '65%'

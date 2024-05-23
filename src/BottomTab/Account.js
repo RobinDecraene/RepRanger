@@ -10,6 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
+import { Title } from '../../Components/Title';
 
 
 const Account = () => {
@@ -99,6 +100,10 @@ const Account = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
+
+      {user && (
+          <Title style={styles.title}>{`${user.firstName} ${user.lastName}`}</Title>
+        )}
         <Pressable
           onPress={() => navigation.navigate('EditAccount')}
           style={styles.icon}
@@ -110,18 +115,16 @@ const Account = () => {
           style={styles.profileImg}
           source={require('../../assets/images/no-profil.png')}
         />
-        {user && (
-          <P>{`${user.firstName} ${user.lastName}`}</P>
-        )}
+
 
         <Card style={styles.infoCard}>
           <View style={styles.infoCardText}>
-            <P>5</P>
+            <P style={styles.orange}>5</P>
             <SmallText style={styles.orange}>Workout/week</SmallText>
           </View>
 
           <View style={styles.infoCardText}>
-            <P>25:35</P>
+            <P style={styles.orange}>25:35</P>
             <SmallText style={styles.orange}>Gemiddelde tijd</SmallText>
           </View>
         </Card>
@@ -139,14 +142,8 @@ const Account = () => {
               style={styles.exercisesImg}
               source={require('../../assets/images/bench-press-up.png')}
             />
-            <View style={styles.spacebetween}>
-              <P>{history.workout.name} {formatDate(history.date)}</P>
-              <View style={styles.cardInfo}>
-                <SmallText>{history.exercises.length} oef</SmallText>
-                <SmallText> cal</SmallText>
-                <SmallText>{formatTime(history.elapsedTime)} min</SmallText>
-              </View>
-            </View>
+            <P>{history.workout.name} {formatDate(history.date)}</P>
+            <MaterialCommunityIcons name="arrow-right" color='#4E598C' size={30} />
           </Card>
         ))}
 
@@ -160,12 +157,12 @@ export default Account;
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%',
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     alignItems: 'center',
     paddingLeft: 20,
     paddingRight: 20,
@@ -177,10 +174,13 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     width: '60%',
     borderRadius: 120,
-    marginTop: 40,
     marginBottom: 20,
-    borderColor: '#4E598C',
+    borderColor: '#D7DAE5',
+    backgroundColor: '#D7DAE5',
     borderWidth: 1,
+  },
+  title: {
+    width: '90%'
   },
   card: {
     flexDirection: 'row',
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   orange: {
-    color: '#FCAF58',
+    color: '#C76A02',
   },
   icon: {
     position: 'absolute',
@@ -221,8 +221,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  spacebetween: {
-    justifyContent: 'space-between',
-    height: 58
-  }
 });

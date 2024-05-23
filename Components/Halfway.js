@@ -26,7 +26,6 @@ const Halfway = ({ elapsedTime, handleNextExercise, handleStopWorkout, halfwayEx
         <Image style={styles.nextExercisesImg} source={require('../assets/images/squat-up.png')} />
         <View>
           <P>Volgende oefening</P>
-          {halfwayExercise && <P>{halfwayExercise.name}</P>}
         </View>
         <MaterialCommunityIcons name="arrow-right" color="#B0B5CB" size={25} />
       </Card>
@@ -41,12 +40,12 @@ export default Halfway;
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%'
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     alignItems: 'center',
     paddingLeft: 20,
     paddingRight: 20,

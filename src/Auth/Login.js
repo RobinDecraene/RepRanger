@@ -16,14 +16,14 @@ const Login = () => {
       try {
           await firebase.auth().signInWithEmailAndPassword(email,password);
       } catch (error) {
-          alert(error.message);
+          alert('Email of wachtwoord is verkeerd');
       }
   }
   
   const forgetPassword = () => {
     firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
-        alert('Password reset email sent!');
+        alert('Wachtwoord reset email is verzonden!');
     })
     .catch(error => {
         alert(error.message);
@@ -33,7 +33,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
-      <Title style={styles.title}>Login</Title>
+      <Title>Login</Title>
       <Input
         placeholder="Email" 
         onChangeText={(email) => setEmail(email)}
@@ -57,13 +57,13 @@ const Login = () => {
 export default Login
 
 const styles = StyleSheet.create({
-container: {
-  flex:1,
-  backgroundColor: '#fff',  
-  alignItems:'center',
-  justifyContent: 'center'
-},
-title: {
-  marginBottom: 20
-}
+  container: {
+    flex: 1,
+    backgroundColor: '#FAFAFC',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 20,
+    paddingRight: 20,
+    paddingTop: 20,
+  },
 });

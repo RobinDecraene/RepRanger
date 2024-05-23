@@ -88,7 +88,7 @@ const Workout = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <Title style={styles.title}>Mijn workouts</Title>
+        <Title>Mijn workouts</Title>
         <Pressable
           onPress={() => navigation.navigate('NiewWorkout')}
           style={styles.icon}
@@ -114,7 +114,7 @@ const Workout = () => {
 
             <View style={styles.cardInfo}>
               <View>
-                <SmallTitle>{workout.workout.name}</SmallTitle>
+                <SmallTitle style={styles.cardInfoTitle}>{workout.workout.name}</SmallTitle>
                 <SmallText>{workout.muscleGroup.name}</SmallText>
               </View>
               <Pressable onPress={() => removeWorkout(workout.id)}>
@@ -133,7 +133,7 @@ export default Workout;
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%'
   },
   container: {
@@ -142,12 +142,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     marginBottom: 40
-  },
-  title: {
-    marginTop: 25,
-    marginBottom: 20
   },
   icon: {
     position: 'absolute',
@@ -167,6 +163,9 @@ const styles = StyleSheet.create({
     width: '100%',
     bottom: 10,
     left: 15,
+  },
+  cardInfoTitle: {
+    marginBottom: 0
   },
   images: {
     flexDirection: 'row',

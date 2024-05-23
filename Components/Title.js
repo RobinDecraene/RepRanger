@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { useFonts } from 'expo-font';
 
 export function Title({ children, style }) {
@@ -12,8 +12,21 @@ export function Title({ children, style }) {
   }
 
   return (
-    <Text style={[{ fontFamily: 'BauhausRegular', color: '#4E598C', fontSize: 35 }, style]}>
+    <Text style={[styles.title, style]}>
       {children}
     </Text>
   );
 }
+
+
+const styles = StyleSheet.create({
+  title: {
+    fontFamily: 'BauhausRegular',
+    color: '#4E598C',
+    fontSize: 35,
+    alignItems: 'center',
+    textAlign: 'center',
+    marginTop: 25,
+    marginBottom: 25
+  }
+});

@@ -115,7 +115,7 @@ const NiewWorkout = () => {
           <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
         </Pressable>
 
-        <Title style={styles.title}>Alle workouts</Title>
+        <Title>Alle workouts</Title>
         <View style={styles.setsRow}>
           {muscleData
             .sort((a, b) => a.name.localeCompare(b.name))
@@ -182,7 +182,7 @@ export default NiewWorkout
 
 const styles = StyleSheet.create({
   base: {
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     width: '100%'
   },
   container: {
@@ -191,12 +191,8 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#FAFAFC',
     marginBottom: 40
-  },
-  title: {
-    marginTop: 25,
-    marginBottom: 20
   },
   icon: {
     position: 'absolute',

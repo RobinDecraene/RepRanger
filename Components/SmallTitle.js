@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { useFonts } from 'expo-font';
 
 export function SmallTitle({ children, style }) {
@@ -12,8 +12,17 @@ export function SmallTitle({ children, style }) {
   }
 
   return (
-    <Text style={[{ fontFamily: 'BauhausRegular', color: '#4E598C', fontSize: 25 }, style]}>
+    <Text style={[styles.smallTitle, style]}>
       {children}
     </Text>
   );
 }
+
+const styles = StyleSheet.create({
+  smallTitle: {
+    fontFamily: 'BauhausRegular',
+    color: '#4E598C',
+    fontSize: 26,
+    marginBottom: 20
+  },
+});
