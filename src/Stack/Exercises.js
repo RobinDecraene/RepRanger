@@ -3,8 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from '../../Firebase';
 
-import { Pressable, StyleSheet, View, Image } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Pressable, StyleSheet, View, Image, ScrollView } from 'react-native';
 import { Title } from '../../Components/Title';
 import { Set, SetPressed } from '../../Components/Sets';
 import { Card } from '../../Components/Card';
@@ -13,23 +12,50 @@ import { SmallTitle } from '../../Components/SmallTitle';
 
 const Exercises = () => {
   const [exercises, setExercises] = useState([]);
+  const [muscleData, setMuscleData] = useState([]);
+  const [selectedMuscle, setSelectedMuscle] = useState('Alles');
   const navigation = useNavigation();
 
   useEffect(() => {
-    const fetchExercises = async () => {
+    const fetchExercisesAndMuscles = async () => {
       try {
-        const exercises = await firebase.firestore().collection('exercises').get();
-        const exercisesData = exercises.docs.map(doc => doc.data());
-        setExercises(exercisesData);
-        console.log(exercisesData)
+        // Fetch exercises
+        const exercisesCollection = await firebase.firestore().collection('exercises').get();
+        const exercisesData = await Promise.all(
+          exercisesCollection.docs.map(async (doc) => {
+            const data = doc.data();
+            const muscleGroupDoc = await data.muscle_group.get();
+            const muscleGroupName = muscleGroupDoc.data().name;
+            return {
+              id: doc.id,
+              ...data,
+              muscleGroupName,
+            };
+          })
+        );
 
+        // Fetch muscle groups
+        const muscleGroupsCollection = await firebase.firestore().collection('muscle_groups').get();
+        const muscleGroupsData = muscleGroupsCollection.docs.map(doc => doc.data());
+
+        setExercises(exercisesData);
+        setMuscleData(muscleGroupsData);
       } catch (error) {
-        console.error('Error fetching exercises: ', error);
+        console.error('Error fetching data: ', error);
       }
     };
 
-    fetchExercises();
+    fetchExercisesAndMuscles();
   }, []);
+
+  const handleFilterPress = (muscleName) => {
+    setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
+  };
+
+  const filteredExercises = selectedMuscle === 'Alles'
+    ? exercises
+    : exercises.filter(exercise => exercise.muscleGroupName === selectedMuscle);
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -43,40 +69,53 @@ const Exercises = () => {
         <Title>Oefeningen</Title>
 
         <View style={styles.setsRow}>
-          <SetPressed>All</SetPressed>
-          <Set>Benen</Set>
-          <Set>Armen</Set>
-          <Set>Rug</Set>
+          {muscleData
+            .sort((a, b) => a.name.localeCompare(b.name))
+            .map((muscle, index) => (
+              muscle.name === selectedMuscle ? (
+                <SetPressed
+                  key={index}
+                  onPress={() => handleFilterPress(muscle.name)}
+                >
+                  {muscle.name}
+                </SetPressed>
+              ) : (
+                <Set
+                  key={index}
+                  onPress={() => handleFilterPress(muscle.name)}
+                >
+                  {muscle.name}
+                </Set>
+              )
+            ))}
         </View>
 
-      <View style={styles.exercises}>
-        {exercises.map((exercise, index) => (
-          <Card
-            style={styles.card}
-            key={index}
-          >
-            <Image
+        <View style={styles.exercises}>
+          {filteredExercises.map((exercise, index) => (
+            <Card
+              style={styles.card}
+              key={index}
+            >
+              <Image
                 style={styles.exercisesImg}
                 source={require('../../assets/images/squat-up.png')}
               />
               <View style={styles.cardInfo}>
                 <SmallTitle style={styles.cardTitle}>{exercise.name}</SmallTitle>
                 <View style={styles.cardHeart}>
-                  <SmallText>Spiergroep</SmallText>
+                  <SmallText>{exercise.muscleGroupName}</SmallText>
                   <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
                 </View>
-                
               </View>
-          </Card>
-        ))}
-      </View>
-
+            </Card>
+          ))}
+        </View>
       </View>
     </ScrollView>
   );
 }
 
-export default Exercises
+export default Exercises;
 
 const styles = StyleSheet.create({
   base: {
@@ -106,7 +145,7 @@ const styles = StyleSheet.create({
   },
   setsRow: {
     flexDirection: 'row',
-    alignItems: 'center ',
+    alignItems: 'center',
     width: '99%',
     justifyContent: 'space-between',
     marginTop: 20,
@@ -128,7 +167,7 @@ const styles = StyleSheet.create({
     left: 15,
   },
   cardTitle: {
-    marginBottom: 5
+    marginBottom: 0
   },
   cardHeart: {
     flexDirection: 'row',
