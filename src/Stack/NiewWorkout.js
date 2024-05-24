@@ -20,38 +20,39 @@ const NiewWorkout = () => {
   useEffect(() => {
     const fetchWorkout = async () => {
       try {
-          const workoutSnapshot = await firebase.firestore().collection('workouts').get();
-  
-          const workoutData = await Promise.all(workoutSnapshot.docs.map(async doc => {
-              const workout = doc.data();
-              const workoutId = doc.id;
-              const muscleGroupRef = workout.muscle_group;
-              const muscleGroupDoc = await muscleGroupRef.get();
-              const muscleGroupData = muscleGroupDoc.data();
-  
-              const currentUser = firebase.auth().currentUser;
-              let isSaved = false;
-              if (currentUser) {
-                  const savedWorkoutRef = await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId).get();
-                  isSaved = savedWorkoutRef.exists;
-              }
-  
-              const exercisesPromises = workout.exercises.map(async exerciseRef => {
-                  const exerciseDoc = await exerciseRef.get();
-                  return exerciseDoc.data();
-              });
-  
-              const exercises = await Promise.all(exercisesPromises);
-  
-              return { ...workout, id: workoutId, muscle_group: muscleGroupData, exercises, saved_workout: isSaved };
-          }));
-  
-          setWorkoutData(workoutData);
-          setLoading(false);
+        const workoutSnapshot = await firebase.firestore().collection('workouts').get();
+    
+        const workoutData = await Promise.all(workoutSnapshot.docs.map(async doc => {
+          const workout = doc.data();
+          const workoutId = doc.id;
+          const muscleGroupRef = workout.muscle_group;
+          const muscleGroupDoc = await muscleGroupRef.get();
+          const muscleGroupData = muscleGroupDoc.data();
+    
+          const currentUser = firebase.auth().currentUser;
+          let isSaved = false;
+          if (currentUser) {
+            const savedWorkoutRef = await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId).get();
+            isSaved = savedWorkoutRef.exists;
+          }
+    
+          const exercisesPromises = workout.exercises.map(async exerciseRef => {
+            const exerciseDoc = await exerciseRef.get();
+            return { id: exerciseDoc.id, ...exerciseDoc.data() };
+          });
+    
+          const exercises = await Promise.all(exercisesPromises);
+    
+          return { ...workout, id: workoutId, muscle_group: muscleGroupData, exercises, saved_workout: isSaved };
+        }));
+    
+        setWorkoutData(workoutData);
+        setLoading(false);
       } catch (error) {
-          console.error('Error fetching data:', error);
+        console.error('Error fetching data:', error);
       }
-  };
+    };
+    
   
 
     const muscleGroupsRef = firebase.firestore().collection('muscle_groups');
@@ -65,27 +66,29 @@ const NiewWorkout = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleFilterPress = (muscleName) => {
-    setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
-  };
-
-  const toggleSavedWorkout = async (workoutId, isSaved) => {
+  const toggleSavedWorkout = async (workoutId, isSaved, exercises) => {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
       console.error('User not authenticated');
       return;
     }
-
+  
     const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
     const savedWorkoutsRef = userRef.collection('saved_workouts').doc(workoutId);
-
+  
     try {
       if (isSaved) {
         await savedWorkoutsRef.delete();
       } else {
-        await savedWorkoutsRef.set({ workout: firebase.firestore().doc(`workouts/${workoutId}`) });
+        const workoutDocRef = firebase.firestore().doc(`workouts/${workoutId}`);
+        const exerciseRefs = exercises.map(exercise => firebase.firestore().doc(`exercises/${exercise.id}`));
+        const savedWorkoutData = {
+          workout: workoutDocRef,
+          exercisesSaved: exerciseRefs
+        };
+        await savedWorkoutsRef.set(savedWorkoutData);
       }
-
+  
       setWorkoutData(prevWorkoutData => prevWorkoutData.map(workout => {
         if (workout.id === workoutId) {
           return { ...workout, saved_workout: !isSaved };
@@ -96,6 +99,8 @@ const NiewWorkout = () => {
       console.error('Error toggling saved workout:', error);
     }
   };
+  
+  
 
   if (loading) {
     return (
@@ -163,9 +168,11 @@ const NiewWorkout = () => {
                     <SmallText>{workout.muscle_group.name}</SmallText>
                   </View>
 
-                  <Pressable onPress={() => toggleSavedWorkout(workout.id, isSaved)}>
+                  <Pressable onPress={() => toggleSavedWorkout(workout.id, isSaved, workout.exercises)}>
                     <MaterialCommunityIcons name={isSaved ? "heart" : "heart-outline"} color='#4E598C' size={30} />
                   </Pressable>
+
+
 
                 </View>
               </Card>

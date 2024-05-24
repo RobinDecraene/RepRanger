@@ -22,31 +22,21 @@ const Workout = () => {
         const userRef = db.collection('users').doc(currentUser.uid);
 
         try {
-          const userDoc = await userRef.get();
-          if (userDoc.exists) {
-            const savedWorkoutCollection = await userRef.collection('saved_workouts').get();
-            const myWorkoutData = await Promise.all(savedWorkoutCollection.docs.map(async doc => {
-              const workout = doc.data();
-              const workoutId = doc.id;
-              const savedWorkoutRef = workout.workout;
-              const savedWorkoutDoc = await savedWorkoutRef.get();
-              const myWorkoutData = savedWorkoutDoc.data();
-              
-              const muscleGroupRef = myWorkoutData.muscle_group;
-              const muscleGroupDoc = await muscleGroupRef.get();
-              const muscleGroupData = muscleGroupDoc.data();
-          
-              const exercisesPromises = myWorkoutData.exercises.map(async exerciseRef => {
-                  const exerciseDoc = await exerciseRef.get();
-                  return exerciseDoc.data();
-              });
-              const exercises = await Promise.all(exercisesPromises);
-          
-              return { id: workoutId, ...workout, workout: myWorkoutData, muscleGroup: muscleGroupData, exercises };
+          const savedWorkoutCollection = await userRef.collection('saved_workouts').get();
+          const myWorkoutData = await Promise.all(savedWorkoutCollection.docs.map(async doc => {
+            const workoutId = doc.id;
+            const workoutData = doc.data();
+
+            const exercisesPromises = workoutData.exercisesSaved.map(async exerciseRef => {
+              const exerciseDoc = await exerciseRef.get();
+              return { id: exerciseDoc.id, ...exerciseDoc.data() };
+            });
+            const exercises = await Promise.all(exercisesPromises);
+        
+            return { id: workoutId, workout: workoutData, exercises };
           }));
           
-            setMyWorkoutData(myWorkoutData);
-          } 
+          setMyWorkoutData(myWorkoutData);
         } catch (error) {
           console.log('Error getting document:', error);
         } finally {
@@ -85,6 +75,7 @@ const Workout = () => {
     );
   }
 
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -96,33 +87,40 @@ const Workout = () => {
           <MaterialCommunityIcons name="plus-circle" color='#4E598C' size={30} />
         </Pressable>
 
-        {myWorkoutData.map((workout, index) => (
-          <Card
-            key={index}
-            onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workout.name, exercises: workout.exercises, source: 'Workout', workout: workout })}
-          >
-            <View style={styles.images}>
-              <Image
-                style={styles.exercisesImg}
-                source={require('../../assets/images/squat-up.png')}
-              />
-              <Image
-                style={styles.exercisesImgSmaller}
-                source={require('../../assets/images/squat-down.png')}
-              />
-            </View>
+        {myWorkoutData.map((workout, index) => {
+  console.log('Workout Data:', workout); // Log the workout data
+  
+  return (
+    <Card
+      key={index}
+      onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workout?.name || '', exercises: workout.exercises, source: 'Workout', workout: workout })}
+    >
 
-            <View style={styles.cardInfo}>
-              <View>
-                <SmallTitle style={styles.cardInfoTitle}>{workout.workout.name}</SmallTitle>
-                <SmallText>{workout.muscleGroup.name}</SmallText>
-              </View>
-              <Pressable onPress={() => removeWorkout(workout.id)}>
-                <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />
-              </Pressable>
-            </View>
-          </Card>
-        ))}
+      <View style={styles.images}>
+        <Image
+          style={styles.exercisesImg}
+          source={require('../../assets/images/squat-up.png')}
+        />
+        <Image
+          style={styles.exercisesImgSmaller}
+          source={require('../../assets/images/squat-down.png')}
+        />
+      </View>
+
+      <View style={styles.cardInfo}>
+        <View>
+          <SmallTitle style={styles.cardInfoTitle}>{workout.name || 'Workout Name Missing'}</SmallTitle>
+          <SmallText>{workout.muscleGroup?.name || 'Muscle Group Name Missing'}</SmallText>
+        </View>
+        <Pressable onPress={() => removeWorkout(workout.id)}>
+          <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />
+        </Pressable>
+      </View>
+    </Card>
+  );
+})}
+
+
 
       </View>
     </ScrollView>

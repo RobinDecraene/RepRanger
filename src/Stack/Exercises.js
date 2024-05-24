@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from '../../Firebase';
 
@@ -15,11 +15,12 @@ const Exercises = () => {
   const [muscleData, setMuscleData] = useState([]);
   const [selectedMuscle, setSelectedMuscle] = useState('Alles');
   const navigation = useNavigation();
+  const route = useRoute();
+  const { id } = route.params;
 
   useEffect(() => {
     const fetchExercisesAndMuscles = async () => {
       try {
-        // Fetch exercises
         const exercisesCollection = await firebase.firestore().collection('exercises').get();
         const exercisesData = await Promise.all(
           exercisesCollection.docs.map(async (doc) => {
@@ -34,7 +35,6 @@ const Exercises = () => {
           })
         );
 
-        // Fetch muscle groups
         const muscleGroupsCollection = await firebase.firestore().collection('muscle_groups').get();
         const muscleGroupsData = muscleGroupsCollection.docs.map(doc => doc.data());
 
@@ -47,6 +47,35 @@ const Exercises = () => {
 
     fetchExercisesAndMuscles();
   }, []);
+
+  const toggleSavedExercise = async (exerciseId, isSaved) => {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+  
+    const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
+    const savedExercisesRef = userRef.collection('saved_exercises').doc(exerciseId);
+  
+    try {
+      if (isSaved) {
+        await savedExercisesRef.delete();
+      } else {
+        const exerciseDocRef = firebase.firestore().doc(`exercises/${exerciseId}`);
+        await savedExercisesRef.set({ exercise: exerciseDocRef });
+      }
+  
+      setExercises(prevExercises => prevExercises.map(exercise => {
+        if (exercise.id === exerciseId) {
+          return { ...exercise, saved: !isSaved };
+        }
+        return exercise;
+      }));
+    } catch (error) {
+      console.error('Error toggling saved exercise:', error);
+    }
+  };
 
   const handleFilterPress = (muscleName) => {
     setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
@@ -104,7 +133,9 @@ const Exercises = () => {
                 <SmallTitle style={styles.cardTitle}>{exercise.name}</SmallTitle>
                 <View style={styles.cardHeart}>
                   <SmallText>{exercise.muscleGroupName}</SmallText>
-                  <MaterialCommunityIcons name="heart-outline" color='#4E598C' size={30} />
+                  <Pressable onPress={() => toggleSavedExercise(exercise.id, exercise.saved)}>
+                    <MaterialCommunityIcons name={exercise.saved ? "heart" : "heart-outline"} color='#4E598C' size={30} />
+                  </Pressable>
                 </View>
               </View>
             </Card>

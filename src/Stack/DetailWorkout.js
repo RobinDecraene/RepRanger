@@ -13,7 +13,7 @@ import { Title } from '../../Components/Title';
 const DetailWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, exercises, source, workout } = route.params;
+  const { name, exercises, source, workout, id } = route.params;
   
   return (
     <ScrollView style={styles.base}>
@@ -29,7 +29,7 @@ const DetailWorkout = () => {
 
         {source === 'Workout' ? (
           <Pressable
-            onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises })}
+            onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises, workout: workout, id: id })}
             style={styles.iconRight}
           >
             <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
