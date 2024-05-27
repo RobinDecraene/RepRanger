@@ -27,11 +27,7 @@ const DetailExercise = () => {
         <Card style={styles.imagesCard}>
           <Image
             style={styles.exercisesImg}
-            source={require('../../assets/images/squat-up.png')}
-          />
-          <Image
-            style={styles.exercisesImgSmaller}
-            source={require('../../assets/images/squat-down.png')}
+            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercises.image}.png?alt=media`}}
           />
         </Card>
 

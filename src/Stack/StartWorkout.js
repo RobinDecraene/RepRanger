@@ -122,8 +122,10 @@ const StartWorkout = () => {
                 <P>{formatTime(elapsedTime)}</P>
               </View>
               <Card style={styles.imagesCard}>
-                <Image style={styles.exercisesImg} source={require('../../assets/images/squat-up.png')} />
-                <Image style={styles.exercisesImgSmaller} source={require('../../assets/images/squat-down.png')} />
+                <Image
+                  style={styles.exercisesImg}
+                  source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${currentExercise.image}.png?alt=media`}}
+                  />
               </Card>
 
               <View style={styles.setsRow}>
@@ -168,7 +170,7 @@ const StartWorkout = () => {
               ))}
 
               <Card onPress={handleNextExercise} style={styles.nextExercises}>
-                <Image style={styles.nextExercisesImg} source={require('../../assets/images/squat-up.png')} />
+                <Image style={styles.nextExercisesImg} source={require('../../assets/images/bench-press-up.png')} />
                 <View>
                   <P>Volgende oefening</P>
                   {exercises[currentExerciseIndex + 1] && <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>}

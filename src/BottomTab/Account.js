@@ -107,7 +107,7 @@ const Account = () => {
       
         <Image
           style={styles.profileImg}
-          source={require('../../assets/images/no-profil.png')}
+          source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/no-profil.png?alt=media`}}
         />
 
 
