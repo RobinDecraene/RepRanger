@@ -28,7 +28,8 @@ const Workout = () => {
             const workoutData = doc.data();
   
             const workoutDoc = await db.collection('workouts').doc(workoutId).get();
-            const workoutName = workoutDoc.exists ? workoutDoc.data().name : 'Unknown Workout';
+            const workouts = workoutDoc.data();
+
             
             const muscleGroupRef = workoutDoc.data().muscle_group;
             let muscleGroupName = 'Unknown Muscle Group';
@@ -43,7 +44,7 @@ const Workout = () => {
             });
             const exercises = await Promise.all(exercisesPromises);
   
-            return { id: workoutId, workout: workoutData, exercises, workoutName, muscleGroupName };
+            return { id: workoutId, workout: workoutData, exercises, workouts, muscleGroupName };
           }));
   
           setMyWorkoutData(myWorkoutData);
@@ -100,37 +101,27 @@ const Workout = () => {
         </Pressable>
 
         {myWorkoutData.map((workout, index) => {
-  console.log('Workout Data:', workout);
-  
-  return (
-    <Card
-      key={index}
-      onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workoutName, exercises: workout.exercises, source: 'Workout', workout: workout })}
-    >
-
-      <View style={styles.images}>
-        <Image
-          style={styles.exercisesImg}
-          source={require('../../assets/images/squat-up.png')}
-        />
-        <Image
-          style={styles.exercisesImgSmaller}
-          source={require('../../assets/images/squat-down.png')}
-        />
-      </View>
-
-      <View style={styles.cardInfo}>
-        <View>
-          <SmallTitle style={styles.cardInfoTitle}>{workout.workoutName}</SmallTitle>
-          <SmallText>{workout.muscleGroupName}</SmallText>
-        </View>
-        <Pressable onPress={() => removeWorkout(workout.id)}>
-          <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />
-        </Pressable>
-      </View>
-    </Card>
-  );
-})}
+        return (
+          <Card
+            key={index}
+            onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workouts.name, exercises: workout.exercises, source: 'Workout', workout: workout })}
+          >
+            <Image
+              style={styles.exercisesImg}
+              source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${workout.workouts.image}.png?alt=media`}}
+            />
+            <View style={styles.cardInfo}>
+              <View>
+                <SmallTitle style={styles.cardInfoTitle}>{workout.workouts.name}</SmallTitle>
+                <SmallText>{workout.muscleGroupName}</SmallText>
+              </View>
+              <Pressable onPress={() => removeWorkout(workout.id)}>
+                <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />
+              </Pressable>
+            </View>
+          </Card>
+        );
+      })}
 
 
 
@@ -177,21 +168,9 @@ const styles = StyleSheet.create({
   cardInfoTitle: {
     marginBottom: 0
   },
-  images: {
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    alignItems: 'baseline',
-    width: '100%',
-    justifyContent: 'space-between'
-  },
   exercisesImg: {
-    width: 140,
+    width: 300,
     height: 160,
-    resizeMode: 'contain'
-  },
-  exercisesImgSmaller: {
-    width: 140,
-    height: 100,
     resizeMode: 'contain'
   },
   loadingContainer: {

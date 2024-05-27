@@ -29,7 +29,7 @@ const DetailWorkout = () => {
 
         {source === 'Workout' ? (
           <Pressable
-            onPress={() => navigation.navigate('EditWorkout', { name: name, exercises: exercises, workout: workout, id: id })}
+            onPress={() => navigation.navigate('EditWorkout', { myExercises: exercises, id: id })}
             style={styles.iconRight}
           >
             <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
@@ -49,7 +49,7 @@ const DetailWorkout = () => {
             style={styles.card}>
               <Image
                 style={styles.exercisesImg}
-                source={require('../../assets/images/squat-up.png')}
+                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image}.png?alt=media`}}
               />
 
               <P style={styles.cardName}>{exercise.name}</P>

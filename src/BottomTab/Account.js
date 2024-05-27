@@ -111,7 +111,7 @@ const Account = () => {
         />
 
 
-        <Card style={styles.infoCard}>
+        {/* <Card style={styles.infoCard}>
           <View style={styles.infoCardText}>
             <P style={styles.orange}>5</P>
             <SmallText style={styles.orange}>Workout/week</SmallText>
@@ -121,7 +121,7 @@ const Account = () => {
             <P style={styles.orange}>25:35</P>
             <SmallText style={styles.orange}>Gemiddelde tijd</SmallText>
           </View>
-        </Card>
+        </Card> */}
 
         <SmallTitle>Workout historiek</SmallTitle>
         {historyData

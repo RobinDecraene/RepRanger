@@ -60,16 +60,15 @@ const Exercises = () => {
   
     try {
       const savedDoc = await savedExercisesRef.get();
-      const existingExercises = savedDoc.exists ? savedDoc.data().exercises || [] : [];
+      const existingExercises = savedDoc.exists ? savedDoc.data().exercisesSaved || [] : [];
   
       if (isSaved) {
         const updatedExercises = existingExercises.filter(ex => ex.id !== exerciseId);
-        await savedExercisesRef.update({ exercises: updatedExercises });
+        await savedExercisesRef.update({ exercisesSaved: updatedExercises });
       } else {
-
         const exerciseDocRef = firebase.firestore().doc(`exercises/${exerciseId}`);
         const updatedExercises = [...existingExercises, { id: exerciseId, exercise: exerciseDocRef }];
-        await savedExercisesRef.set({ exercises: updatedExercises }, { merge: true });
+        await savedExercisesRef.set({ exercisesSaved: updatedExercises }, { merge: true });
       }
   
       setExercises(prevExercises => prevExercises.map(exercise => {
@@ -82,6 +81,7 @@ const Exercises = () => {
       console.error('Error toggling saved exercise:', error);
     }
   };
+  
   
 
   const handleFilterPress = (muscleName) => {
@@ -134,7 +134,7 @@ const Exercises = () => {
             >
               <Image
                 style={styles.exercisesImg}
-                source={require('../../assets/images/squat-up.png')}
+                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image}.png?alt=media`}}
               />
               <View style={styles.cardInfo}>
                 <SmallTitle style={styles.cardTitle}>{exercise.name}</SmallTitle>
