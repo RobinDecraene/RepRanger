@@ -20,22 +20,32 @@ const Workout = () => {
       if (currentUser) {
         const db = firebase.firestore();
         const userRef = db.collection('users').doc(currentUser.uid);
-
+  
         try {
           const savedWorkoutCollection = await userRef.collection('saved_workouts').get();
           const myWorkoutData = await Promise.all(savedWorkoutCollection.docs.map(async doc => {
             const workoutId = doc.id;
             const workoutData = doc.data();
-
+  
+            const workoutDoc = await db.collection('workouts').doc(workoutId).get();
+            const workoutName = workoutDoc.exists ? workoutDoc.data().name : 'Unknown Workout';
+            
+            const muscleGroupRef = workoutDoc.data().muscle_group;
+            let muscleGroupName = 'Unknown Muscle Group';
+            if (muscleGroupRef) {
+              const muscleGroupDoc = await muscleGroupRef.get();
+              muscleGroupName = muscleGroupDoc.exists ? muscleGroupDoc.data().name : 'Unknown Muscle Group';
+            }
+  
             const exercisesPromises = workoutData.exercisesSaved.map(async exerciseRef => {
               const exerciseDoc = await exerciseRef.get();
               return { id: exerciseDoc.id, ...exerciseDoc.data() };
             });
             const exercises = await Promise.all(exercisesPromises);
-        
-            return { id: workoutId, workout: workoutData, exercises };
+  
+            return { id: workoutId, workout: workoutData, exercises, workoutName, muscleGroupName };
           }));
-          
+  
           setMyWorkoutData(myWorkoutData);
         } catch (error) {
           console.log('Error getting document:', error);
@@ -46,9 +56,11 @@ const Workout = () => {
         setLoading(false);
       }
     };
-
+  
     fetchUserData();
   }, []);
+  
+  
 
   const removeWorkout = async (workoutId) => {
     const currentUser = firebase.auth().currentUser;
@@ -88,12 +100,12 @@ const Workout = () => {
         </Pressable>
 
         {myWorkoutData.map((workout, index) => {
-  console.log('Workout Data:', workout); // Log the workout data
+  console.log('Workout Data:', workout);
   
   return (
     <Card
       key={index}
-      onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workout?.name || '', exercises: workout.exercises, source: 'Workout', workout: workout })}
+      onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workoutName, exercises: workout.exercises, source: 'Workout', workout: workout })}
     >
 
       <View style={styles.images}>
@@ -109,8 +121,8 @@ const Workout = () => {
 
       <View style={styles.cardInfo}>
         <View>
-          <SmallTitle style={styles.cardInfoTitle}>{workout.name || 'Workout Name Missing'}</SmallTitle>
-          <SmallText>{workout.muscleGroup?.name || 'Muscle Group Name Missing'}</SmallText>
+          <SmallTitle style={styles.cardInfoTitle}>{workout.workoutName}</SmallTitle>
+          <SmallText>{workout.muscleGroupName}</SmallText>
         </View>
         <Pressable onPress={() => removeWorkout(workout.id)}>
           <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />

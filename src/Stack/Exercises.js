@@ -56,14 +56,20 @@ const Exercises = () => {
     }
   
     const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
-    const savedExercisesRef = userRef.collection('saved_exercises').doc(exerciseId);
+    const savedExercisesRef = userRef.collection('saved_workouts').doc(id);
   
     try {
+      const savedDoc = await savedExercisesRef.get();
+      const existingExercises = savedDoc.exists ? savedDoc.data().exercises || [] : [];
+  
       if (isSaved) {
-        await savedExercisesRef.delete();
+        const updatedExercises = existingExercises.filter(ex => ex.id !== exerciseId);
+        await savedExercisesRef.update({ exercises: updatedExercises });
       } else {
+
         const exerciseDocRef = firebase.firestore().doc(`exercises/${exerciseId}`);
-        await savedExercisesRef.set({ exercise: exerciseDocRef });
+        const updatedExercises = [...existingExercises, { id: exerciseId, exercise: exerciseDocRef }];
+        await savedExercisesRef.set({ exercises: updatedExercises }, { merge: true });
       }
   
       setExercises(prevExercises => prevExercises.map(exercise => {
@@ -76,6 +82,7 @@ const Exercises = () => {
       console.error('Error toggling saved exercise:', error);
     }
   };
+  
 
   const handleFilterPress = (muscleName) => {
     setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
