@@ -9,17 +9,21 @@ import { Set, SetPressed } from '../../Components/Sets';
 import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
+import { ActivityIndicator } from 'react-native-paper';
 
 const Exercises = () => {
-  const [exercises, setExercises] = useState([]);
-  const [muscleData, setMuscleData] = useState([]);
-  const [selectedMuscle, setSelectedMuscle] = useState('Alles');
   const navigation = useNavigation();
   const route = useRoute();
   const { id } = route.params;
 
+  const [loading, setLoading] = useState(true);
+  const [exercises, setExercises] = useState([]);
+  const [muscleData, setMuscleData] = useState([]);
+  const [selectedMuscle, setSelectedMuscle] = useState('Alles');
+
   useEffect(() => {
     const fetchExercisesAndMuscles = async () => {
+      setLoading(true);
       try {
         const exercisesCollection = await firebase.firestore().collection('exercises').get();
         const exercisesData = await Promise.all(
@@ -28,7 +32,7 @@ const Exercises = () => {
             const muscleGroupDoc = await data.muscle_group.get();
             const muscleGroupName = muscleGroupDoc.data().name;
             return {
-              id: doc.id,
+              id: doc.ref,  // Storing the reference directly
               ...data,
               muscleGroupName,
             };
@@ -42,37 +46,38 @@ const Exercises = () => {
         setMuscleData(muscleGroupsData);
       } catch (error) {
         console.error('Error fetching data: ', error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchExercisesAndMuscles();
   }, []);
 
-  const toggleSavedExercise = async (exerciseId, isSaved) => {
+  const toggleSavedExercise = async (exerciseRef, isSaved) => {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
       console.error('User not authenticated');
       return;
     }
-  
+
     const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
     const savedExercisesRef = userRef.collection('saved_workouts').doc(id);
-  
+
     try {
       const savedDoc = await savedExercisesRef.get();
       const existingExercises = savedDoc.exists ? savedDoc.data().exercisesSaved || [] : [];
-  
+
       if (isSaved) {
-        const updatedExercises = existingExercises.filter(ex => ex.id !== exerciseId);
+        const updatedExercises = existingExercises.filter(ex => ex.id !== exerciseRef.id);
         await savedExercisesRef.update({ exercisesSaved: updatedExercises });
       } else {
-        const exerciseDocRef = firebase.firestore().doc(`exercises/${exerciseId}`);
-        const updatedExercises = [...existingExercises, { id: exerciseId, exercise: exerciseDocRef }];
+        const updatedExercises = [...existingExercises, exerciseRef];
         await savedExercisesRef.set({ exercisesSaved: updatedExercises }, { merge: true });
       }
-  
+
       setExercises(prevExercises => prevExercises.map(exercise => {
-        if (exercise.id === exerciseId) {
+        if (exercise.id.id === exerciseRef.id) {
           return { ...exercise, saved: !isSaved };
         }
         return exercise;
@@ -81,8 +86,6 @@ const Exercises = () => {
       console.error('Error toggling saved exercise:', error);
     }
   };
-  
-  
 
   const handleFilterPress = (muscleName) => {
     setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
@@ -92,6 +95,13 @@ const Exercises = () => {
     ? exercises
     : exercises.filter(exercise => exercise.muscleGroupName === selectedMuscle);
 
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4E598C" />
+      </View>
+    );
+  }
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -194,7 +204,7 @@ const styles = StyleSheet.create({
   },
   exercisesImg: {
     width: 140,
-    height: 160,
+    height: 150,
     resizeMode: 'contain'
   },
   cardInfo: {
@@ -211,5 +221,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center'
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   }
 });

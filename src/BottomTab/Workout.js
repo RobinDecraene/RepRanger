@@ -29,8 +29,7 @@ const Workout = () => {
   
             const workoutDoc = await db.collection('workouts').doc(workoutId).get();
             const workouts = workoutDoc.data();
-
-            
+  
             const muscleGroupRef = workoutDoc.data().muscle_group;
             let muscleGroupName = 'Unknown Muscle Group';
             if (muscleGroupRef) {
@@ -38,11 +37,15 @@ const Workout = () => {
               muscleGroupName = muscleGroupDoc.exists ? muscleGroupDoc.data().name : 'Unknown Muscle Group';
             }
   
-            const exercisesPromises = workoutData.exercisesSaved.map(async exerciseRef => {
-              const exerciseDoc = await exerciseRef.get();
-              return { id: exerciseDoc.id, ...exerciseDoc.data() };
+            const exercisesPromises = (workoutData.exercisesSaved || []).map(async exerciseRef => {
+              if (exerciseRef && typeof exerciseRef.get === 'function') {
+                const exerciseDoc = await exerciseRef.get();
+                return { id: exerciseDoc.id, ...exerciseDoc.data() };
+              }
+              return null;
             });
-            const exercises = await Promise.all(exercisesPromises);
+  
+            const exercises = (await Promise.all(exercisesPromises)).filter(Boolean);
   
             return { id: workoutId, workout: workoutData, exercises, workouts, muscleGroupName };
           }));

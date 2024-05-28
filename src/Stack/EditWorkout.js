@@ -13,9 +13,9 @@ import { firebase } from '../../Firebase';
 const EditWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, exercises, id } = route.params;
+  const { name, myExercises = [], id } = route.params;
 
-  const [exerciseList, setExerciseList] = useState(exercises);
+  const [exerciseList, setExerciseList] = useState(myExercises);
 
   const removeExercise = async (workoutId, exerciseRef) => {
     const currentUser = firebase.auth().currentUser;
@@ -23,7 +23,7 @@ const EditWorkout = () => {
       console.error('User not authenticated');
       return;
     }
-  
+
     const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId);
 
     try {
@@ -34,16 +34,10 @@ const EditWorkout = () => {
 
       const updatedExerciseList = exerciseList.filter(exercise => exercise.id !== exerciseRef);
       setExerciseList(updatedExerciseList);
-      
-      console.log(userRef);
-      console.log(workoutId);
-      console.log(`exercises/${exerciseRef}`);
-      console.log('Exercise removed successfully');
     } catch (error) {
       console.error('Error removing exercise:', error);
     }
   };
-  
 
   return (
     <ScrollView style={styles.base}>

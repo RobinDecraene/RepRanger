@@ -29,7 +29,7 @@ const DetailWorkout = () => {
 
         {source === 'Workout' ? (
           <Pressable
-            onPress={() => navigation.navigate('EditWorkout', { myExercises: exercises, id: id })}
+            onPress={() => navigation.navigate('EditWorkout', { myExercises: exercises, id: id, name: name })}
             style={styles.iconRight}
           >
             <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
