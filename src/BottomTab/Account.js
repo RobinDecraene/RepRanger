@@ -33,7 +33,7 @@ const Account = () => {
       if (currentUser) {
         const db = firebase.firestore();
         const userRef = db.collection('users').doc(currentUser.uid);
-
+  
         try {
           const userDoc = await userRef.get();
           if (userDoc.exists) {
@@ -42,18 +42,23 @@ const Account = () => {
             const historyData = await Promise.all(historyCollection.docs.map(async doc => {
               const historyItem = doc.data();
               const historyRef = historyItem.workout;
-              
+  
               if (historyRef && typeof historyRef.get === 'function') {
                 const historyDoc = await historyRef.get();
                 const workoutData = historyDoc.data();
                 
-                const exercisesPromises = workoutData.exercises.map(async exerciseRef => {
-                  const exerciseDoc = await exerciseRef.get();
-                  return exerciseDoc.data();
-                });
-                const exercises = await Promise.all(exercisesPromises);
-  
-                return { id: doc.id, ...historyItem, workout: workoutData, exercises };
+                if (workoutData && Array.isArray(workoutData.exercises)) {
+                  const exercisesPromises = workoutData.exercises.map(async exerciseRef => {
+                    const exerciseDoc = await exerciseRef.get();
+                    return exerciseDoc.data();
+                  });
+                  const exercises = await Promise.all(exercisesPromises);
+    
+                  return { id: doc.id, ...historyItem, workout: workoutData, exercises };
+                } else {
+                  console.error('Workout data or exercises array is invalid');
+                  return null;
+                }
               } else {
                 console.error('Invalid workout reference');
                 return null;
@@ -70,9 +75,10 @@ const Account = () => {
         setLoading(false);
       }
     };
-
+  
     fetchUserData();
   }, []);
+  
 
   const handleLogout = async () => {
     try {

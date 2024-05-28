@@ -52,8 +52,6 @@ const NiewWorkout = () => {
         console.error('Error fetching data:', error);
       }
     };
-    
-  
 
     const muscleGroupsRef = firebase.firestore().collection('muscle_groups');
     const unsubscribe = muscleGroupsRef.onSnapshot(snapshot => {
@@ -65,6 +63,10 @@ const NiewWorkout = () => {
 
     return () => unsubscribe();
   }, []);
+
+  const handleFilterPress = (muscleName) => {
+    setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
+  };
 
   const toggleSavedWorkout = async (workoutId, isSaved, exercises) => {
     const currentUser = firebase.auth().currentUser;
@@ -154,7 +156,7 @@ const NiewWorkout = () => {
                 <View style={styles.images}>
                   <Image
                     style={styles.exercisesImg}
-                    source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${workouts.image}.png?alt=media`}}
+                    source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${workout.image}.png?alt=media`}}
                   />
                 </View>
 
@@ -238,13 +240,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   exercisesImg: {
-    width: 140,
+    width: 300,
     height: 160,
-    resizeMode: 'contain'
-  },
-  exercisesImgSmaller: {
-    width: 140,
-    height: 100,
     resizeMode: 'contain'
   },
   loadingContainer: {
