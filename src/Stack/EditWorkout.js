@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import { Pressable, StyleSheet, View, Image } from 'react-native';
+import { Pressable, StyleSheet, View, Image, Alert } from 'react-native';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -17,7 +16,44 @@ const EditWorkout = () => {
 
   const [exerciseList, setExerciseList] = useState(myExercises);
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchData = async () => {
+        const currentUser = firebase.auth().currentUser;
+        if (!currentUser) {
+          console.error('User not authenticated');
+          return;
+        }
+
+        const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id);
+        const doc = await userRef.get();
+        if (doc.exists) {
+          const exerciseRefs = doc.data().exercisesSaved || [];
+
+          const exercisesData = await Promise.all(
+            exerciseRefs.map(async (ref) => {
+              const exerciseDoc = await ref.get();
+              return { id: ref.id, ...exerciseDoc.data() };
+            })
+          );
+
+          setExerciseList(exercisesData);
+        } else {
+          console.error('No such document!');
+        }
+      };
+
+      fetchData();
+      
+    }, [id])
+  );
+
   const removeExercise = async (workoutId, exerciseRef) => {
+    if (exerciseList.length <= 4) {
+      alert('Je moet minstens 4 oefeningen hebben in je workout.');
+      return;
+    }
+
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
       console.error('User not authenticated');
@@ -69,7 +105,13 @@ const EditWorkout = () => {
         ))}
 
         <Button
-          onPress={() => navigation.navigate('Exercises', {id: id})}
+          onPress={() => {
+            if (exerciseList.length >= 8) {
+              alert('Je kan niet meer dan 8 oefeningne hebben in je workout');
+            } else {
+              navigation.navigate('Exercises', { id: id });
+            }
+          }}
           style={styles.button}
         >
           + Nieuwe oefening
@@ -78,6 +120,7 @@ const EditWorkout = () => {
     </ScrollView>
   );
 }
+
 
 export default EditWorkout;
 

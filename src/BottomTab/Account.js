@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from '../../Firebase';
 
@@ -11,7 +11,6 @@ import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { Title } from '../../Components/Title';
-
 
 const Account = () => {
   const navigation = useNavigation();
@@ -27,58 +26,59 @@ const Account = () => {
     return `${day}/${month}/${year}`;
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const currentUser = firebase.auth().currentUser;
-      if (currentUser) {
-        const db = firebase.firestore();
-        const userRef = db.collection('users').doc(currentUser.uid);
-  
-        try {
-          const userDoc = await userRef.get();
-          if (userDoc.exists) {
-            setUser(userDoc.data());
-            const historyCollection = await userRef.collection('history').get();
-            const historyData = await Promise.all(historyCollection.docs.map(async doc => {
-              const historyItem = doc.data();
-              const historyRef = historyItem.workout;
-  
-              if (historyRef && typeof historyRef.get === 'function') {
-                const historyDoc = await historyRef.get();
-                const workoutData = historyDoc.data();
-                
-                if (workoutData && Array.isArray(workoutData.exercises)) {
-                  const exercisesPromises = workoutData.exercises.map(async exerciseRef => {
-                    const exerciseDoc = await exerciseRef.get();
-                    return exerciseDoc.data();
-                  });
-                  const exercises = await Promise.all(exercisesPromises);
-    
-                  return { id: doc.id, ...historyItem, workout: workoutData, exercises };
-                } else {
-                  console.error('Workout data or exercises array is invalid');
-                  return null;
-                }
+  const fetchUserData = async () => {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      const db = firebase.firestore();
+      const userRef = db.collection('users').doc(currentUser.uid);
+
+      try {
+        const userDoc = await userRef.get();
+        if (userDoc.exists) {
+          setUser(userDoc.data());
+          const historyCollection = await userRef.collection('history').get();
+          const historyData = await Promise.all(historyCollection.docs.map(async doc => {
+            const historyItem = doc.data();
+            const historyRef = historyItem.workout;
+
+            if (historyRef && typeof historyRef.get === 'function') {
+              const historyDoc = await historyRef.get();
+              const workoutData = historyDoc.data();
+              
+              if (workoutData && Array.isArray(workoutData.exercises)) {
+                const exercisesPromises = workoutData.exercises.map(async exerciseRef => {
+                  const exerciseDoc = await exerciseRef.get();
+                  return exerciseDoc.data();
+                });
+                const exercises = await Promise.all(exercisesPromises);
+
+                return { id: doc.id, ...historyItem, workout: workoutData, exercises };
               } else {
-                console.error('Invalid workout reference');
+                console.error('Workout data or exercises array is invalid');
                 return null;
               }
-            }));
-            setHistoryData(historyData.filter(item => item !== null));
-          } 
-        } catch (error) {
-          console.log('Error getting document:', error);
-        } finally {
-          setLoading(false);
-        }
-      } else {
+            } else {
+              console.error('Invalid workout reference');
+              return null;
+            }
+          }));
+          setHistoryData(historyData.filter(item => item !== null));
+        } 
+      } catch (error) {
+        console.log('Error getting document:', error);
+      } finally {
         setLoading(false);
       }
-    };
-  
-    fetchUserData();
-  }, []);
-  
+    } else {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
 
   const handleLogout = async () => {
     try {
@@ -100,8 +100,7 @@ const Account = () => {
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-
-      {user && (
+        {user && (
           <Title style={styles.title}>{`${user.firstName} ${user.lastName}`}</Title>
         )}
         <Pressable
@@ -116,36 +115,23 @@ const Account = () => {
           source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/no-profil.png?alt=media`}}
         />
 
-
-        {/* <Card style={styles.infoCard}>
-          <View style={styles.infoCardText}>
-            <P style={styles.orange}>5</P>
-            <SmallText style={styles.orange}>Workout/week</SmallText>
-          </View>
-
-          <View style={styles.infoCardText}>
-            <P style={styles.orange}>25:35</P>
-            <SmallText style={styles.orange}>Gemiddelde tijd</SmallText>
-          </View>
-        </Card> */}
-
         <SmallTitle>Workout historiek</SmallTitle>
         {historyData
           .sort((a, b) => b.date - a.date)
           .map((history, index) => (
-          <Card
-            key={index}
-            onPress={() => navigation.navigate('DetailHistory', {history: history, workout: history.workout})}
-            style={styles.card}
-          >
-            <Image
-              style={styles.exercisesImg}
-              source={require('../../assets/images/bench-press-up.png')}
-            />
-            <P style={styles.exercisesName}>{history.workout.name} {formatDate(history.date)}</P>
-            <MaterialCommunityIcons name="arrow-right" color='#4E598C' size={30} />
-          </Card>
-        ))}
+            <Card
+              key={index}
+              onPress={() => navigation.navigate('DetailHistory', { history, workout: history.workout })}
+              style={styles.card}
+            >
+              <Image
+                style={styles.exercisesImg}
+                source={require('../../assets/images/bench-press-up.png')}
+              />
+              <P style={styles.exercisesName}>{history.workout.name} {formatDate(history.date)}</P>
+              <MaterialCommunityIcons name="arrow-right" color='#4E598C' size={30} />
+            </Card>
+          ))}
 
         <Button onPress={handleLogout}>Log uit</Button>
       </View>

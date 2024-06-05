@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
+import React, { useState, useCallback } from 'react';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from '../../Firebase';
 
@@ -14,57 +14,57 @@ const Workout = () => {
   const [myWorkoutData, setMyWorkoutData] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const currentUser = firebase.auth().currentUser;
-      if (currentUser) {
-        const db = firebase.firestore();
-        const userRef = db.collection('users').doc(currentUser.uid);
-  
-        try {
-          const savedWorkoutCollection = await userRef.collection('saved_workouts').get();
-          const myWorkoutData = await Promise.all(savedWorkoutCollection.docs.map(async doc => {
-            const workoutId = doc.id;
-            const workoutData = doc.data();
-  
-            const workoutDoc = await db.collection('workouts').doc(workoutId).get();
-            const workouts = workoutDoc.data();
-  
-            const muscleGroupRef = workoutDoc.data().muscle_group;
-            let muscleGroupName = 'Unknown Muscle Group';
-            if (muscleGroupRef) {
-              const muscleGroupDoc = await muscleGroupRef.get();
-              muscleGroupName = muscleGroupDoc.exists ? muscleGroupDoc.data().name : 'Unknown Muscle Group';
+  const fetchUserData = async () => {
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      const db = firebase.firestore();
+      const userRef = db.collection('users').doc(currentUser.uid);
+
+      try {
+        const savedWorkoutCollection = await userRef.collection('saved_workouts').get();
+        const myWorkoutData = await Promise.all(savedWorkoutCollection.docs.map(async doc => {
+          const workoutId = doc.id;
+          const workoutData = doc.data();
+
+          const workoutDoc = await db.collection('workouts').doc(workoutId).get();
+          const workouts = workoutDoc.data();
+
+          const muscleGroupRef = workoutDoc.data().muscle_group;
+          let muscleGroupName = 'Unknown Muscle Group';
+          if (muscleGroupRef) {
+            const muscleGroupDoc = await muscleGroupRef.get();
+            muscleGroupName = muscleGroupDoc.exists ? muscleGroupDoc.data().name : 'Unknown Muscle Group';
+          }
+
+          const exercisesPromises = (workoutData.exercisesSaved || []).map(async exerciseRef => {
+            if (exerciseRef && typeof exerciseRef.get === 'function') {
+              const exerciseDoc = await exerciseRef.get();
+              return { id: exerciseDoc.id, ...exerciseDoc.data() };
             }
-  
-            const exercisesPromises = (workoutData.exercisesSaved || []).map(async exerciseRef => {
-              if (exerciseRef && typeof exerciseRef.get === 'function') {
-                const exerciseDoc = await exerciseRef.get();
-                return { id: exerciseDoc.id, ...exerciseDoc.data() };
-              }
-              return null;
-            });
-  
-            const exercises = (await Promise.all(exercisesPromises)).filter(Boolean);
-  
-            return { id: workoutId, workout: workoutData, exercises, workouts, muscleGroupName };
-          }));
-  
-          setMyWorkoutData(myWorkoutData);
-        } catch (error) {
-          console.log('Error getting document:', error);
-        } finally {
-          setLoading(false);
-        }
-      } else {
+            return null;
+          });
+
+          const exercises = (await Promise.all(exercisesPromises)).filter(Boolean);
+
+          return { id: workoutId, workout: workoutData, exercises, workouts, muscleGroupName };
+        }));
+
+        setMyWorkoutData(myWorkoutData);
+      } catch (error) {
+        console.log('Error getting document:', error);
+      } finally {
         setLoading(false);
       }
-    };
-  
-    fetchUserData();
-  }, []);
-  
-  
+    } else {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchUserData();
+    }, [])
+  );
 
   const removeWorkout = async (workoutId) => {
     const currentUser = firebase.auth().currentUser;
@@ -91,7 +91,6 @@ const Workout = () => {
     );
   }
 
-
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -103,8 +102,7 @@ const Workout = () => {
           <MaterialCommunityIcons name="plus-circle" color='#4E598C' size={30} />
         </Pressable>
 
-        {myWorkoutData.map((workout, index) => {
-        return (
+        {myWorkoutData.map((workout, index) => (
           <Card
             key={index}
             onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workouts.name, exercises: workout.exercises, source: 'Workout', workout: workout })}
@@ -123,11 +121,7 @@ const Workout = () => {
               </Pressable>
             </View>
           </Card>
-        );
-      })}
-
-
-
+        ))}
       </View>
     </ScrollView>
   );
