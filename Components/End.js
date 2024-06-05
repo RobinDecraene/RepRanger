@@ -25,10 +25,6 @@ const End = ({ elapsedTime, handleStopWorkout }) => {
           <SmallText>Oef</SmallText>
         </View>
         <View style={styles.numbers}>
-          <P>300</P>
-          <SmallText>Cal</SmallText>
-        </View>
-        <View style={styles.numbers}>
           <P>{formatTime(elapsedTime)}</P>
           <SmallText>Min</SmallText>
         </View>

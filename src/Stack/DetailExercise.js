@@ -24,6 +24,7 @@ const DetailExercise = () => {
           <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
+
         <Card style={styles.imagesCard}>
           <Image
             style={styles.exercisesImg}

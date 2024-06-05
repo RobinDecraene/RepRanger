@@ -1,8 +1,10 @@
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { firebase } from '../../Firebase';
 
-import { Pressable, Image, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Title } from '../../Components/Title';
 import { Card } from '../../Components/Card';
@@ -13,7 +15,7 @@ import { SmallTitle } from '../../Components/SmallTitle';
 const DetailHistory = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { history, workout } = route.params;
+  const { history, workout, historyId } = route.params;
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -29,6 +31,39 @@ const DetailHistory = () => {
     return `${day}/${month}/${year}`;
   };
 
+  const confirmDeleteWorkout = () => {
+    Alert.alert(
+      "Verwijder Workout",
+      "Weet je zeker dat je deze workout wilt verwijderen?",
+      [
+        {
+          text: "Annuleren",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel"
+        },
+        { text: "Verwijder", onPress: () => deleteWorkout() }
+      ],
+      { cancelable: false }
+    );
+  };
+
+  const deleteWorkout = async () => {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(historyId);
+
+    try {
+      await userRef.delete();
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error removing workout:', error);
+    }
+  };
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -37,6 +72,13 @@ const DetailHistory = () => {
           style={styles.icon}
         >
           <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
+        </Pressable>
+
+        <Pressable
+          onPress={confirmDeleteWorkout}
+          style={styles.iconRight}
+        >
+          <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />
         </Pressable>
 
         <View style={styles.title}>
@@ -110,6 +152,11 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20
+  },
+  iconRight: {
+    position: 'absolute',
+    top: 50,
+    right: 20
   },
   margin: {
     marginBottom: 20
