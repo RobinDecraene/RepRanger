@@ -44,7 +44,7 @@ const DetailExercise = () => {
           <SmallTitle>Gebruikte spieren</SmallTitle>
           <Image
             style={styles.muscles}
-              source={require('../../assets/images/used-muscles.png')}
+              source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image_muscle}.png?alt=media` }}
             />
         </Card>
 
