@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { Pressable, Image, StyleSheet, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -36,7 +36,7 @@ const DetailHistory = () => {
           onPress={() => navigation.goBack()}
           style={styles.icon}
         >
-          <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
+          <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
         <View style={styles.title}>
@@ -50,10 +50,6 @@ const DetailHistory = () => {
           <View style={styles.numbers}>
             <P style={styles.orange}>6</P>
             <SmallText style={styles.orange}>Oef</SmallText>
-          </View>
-          <View style={styles.numbers}>
-            <P style={styles.orange}>300</P>
-            <SmallText style={styles.orange}>Cal</SmallText>
           </View>
           <View style={styles.numbers}>
             <P style={styles.orange}>{formatTime(history.elapsedTime)}</P>
@@ -112,7 +108,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 55,
+    top: 50,
     left: 20
   },
   margin: {

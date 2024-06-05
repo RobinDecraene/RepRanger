@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 
 import { Pressable, StyleSheet, View } from 'react-native';
@@ -70,7 +70,7 @@ const EditAccount = () => {
     <ScrollView style={styles.base}>
       <View style={styles.container}>
         <Pressable onPress={() => navigation.goBack()} style={styles.icon}>
-          <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
+          <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
         <Title>Bewerk profiel</Title>
@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 55,
+    top: 50,
     left: 20
   },
   loadingContainer: {

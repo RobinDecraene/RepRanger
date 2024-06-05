@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute  } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 
 import { Pressable, StyleSheet, View, Image, ScrollView, ActivityIndicator } from 'react-native';
@@ -108,7 +109,7 @@ const Exercises = () => {
           onPress={() => navigation.goBack()}
           style={styles.icon}
         >
-          <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
+          <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
         <Title>Oefeningen</Title>
@@ -187,7 +188,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 55,
+    top: 50,
     left: 20
   },
   setsRow: {

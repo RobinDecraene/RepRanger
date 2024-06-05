@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../Firebase';
 
@@ -119,7 +120,7 @@ const NiewWorkout = () => {
           onPress={() => navigation.goBack()}
           style={styles.icon}
         >
-          <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
+          <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
         <Title>Alle workouts</Title>
@@ -201,7 +202,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 55,
+    top: 50,
     left: 20
   },
   setsRow: {

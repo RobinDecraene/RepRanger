@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 
 import { Image, Pressable, StyleSheet, View, ActivityIndicator } from 'react-native';
@@ -129,7 +130,7 @@ const Account = () => {
                 source={require('../../assets/images/bench-press-up.png')}
               />
               <P style={styles.exercisesName}>{history.workout.name} {formatDate(history.date)}</P>
-              <MaterialCommunityIcons name="arrow-right" color='#4E598C' size={30} />
+              <MaterialIcons name="keyboard-arrow-right" size={40} color="#4E598C" />
             </Card>
           ))}
 

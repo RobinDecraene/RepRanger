@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import { firebase } from '../../Firebase';
 
@@ -224,7 +225,7 @@ const StartWorkout = () => {
                   <P>Volgende oefening</P>
                   {exercises[currentExerciseIndex + 1] && <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>}
                 </View>
-                <MaterialCommunityIcons name="arrow-right" color="#4E598C" size={25} />
+                <MaterialIcons name="keyboard-arrow-right" size={40} color="#4E598C" />
               </Card>
 
               <ButtonSecondary style={styles.margin} onPress={handleStopWorkout}>

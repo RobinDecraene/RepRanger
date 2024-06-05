@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { P } from './Text';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 export function FAQ({ children, onPress, style }) {
   
@@ -14,8 +14,8 @@ export function FAQ({ children, onPress, style }) {
 
   return (
     <TouchableOpacity style={[styles.faq, style]} onPress={handlePress}>
-      <P style={{ fontSize: 20, maxWidth: '90%' }}>{ children }</P>
-      <MaterialCommunityIcons name="arrow-right" color='#4E598C' size={30} />
+      <P style={{ fontSize: 20, minWidth: '90%', maxWidth: '90%' }}>{ children }</P>
+      <MaterialIcons name="keyboard-arrow-right" size={40} color="#4E598C" />
     </TouchableOpacity>
   );
 }

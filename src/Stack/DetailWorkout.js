@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { Pressable, StyleSheet, View, Image } from 'react-native';
 import { P } from '../../Components/Text';
@@ -22,7 +23,7 @@ const DetailWorkout = () => {
           onPress={() => navigation.goBack()}
           style={styles.icon}
         >
-          <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
+          <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
         <Title>{name}</Title>
@@ -54,7 +55,7 @@ const DetailWorkout = () => {
 
               <P style={styles.cardName}>{exercise.name}</P>
 
-              <MaterialCommunityIcons name="arrow-right" color="#4E598C" size={25} />
+              <MaterialIcons name="keyboard-arrow-right" size={35} color="#4E598C" />
           </Card>
         ))}
 
@@ -93,7 +94,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 55,
+    top: 50,
     left: 20
   },
   iconRight: {

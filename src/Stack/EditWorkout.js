@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View, Image, Alert } from 'react-native';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
@@ -82,7 +83,7 @@ const EditWorkout = () => {
           onPress={() => navigation.goBack()}
           style={styles.icon}
         >
-          <MaterialCommunityIcons name="arrow-left" color='#4E598C' size={30} />
+          <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
         <Title>{name}</Title>
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 55,
+    top: 50,
     left: 20
   },
   iconRight: {
