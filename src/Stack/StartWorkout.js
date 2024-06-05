@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import RNPickerSelect from 'react-native-picker-select';
 import { firebase } from '../../Firebase';
 
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, Pressable, Modal, Text, Button } from 'react-native';
 import { P } from '../../Components/Text';
 import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
@@ -29,6 +29,7 @@ const StartWorkout = () => {
   const [currentExerciseData, setCurrentExerciseData] = useState([]);
   const intervalIdRef = useRef(null);
   const scrollViewRef = useRef(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -121,11 +122,53 @@ const StartWorkout = () => {
                 <Title>{currentExercise.name}</Title>
                 <P>{formatTime(elapsedTime)}</P>
               </View>
+              <Pressable
+                onPress={() => setModalVisible(true)}
+                style={styles.icon}
+              >
+                <MaterialCommunityIcons name="help-circle" color="#4E598C" size={25} />
+              </Pressable>
+
+              <Modal
+                animationType="slide"
+                visible={modalVisible}
+                onRequestClose={() => setModalVisible(false)}
+              >
+                <ScrollView style={styles.base}>
+                  <View style={styles.container}>
+                    <Title style={styles.title}>{currentExercise.name}</Title>
+                    <Pressable
+                      onPress={() => setModalVisible(false)}
+                      style={styles.icon}
+                    >
+                      <MaterialCommunityIcons name="close" color='#4E598C' size={30} />
+                    </Pressable>
+                    <Card style={styles.exerciseInfo}>
+                      <SmallTitle>Hoe doe je de oefening?</SmallTitle>
+                      <P>{currentExercise.how_to}</P>
+                      <Image
+                      style={styles.ranger}
+                        source={require('../../assets/images/ranger-head.png')}
+                      />
+                    </Card>
+
+                    <Card style={styles.alignLeft}>
+                      <SmallTitle>Gebruikte spieren</SmallTitle>
+                      <Image
+                        style={styles.muscles}
+                          source={require('../../assets/images/used-muscles.png')}
+                        />
+                    </Card>
+                    
+                  </View>
+                </ScrollView>
+              </Modal>
+              
               <Card style={styles.imagesCard}>
                 <Image
                   style={styles.exercisesImg}
-                  source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${currentExercise.image}.png?alt=media`}}
-                  />
+                  source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${currentExercise.image_big}.png?alt=media`}}
+                />
               </Card>
 
               <View style={styles.setsRow}>
@@ -205,8 +248,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    alignItems: 'center',
-    marginTop: 25
+    alignItems: 'center'
   },
   imagesCard: {
     flexDirection: 'row',
@@ -216,8 +258,8 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   exercisesImg: {
-    width: 140,
-    height: 180,
+    width: 300,
+    height: 160,
     resizeMode: 'contain'
   },
   exercisesImgSmaller: {
@@ -292,6 +334,31 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 40,
     marginTop: 20
+  },
+  muscles: {
+    width: 310,
+    height: 250,
+    resizeMode: 'contain'
+  },
+  ranger: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    position: 'absolute',
+    bottom: -50,
+    left: -10
+  },
+  exerciseInfo: {
+    width: '100%',
+    justifyContent: 'space-between',
+    paddingBottom: 50,
+    alignItems: 'flex-start',
+    marginBottom: 70
+  },
+  icon: {
+    position: 'absolute',
+    top: 55,
+    right: 20
   },
 });
 
