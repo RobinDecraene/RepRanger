@@ -66,7 +66,7 @@ const StartWorkout = () => {
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   };
 
-  const handleStopWorkout = async () => {
+  const handleEndWorkout = async () => {
     setIsTimerRunning(false);
 
     const currentUser = firebase.auth().currentUser;
@@ -96,6 +96,12 @@ const StartWorkout = () => {
     }
   };
 
+  const handleStopWorkout = () => {
+    setIsTimerRunning(false);
+    navigation.navigate('Workout');
+  };
+  
+
   const handleSetDataChange = (setIndex, field, value) => {
     setCurrentExerciseData(prevData => {
       const newData = [...prevData];
@@ -113,7 +119,7 @@ const StartWorkout = () => {
   return (
     <ScrollView ref={scrollViewRef} style={styles.base}>
       {isEnd ? (
-        <End elapsedTime={elapsedTime} handleStopWorkout={handleStopWorkout} />
+        <End elapsedTime={elapsedTime} handleStopWorkout={handleEndWorkout} />
       ) : (
         <View style={styles.container}>
           {currentExercise && (
