@@ -45,7 +45,7 @@ const DetailWorkout = () => {
         {exercises.map((exercise, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailExercise' , { name: exercise.name, how_to: exercise.how_to })}
+            onPress={() => navigation.navigate('DetailExercise' , { exercise: exercise })}
             style={styles.card}>
               <Image
                 style={styles.exercisesImg}

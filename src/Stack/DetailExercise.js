@@ -12,11 +12,11 @@ import { SmallTitle } from '../../Components/SmallTitle';
 const DetailExercise = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, how_to } = route.params;
+  const { exercise } = route.params;
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <Title style={styles.title}>{name}</Title>
+        <Title style={styles.title}>{exercise.name}</Title>
         <Pressable
           onPress={() => navigation.goBack()}
           style={styles.icon}
@@ -27,13 +27,13 @@ const DetailExercise = () => {
         <Card style={styles.imagesCard}>
           <Image
             style={styles.exercisesImg}
-            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercises.image}.png?alt=media`}}
+            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image_big}.png?alt=media`}}
           />
         </Card>
 
         <Card style={styles.exerciseInfo}>
           <SmallTitle>Hoe doe je de oefening?</SmallTitle>
-          <P>{how_to}</P>
+          <P>{exercise.how_to}</P>
           <Image
           style={styles.ranger}
             source={require('../../assets/images/ranger-head.png')}
@@ -85,17 +85,12 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   exercisesImg: {
-    width: 140,
-    height: 180,
-    resizeMode: 'contain'
-  },
-  exercisesImgSmaller: {
-    width: 140,
-    height: 120,
+    width: 300,
+    height: 160,
     resizeMode: 'contain'
   },
   muscles: {
-    width: 300,
+    width: 310,
     height: 250,
     resizeMode: 'contain'
   },

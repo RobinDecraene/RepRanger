@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute  } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from '../../Firebase';
 
-import { Pressable, StyleSheet, View, Image, ScrollView } from 'react-native';
+import { Pressable, StyleSheet, View, Image, ScrollView, ActivityIndicator } from 'react-native';
 import { Title } from '../../Components/Title';
 import { Set, SetPressed } from '../../Components/Sets';
 import { Card } from '../../Components/Card';
 import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
-import { ActivityIndicator } from 'react-native-paper';
 
 const Exercises = () => {
   const navigation = useNavigation();
@@ -32,7 +31,7 @@ const Exercises = () => {
             const muscleGroupDoc = await data.muscle_group.get();
             const muscleGroupName = muscleGroupDoc.data().name;
             return {
-              id: doc.ref,  // Storing the reference directly
+              id: doc.ref,
               ...data,
               muscleGroupName,
             };
