@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import RNPickerSelect from 'react-native-picker-select';
 import { firebase } from '../../Firebase';
 
-import { StyleSheet, View, Image, ScrollView, Pressable, Modal, Text, Button } from 'react-native';
+import { StyleSheet, View, Image, ScrollView, Pressable, Modal, Alert } from 'react-native';
 import { P } from '../../Components/Text';
 import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
@@ -55,17 +55,28 @@ const StartWorkout = () => {
   }, []);
 
   const handleNextExercise = () => {
+    const isAnyInputEmpty = currentExerciseData.some(set => set.reps === '' || set.kg === '');
+  
+    if (isAnyInputEmpty) {
+      Alert.alert(
+        "Lege set",
+        "Je bent een van je sets vergeten invullen!",
+      );
+      return;
+    }
+  
     const currentExercise = exercises[currentExerciseIndex];
     
     setWorkoutData(prevData => [
       ...prevData,
       { exerciseName: currentExercise.name, sets: currentExerciseData }
     ]);
-
+  
     setCurrentExerciseIndex(prevIndex => prevIndex + 1);
     setCurrentExerciseData([]);
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   };
+  
 
   const handleEndWorkout = async () => {
     setIsTimerRunning(false);
@@ -174,7 +185,7 @@ const StartWorkout = () => {
               <Card style={styles.imagesCard}>
                 <Image
                   style={styles.exercisesImg}
-                  source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${currentExercise.image_big}.png?alt=media`}}
+                  source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/big_exercises%2F${currentExercise.image_big}.png?alt=media`}}
                 />
               </Card>
 
@@ -195,7 +206,7 @@ const StartWorkout = () => {
                     <View style={styles.setCardInputRow}>
                       <RNPickerSelect
                         style={pickerSelectStyles}
-                        placeholder={{ label: ' ', value: null }}
+                        placeholder={{ label: ' ', value: '' }}
                         onValueChange={(value) => handleSetDataChange(index, 'reps', value)}
                         items={[
                           { label: '8', value: '8' },
