@@ -15,7 +15,7 @@ import { SmallTitle } from '../../Components/SmallTitle';
 const DetailHistory = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { history, workout, historyId } = route.params;
+  const { history, workout } = route.params;
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -34,7 +34,7 @@ const DetailHistory = () => {
   const confirmDeleteWorkout = () => {
     Alert.alert(
       "Verwijder Workout",
-      "Weet je zeker dat je deze workout wilt verwijderen?",
+      "Weet je zeker dat je deze workout wilt verwijderen uit je geschiedenis?",
       [
         {
           text: "Annuleren",
@@ -53,9 +53,9 @@ const DetailHistory = () => {
       console.error('User not authenticated');
       return;
     }
-
-    const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(historyId);
-
+  
+    const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('history').doc(history.id);
+  
     try {
       await userRef.delete();
       navigation.goBack();
@@ -63,6 +63,7 @@ const DetailHistory = () => {
       console.error('Error removing workout:', error);
     }
   };
+  
 
   return (
     <ScrollView style={styles.base}>

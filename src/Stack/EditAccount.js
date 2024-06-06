@@ -4,12 +4,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 import * as ImagePicker from 'expo-image-picker';
 
-import { Pressable, StyleSheet, View, Image } from 'react-native';
+import { Pressable, StyleSheet, View, Image, ActivityIndicator } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Title } from '../../Components/Title';
 import { Input } from '../../Components/Input';
 import { Button } from '../../Components/Button';
-import { ActivityIndicator } from 'react-native-paper';
 import { P } from '../../Components/Text';
 
 const EditAccount = () => {
