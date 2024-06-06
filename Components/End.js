@@ -8,7 +8,7 @@ import { Card } from './Card';
 import { Button } from './Button';
 import { SmallText } from './SmallText';
 
-const End = ({ elapsedTime }) => {
+const End = ({ elapsedTime, handleEndWorkout }) => {
   const navigation = useNavigation();
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -33,7 +33,7 @@ const End = ({ elapsedTime }) => {
         </View>
       </Card>
 
-      <Button onPress={() => navigation.navigate('Workout')}>Mijn workouts</Button>
+      <Button onPress={handleEndWorkout}>Mijn workouts</Button>
     </View>
   );
 };

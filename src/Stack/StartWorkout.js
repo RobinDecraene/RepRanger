@@ -54,11 +54,6 @@ const StartWorkout = () => {
     setIsTimerRunning(true);
   }, []);
 
-  useEffect(() => {
-    if (isEnd) {
-      handleEndWorkout();
-    }
-  }, [isEnd]);
   
 
   const handleNextExercise = () => {
@@ -80,18 +75,42 @@ const StartWorkout = () => {
     ]);
     
     setCurrentExerciseIndex(prevIndex => prevIndex + 1);
-    setCurrentExerciseData(Array.from({ length: selectedSets }, () => ({ reps: '', kg: '' })));
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  };
+
+
+  const handlePreviousExercise = () => {
+    const isAnyInputEmpty = currentExerciseData.some(set => set.reps === '' || set.kg === '');
+    
+    if (isAnyInputEmpty) {
+      Alert.alert(
+        "Lege set",
+        "Je bent een van je sets vergeten invullen!",
+      );
+      return;
+    }
+    
+    const currentExercise = exercises[currentExerciseIndex];
+    
+    setWorkoutData(prevData => [
+      ...prevData,
+      { exerciseName: currentExercise.name, sets: currentExerciseData }
+    ]);
+    
+    setCurrentExerciseIndex(prevIndex => prevIndex - 1);
+    
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+    
+    const previousExerciseData = workoutData[workoutData.length - 1]?.sets || [];
+    setCurrentExerciseData(previousExerciseData);
   };
   
   
-
   const handleEndWorkout = async () => {
     setIsTimerRunning(false);
 
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
-      console.error('User not authenticated');
       return;
     }
 
@@ -113,6 +132,8 @@ const StartWorkout = () => {
     } catch (error) {
       console.error('Error adding workout to history:', error);
     }
+
+    navigation.navigate('Workout');
   };
 
   const handleStopWorkout = () => {
@@ -138,7 +159,7 @@ const StartWorkout = () => {
   return (
     <ScrollView ref={scrollViewRef} style={styles.base}>
       {isEnd ? (
-        <End elapsedTime={elapsedTime} />
+        <End elapsedTime={elapsedTime} handleEndWorkout = {handleEndWorkout} />
       ) : (
         <View style={styles.container}>
           {currentExercise && (
@@ -237,14 +258,48 @@ const StartWorkout = () => {
                 </Card>
               ))}
 
-              <Card onPress={handleNextExercise} style={styles.nextExercises}>
-                <Image style={styles.nextExercisesImg} source={require('../../assets/images/bench-press-up.png')} />
-                <View>
-                  <P>Volgende oefening</P>
-                  {exercises[currentExerciseIndex + 1] && <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>}
-                </View>
-                <MaterialIcons name="keyboard-arrow-right" size={40} color="#4E598C" />
+              <Card onPress={handleNextExercise} style={[styles.nextExercises, styles.marginTop]}>
+                {exercises[currentExerciseIndex + 1] ? (
+                  <>
+                    <Image
+                      style={styles.nextExercisesImg}
+                      source={{
+                        uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercises[currentExerciseIndex + 1].image}.png?alt=media`,
+                      }}
+                    />
+                    <View>
+                      <P>Volgende oefening</P>
+                      <SmallText>{exercises[currentExerciseIndex + 1].name}</SmallText>
+                    </View>
+                    <MaterialIcons name="keyboard-arrow-right" size={40} color="#4E598C" />
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      style={styles.nextExercisesImg}
+                      source={require('../../assets/images/ranger-hands-up.png')}
+                    />
+                    <P>Einde workout</P>
+                    <MaterialIcons name="keyboard-arrow-right" size={40} color="#4E598C" />
+                  </>
+                )}
               </Card>
+              {exercises[currentExerciseIndex - 1] ? (
+              <Card onPress={handlePreviousExercise} style={styles.nextExercises}>
+                <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
+
+                <View>
+                  <P>Vorige oefening</P>
+                  <SmallText>{exercises[currentExerciseIndex - 1].name}</SmallText>
+                </View>
+                <Image
+                  style={styles.nextExercisesImg}
+                  source={{
+                    uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercises[currentExerciseIndex - 1].image}.png?alt=media`,
+                  }}
+                />
+              </Card>
+              ) : null}
 
               <ButtonSecondary style={styles.margin} onPress={handleStopWorkout}>
                 Stop Workout
@@ -337,11 +392,13 @@ const styles = StyleSheet.create({
   nextExercises: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  marginTop: {
     marginTop: 20
   },
   nextExercisesImg: {
-    width: 60,
-    height: 80,
+    width: 40,
+    height: 50,
     resizeMode: 'contain'
   },
   ranger: {
