@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
+import * as ImagePicker from 'expo-image-picker';
 
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, StyleSheet, View, Image } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Title } from '../../Components/Title';
 import { Input } from '../../Components/Input';
 import { Button } from '../../Components/Button';
 import { ActivityIndicator } from 'react-native-paper';
+import { P } from '../../Components/Text';
 
 const EditAccount = () => {
   const navigation = useNavigation();
@@ -18,6 +20,7 @@ const EditAccount = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -37,8 +40,77 @@ const EditAccount = () => {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    const requestPermission = async () => {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        alert('Sorry, we need camera roll permissions to make this work!');
+      }
+    };
+
+    requestPermission();
+  }, []);
+
+  const pickImage = async () => {
+    try {
+      let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+
+      console.log('Image Picker Result:', result);
+
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setImage(result.assets[0].uri);
+        console.log('Image URI:', result.assets[0].uri);
+      } else {
+        console.log('Image picker canceled or no image selected');
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+    }
+  };
+
+  const uploadImage = async () => {
+    if (!image) return null;
+    
+    try {
+      const response = await fetch(image);
+      const blob = await response.blob();
+    
+      const ref = firebase.storage().ref().child(`profile_pictures/${firebase.auth().currentUser.uid}`);
+      const uploadTask = ref.put(blob);
+      console.log('uploading');
+    
+      return new Promise((resolve, reject) => {
+        uploadTask.on(
+          'state_changed',
+          (snapshot) => {
+            console.log(`Progress: ${(snapshot.bytesTransferred / snapshot.totalBytes) * 100}%`);
+          },
+          (error) => {
+            console.error('Error uploading image:', error);
+            reject(error);
+          },
+          async () => {
+            const downloadURL = await ref.getDownloadURL();
+            console.log('Download URL:', downloadURL);
+            resolve(downloadURL);
+          }
+        );
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return null;
+    }
+  };
+  
+  
   const handleSave = async () => {
-    const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
+    setLoading(true);
+    const userRef = firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid);
 
     const updatedData = {
       firstName,
@@ -47,14 +119,26 @@ const EditAccount = () => {
     };
 
     try {
-      await userRef.update(updatedData);
       if (password) {
         const user = firebase.auth().currentUser;
         await user.updatePassword(password);
       }
+
+      if (image) {
+        const imageURL = await uploadImage();
+        if (imageURL) {
+          updatedData.profilePicture = imageURL;
+        } else {
+          console.error('Image upload failed, no URL obtained');
+        }
+      }
+
+      await userRef.update(updatedData);
       navigation.goBack();
     } catch (error) {
       console.error('Error updating user data:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -75,9 +159,19 @@ const EditAccount = () => {
 
         <Title>Bewerk profiel</Title>
 
-        <Input
-          placeholder="Profiel foto"
-        />
+        <Pressable onPress={pickImage}>
+          {image ? (
+            <>
+              <Image source={{ uri: image }} style={styles.profileImage} />
+              <P style={styles.float}>Bewerk</P>
+            </>
+
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <MaterialIcons name="add-a-photo" size={40} color="#4E598C" />
+            </View>
+          )}
+        </Pressable>
 
         <Input
           placeholder={firstName}
@@ -137,5 +231,27 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  float: {
+    position: 'absolute',
+    top: 65,
+    left: 45,
+    color: '#000'
+  },
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 80,
+    marginBottom: 20,
+    opacity: 0.5,
+  },
+  imagePlaceholder: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: '#E1E2E6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
 });

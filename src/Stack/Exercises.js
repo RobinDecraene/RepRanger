@@ -144,7 +144,7 @@ const Exercises = () => {
             >
               <Image
                 style={styles.exercisesImg}
-                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image}.png?alt=media`}}
+                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercise.image}.png?alt=media`}}
               />
               <View style={styles.cardInfo}>
                 <SmallTitle style={styles.cardTitle}>{exercise.name}</SmallTitle>
@@ -200,7 +200,9 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   card: {
-    width: '48%'
+    width: '48%',
+    minHeight: 280,
+    justifyContent: 'space-between'
   },
   exercisesImg: {
     width: 140,
@@ -208,14 +210,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain'
   },
   cardInfo: {
-    backgroundColor: 'rgba(235, 236, 242, 0.5)',
-    position: 'absolute',
     width: '100%',
-    bottom: 10,
-    left: 15,
   },
   cardTitle: {
-    marginBottom: 0
+    marginBottom: 0,
   },
   cardHeart: {
     flexDirection: 'row',

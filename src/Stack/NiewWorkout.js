@@ -157,7 +157,7 @@ const NiewWorkout = () => {
                 <View style={styles.images}>
                   <Image
                     style={styles.exercisesImg}
-                    source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${workout.image}.png?alt=media`}}
+                    source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/big_exercises%2F${workout.image}.png?alt=media`}}
                   />
                 </View>
 

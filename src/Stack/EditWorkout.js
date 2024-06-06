@@ -94,7 +94,7 @@ const EditWorkout = () => {
             style={styles.card}>
               <Image
                 style={styles.exercisesImg}
-                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image}.png?alt=media`}}
+                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercise.image}.png?alt=media`}}
               />
 
               <P style={styles.cardName}>{exercise.name}</P>

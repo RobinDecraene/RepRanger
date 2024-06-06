@@ -9,7 +9,6 @@ import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
-import { SmallText } from '../../Components/SmallText';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { Title } from '../../Components/Title';
 
@@ -114,7 +113,7 @@ const Account = () => {
       
         <Image
           style={styles.profileImg}
-          source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/no-profil.png?alt=media`}}
+          source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/profile_pictures%2Fno-profil.png?alt=media`}}
         />
 
         <SmallTitle>Workout historiek</SmallTitle>
@@ -128,7 +127,7 @@ const Account = () => {
             >
               <Image
                 style={styles.exercisesImg}
-                source={require('../../assets/images/bench-press-up.png')}
+                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${history.workout.image_small}.png?alt=media`}}
               />
               <P style={styles.exercisesName}>{history.workout.name} {formatDate(history.date)}</P>
               <MaterialIcons name="keyboard-arrow-right" size={40} color="#4E598C" />

@@ -109,7 +109,7 @@ const Workout = () => {
           >
             <Image
               style={styles.exercisesImg}
-              source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${workout.workouts.image}.png?alt=media`}}
+              source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/big_exercises%2F${workout.workouts.image}.png?alt=media`}}
             />
             <View style={styles.cardInfo}>
               <View>

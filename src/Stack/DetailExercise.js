@@ -28,7 +28,7 @@ const DetailExercise = () => {
         <Card style={styles.imagesCard}>
           <Image
             style={styles.exercisesImg}
-            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image_big}.png?alt=media`}}
+            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/big_exercises%2F${exercise.image_big}.png?alt=media`}}
           />
         </Card>
 
@@ -45,7 +45,8 @@ const DetailExercise = () => {
           <SmallTitle>Gebruikte spieren</SmallTitle>
           <Image
             style={styles.muscles}
-              source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/${exercise.image_muscle}.png?alt=media` }}
+            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/muscles%2F${exercise.image_muscle}.png?alt=media` }}
+
             />
         </Card>
 
