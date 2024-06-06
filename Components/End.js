@@ -1,4 +1,6 @@
 import React from 'react';
+import { useNavigation } from '@react-navigation/native';
+
 import { StyleSheet, View, Image } from 'react-native';
 import { Title } from './Title';
 import { P } from './Text';
@@ -6,7 +8,8 @@ import { Card } from './Card';
 import { Button } from './Button';
 import { SmallText } from './SmallText';
 
-const End = ({ elapsedTime, handleStopWorkout }) => {
+const End = ({ elapsedTime }) => {
+  const navigation = useNavigation();
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -30,7 +33,7 @@ const End = ({ elapsedTime, handleStopWorkout }) => {
         </View>
       </Card>
 
-      <Button onPress={handleStopWorkout}>Mijn workouts</Button>
+      <Button onPress={() => navigation.navigate('Workout')}>Mijn workouts</Button>
     </View>
   );
 };

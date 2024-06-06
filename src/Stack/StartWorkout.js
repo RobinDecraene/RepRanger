@@ -54,9 +54,16 @@ const StartWorkout = () => {
     setIsTimerRunning(true);
   }, []);
 
+  useEffect(() => {
+    if (isEnd) {
+      handleEndWorkout();
+    }
+  }, [isEnd]);
+  
+
   const handleNextExercise = () => {
     const isAnyInputEmpty = currentExerciseData.some(set => set.reps === '' || set.kg === '');
-  
+    
     if (isAnyInputEmpty) {
       Alert.alert(
         "Lege set",
@@ -64,18 +71,19 @@ const StartWorkout = () => {
       );
       return;
     }
-  
+    
     const currentExercise = exercises[currentExerciseIndex];
     
     setWorkoutData(prevData => [
       ...prevData,
       { exerciseName: currentExercise.name, sets: currentExerciseData }
     ]);
-  
+    
     setCurrentExerciseIndex(prevIndex => prevIndex + 1);
-    setCurrentExerciseData([]);
+    setCurrentExerciseData(Array.from({ length: selectedSets }, () => ({ reps: '', kg: '' })));
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   };
+  
   
 
   const handleEndWorkout = async () => {
@@ -102,7 +110,6 @@ const StartWorkout = () => {
         date: firebase.firestore.FieldValue.serverTimestamp()
       });
       console.log('Workout added to history');
-      navigation.navigate('Workout');
     } catch (error) {
       console.error('Error adding workout to history:', error);
     }
@@ -131,7 +138,7 @@ const StartWorkout = () => {
   return (
     <ScrollView ref={scrollViewRef} style={styles.base}>
       {isEnd ? (
-        <End elapsedTime={elapsedTime} handleStopWorkout={handleEndWorkout} />
+        <End elapsedTime={elapsedTime} />
       ) : (
         <View style={styles.container}>
           {currentExercise && (
