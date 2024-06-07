@@ -165,14 +165,18 @@ const StartWorkout = () => {
           {currentExercise && (
             <>
               <View style={styles.title}>
-                <Title>{currentExercise.name}</Title>
+                <Title style={styles.titleMargin}>{currentExercise.name}</Title>
                 <P>{formatTime(elapsedTime)}</P>
               </View>
               <Pressable
                 onPress={() => setModalVisible(true)}
                 style={styles.icon}
               >
-                <MaterialCommunityIcons name="help-circle" color="#4E598C" size={25} />
+                <Image
+                  style={styles.question}
+                  source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/ranger%2Fquestion.png?alt=media' }}
+                />
+                
               </Pressable>
 
               <Modal
@@ -202,7 +206,7 @@ const StartWorkout = () => {
                       <SmallTitle>Gebruikte spieren</SmallTitle>
                       <Image
                         style={styles.muscles}
-                          source={require('../../assets/images/used-muscles.png')}
+                        source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/muscles%2F${currentExercise.image_muscle}.png?alt=media` }}
                         />
                     </Card>
                     
@@ -328,7 +332,16 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
   title: {
-    alignItems: 'center'
+    alignItems: 'center',
+    maxWidth: '70%'
+  },
+  titleMargin: {
+    marginBottom: 10
+  },
+  question: {
+    width: 50,
+    height: 50,
+    resizeMode: 'contain'
   },
   imagesCard: {
     flexDirection: 'row',
@@ -439,7 +452,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: 55,
+    top: 40,
     right: 20
   },
 });

@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   exercisesImg: {
-    width: 300,
-    height: 160,
+    width: 330,
+    height: 180,
     resizeMode: 'contain'
   },
   muscles: {
