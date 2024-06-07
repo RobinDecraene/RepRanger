@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     borderColor: '#FCAF58',
     padding: 5,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
     backgroundColor: 'transparent'
   },
   setsText: {
@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FCAF58',
     borderRadius: 40,
     padding: 5,
-    paddingLeft: 20,
-    paddingRight: 20,
+    paddingLeft: 15,
+    paddingRight: 15,
   },
   setsPressedText: {
     color: '#FAFAFC'

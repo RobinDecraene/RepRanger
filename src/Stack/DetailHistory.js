@@ -15,7 +15,7 @@ import { SmallTitle } from '../../Components/SmallTitle';
 const DetailHistory = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { history, workout } = route.params;
+  const { history, workout, exercises } = route.params;
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -53,9 +53,9 @@ const DetailHistory = () => {
       console.error('User not authenticated');
       return;
     }
-  
+
     const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('history').doc(history.id);
-  
+
     try {
       await userRef.delete();
       navigation.goBack();
@@ -63,7 +63,6 @@ const DetailHistory = () => {
       console.error('Error removing workout:', error);
     }
   };
-  
 
   return (
     <ScrollView style={styles.base}>
@@ -87,11 +86,9 @@ const DetailHistory = () => {
           <SmallText>{formatDate(history.date)}</SmallText>
         </View>
 
-
-
         <Card style={styles.numbersCard}>
           <View style={styles.numbers}>
-            <P style={styles.orange}>6</P>
+            <P style={styles.orange}>{exercises.length}</P>
             <SmallText style={styles.orange}>Oef</SmallText>
           </View>
           <View style={styles.numbers}>
@@ -99,24 +96,21 @@ const DetailHistory = () => {
             <SmallText style={styles.orange}>Min</SmallText>
           </View>
         </Card>
-        
-        {history.exercisesArray.map((exercises, index) => (
-        <Card key={index}>
-          <SmallTitle>{exercises.exerciseName}</SmallTitle>
 
-          {exercises.sets.map((set, idx) => (
-            <View style={styles.sets} key={idx}>
-              <SmallTitle style={styles.set}>Set {idx + 1}</SmallTitle>
-              <View style={styles.setInfo}>
-                <P>{set.reps} reps</P>
-                <P>{set.kg}kg</P>
+        {history.exercisesArray.map((exercises, index) => (
+          <Card key={index}>
+            <SmallTitle>{exercises.exerciseName}</SmallTitle>
+            {exercises.sets.map((set, idx) => (
+              <View style={styles.sets} key={idx}>
+                <SmallTitle style={styles.set}>Set {idx + 1}</SmallTitle>
+                <View style={styles.setInfo}>
+                  <P>{set.reps} reps</P>
+                  <P>{set.kg}kg</P>
+                </View>
               </View>
-             
-            </View>
-          ))}
-         
-        </Card>
-      ))}
+            ))}
+          </Card>
+        ))}
       </View>
     </ScrollView>
   );
@@ -168,7 +162,7 @@ const styles = StyleSheet.create({
   numbersCard: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginBottom: 40,
     marginTop: 20,
     backgroundColor: '#FEEDD9'

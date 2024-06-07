@@ -38,6 +38,7 @@ const Account = () => {
           setUser(userDoc.data());
           const historyCollection = await userRef.collection('history').get();
           const historyData = await Promise.all(historyCollection.docs.map(async doc => {
+            const historyId = doc.id;
             const historyItem = doc.data();
             const historyRef = historyItem.workout;
 
@@ -52,7 +53,7 @@ const Account = () => {
                 });
                 const exercises = await Promise.all(exercisesPromises);
 
-                return { ...historyItem, workout: workoutData, exercises };
+                return { id: historyId, ...historyItem, workout: workoutData, exercises };
               } else {
                 console.error('Workout data or exercises array is invalid');
                 return null;
@@ -121,7 +122,7 @@ const Account = () => {
           .map((history, index) => (
             <Card
               key={index}
-              onPress={() => navigation.navigate('DetailHistory', { history: history, workout: history.workout })}
+              onPress={() => navigation.navigate('DetailHistory', { history: history, workout: history.workout, exercises: history.workout.exercises })}
               style={styles.card}
             >
               <Image

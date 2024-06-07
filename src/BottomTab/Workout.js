@@ -110,8 +110,8 @@ const Workout = () => {
             <ButtonLink onPress={() => navigation.navigate('NiewWorkout')}>Voeg een toe!</ButtonLink>
             
             <Image
-            style={styles.ranger}
-              source={require('../../assets/images/ranger-head.png')}
+              style={styles.ranger}
+              source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/ranger%2Franger-head.png?alt=media' }}
             />
           </Card>
 
@@ -203,8 +203,9 @@ const styles = StyleSheet.create({
   ranger: {
     position: 'absolute',
     width: 100,
-    height: 300,
+    height: 100,
     resizeMode: 'contain',
-    left: -10,
+    left: -5,
+    bottom: -50
   },
 });

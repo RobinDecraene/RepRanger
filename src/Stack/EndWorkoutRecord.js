@@ -16,7 +16,7 @@ const EndWorkoutRecord = () => {
       <View style={styles.container}>
       <Image
           style={styles.ranger}
-          source={require('../../assets/images/trophy.png')}
+
         />
         <Title>Nieuw record</Title>
         <P>Je hebt een nieuw record behaald!</P>

@@ -18,7 +18,10 @@ const End = ({ elapsedTime, handleEndWorkout }) => {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.ranger} source={require('../assets/images/ranger-hands-up.png')} />
+      <Image
+        style={styles.ranger}
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/ranger%2Franger-hands-up.png?alt=media' }}
+        />
       <Title>Goed gedaan</Title>
       <P>Je hebt een volledige workout gedaan!</P>
 
@@ -72,7 +75,7 @@ const styles = StyleSheet.create({
   numbersCard: {
     alignItems: 'center',
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginBottom: 40,
     marginTop: 20
   },

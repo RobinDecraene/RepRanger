@@ -47,8 +47,8 @@ const Login = () => {
         secureTextEntry={true}
       />
 
-      <Button onPress={()=>loginUser(email,password)}>Log in</Button>
-      <ButtonLink onPress={()=>navigation.navigate('Registration')}>Geen account? Regustreer u hier</ButtonLink>
+      <Button onPress={()=>loginUser(email,password)} style={styles.button}>Log in</Button>
+      <ButtonLink onPress={()=>navigation.navigate('Registration')} style={styles.margin}>Geen account? Regustreer u hier</ButtonLink>
       <ButtonLink onPress={()=>{forgetPassword()}}>Wachtwoord vergeten?</ButtonLink>
     </View>
   )
@@ -66,4 +66,11 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingTop: 20,
   },
+  button: {
+    marginBottom: 10,
+    marginTop: 20
+  },
+  margin: {
+    marginBottom: 5
+  }
 });

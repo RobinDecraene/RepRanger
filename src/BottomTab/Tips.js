@@ -57,7 +57,7 @@ const Tips = () => {
           <P style={styles.tipText}>{randomTip.tip}</P>
           <Image
             style={styles.ranger}
-            source={require('../../assets/images/ranger-head.png')}
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/ranger%2Franger-head.png?alt=media' }}
           />
         </Card>
         <SmallTitle>Veel gestelde vragen</SmallTitle>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     position: 'absolute',
     bottom: -50,
-    left: -10
+    left: -5
   },
   tip: {
     width: '100%',

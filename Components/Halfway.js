@@ -20,10 +20,10 @@ const Halfway = ({ elapsedTime, handleNextExercise, handleStopWorkout, halfwayEx
         <Title>Halverwegen</Title>
         <P>{formatTime(elapsedTime)}</P>
       </View>
-      <Image style={styles.ranger} source={require('../assets/images/ranger.png')} />
+      <Image style={styles.ranger}  />
       <P>Doe zo verder je bent er bijna!</P>
       <Card onPress={handleNextExercise} style={styles.nextExercises}>
-        <Image style={styles.nextExercisesImg} source={require('../assets/images/bench-press-up.png')} />
+        <Image style={styles.nextExercisesImg} />
         <View>
           <P>Volgende oefening</P>
         </View>

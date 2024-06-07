@@ -13,7 +13,7 @@ const Start = () => {
     <View style={styles.container}>
       <Image
         style={styles.img}
-        source={require('../../assets/images/ranger.png')}
+        source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/ranger%2Franger.png?alt=media' }}
       />
       <Title style={styles.title}>RepRanger</Title>
       <Button onPress={() => navigation.navigate('Login')}>Log in</Button>

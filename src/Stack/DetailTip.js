@@ -45,7 +45,7 @@ const DetailTip = () => {
 
   const scrollToTop = () => {
     if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({ y: 0, animated: true });
+      scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
     }
   };
 
@@ -68,7 +68,10 @@ const DetailTip = () => {
 
         <Card style={styles.exerciseInfo}>
           <P>{description}</P>
-          <Image style={styles.ranger} source={require('../../assets/images/ranger-head.png')} />
+          <Image
+            style={styles.ranger}
+            source={{ uri: 'https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/ranger%2Franger-head.png?alt=media' }}
+          />
         </Card>
 
         <SmallTitle style={styles.smallTitle}>Andere vragen</SmallTitle>
@@ -99,7 +102,7 @@ const styles = StyleSheet.create({
     marginBottom: 40
   },
   title: {
-    width: '85%'
+    width: '80%'
   },
   icon: {
     position: 'absolute',
@@ -112,7 +115,7 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     position: 'absolute',
     bottom: -50,
-    left: -10
+    left: -5
   },
   exerciseInfo: {
     width: '100%',
