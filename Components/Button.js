@@ -42,7 +42,7 @@ export function ButtonLink({ children, onPress, style }) {
 
   return (
     <TouchableOpacity style={style} onPress={handlePress}>
-      <P style={{ color: "#FCAF58", fontSize: 20 }}>{ children }</P>
+      <P style={{ color: "#FCAF58", fontSize: 20, textDecorationLine: 'underline' }}>{ children }</P>
     </TouchableOpacity>
   );
 }
@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
     paddingLeft: 35,
     paddingRight: 35,
     borderRadius: 50,
-    marginBottom: 10
+    marginBottom: 10,
+
   },
   buttonSecondary: {
     backgroundColor:'transparent',
