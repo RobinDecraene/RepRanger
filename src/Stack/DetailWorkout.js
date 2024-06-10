@@ -1,21 +1,70 @@
-import React from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MaterialIcons } from '@expo/vector-icons';
+import { firebase } from '../../Firebase';
 
-import { Pressable, StyleSheet, View, Image } from 'react-native';
+import { Pressable, StyleSheet, View, Image, ActivityIndicator } from 'react-native';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { Title } from '../../Components/Title';
 
-
 const DetailWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { name, exercises, source, workout, id } = route.params;
-  
+  const { id } = route.params;
+  const [loading, setLoading] = useState(true);
+  const [workoutData, setWorkoutData] = useState({});
+
+  const fetchWorkoutData = async () => {
+    const db = firebase.firestore();
+    try {
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        const userRef = db.collection('users').doc(currentUser.uid);
+        const savedWorkoutRef = userRef.collection('saved_workouts').doc(id);
+        const savedWorkoutDoc = await savedWorkoutRef.get();
+        const workoutData = savedWorkoutDoc.data();
+
+        const workoutDoc = await db.collection('workouts').doc(id).get();
+        const workoutDetails = workoutDoc.data();
+
+        const exercisesPromises = (workoutData.exercisesSaved || []).map(async exerciseRef => {
+          const exerciseDoc = await exerciseRef.get();
+          return exerciseDoc.data();
+        });
+
+        const exercises = await Promise.all(exercisesPromises);
+
+        setWorkoutData({ ...workoutDetails, exercises });
+      }
+    } catch (error) {
+      console.error('Error fetching workout document:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkoutData();
+  }, [id]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchWorkoutData();
+    }, [id])
+  );
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4E598C" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -26,57 +75,44 @@ const DetailWorkout = () => {
           <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
-        <Title>{name}</Title>
+        <Title>{workoutData.name}</Title>
 
-        {source === 'Workout' ? (
-          <Pressable
-            onPress={() => navigation.navigate('EditWorkout', { myExercises: exercises, id: id, name: name })}
-            style={styles.iconRight}
-          >
-            <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
-          </Pressable>
-        ): (
-          <Pressable
-            style={styles.iconRight}
-          >
-            <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
-          </Pressable>
-        )}
+        <Pressable
+          onPress={() => navigation.navigate('EditWorkout', { myExercises: workoutData.exercises, id: id, name: workoutData.name })}
+          style={styles.iconRight}
+        >
+          <MaterialCommunityIcons name="cog" color='#4E598C' size={30} />
+        </Pressable>
 
-        {exercises.map((exercise, index) => (
+        {workoutData.exercises && workoutData.exercises.map((exercise, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailExercise' , { exercise: exercise })}
+            onPress={() => navigation.navigate('DetailExercise', { exercise: workoutData.exercises })}
             style={styles.card}>
-              <Image
-                style={styles.exercisesImg}
-                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercise.image}.png?alt=media`}}
-              />
+            <Image
+              style={styles.exercisesImg}
+              source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercise.image}.png?alt=media` }}
+            />
 
-              <P style={styles.cardName}>{exercise.name}</P>
+            <P style={styles.cardName}>{exercise.name}</P>
 
-              <MaterialIcons name="keyboard-arrow-right" size={35} color="#4E598C" />
+            <MaterialIcons name="keyboard-arrow-right" size={35} color="#4E598C" />
           </Card>
         ))}
 
-        {source === 'Workout' ? (
-          <Button
-            onPress={() => navigation.navigate('StartWorkout', { exercises: exercises, workout })}
-            style={styles.button}
-          >
-            Start workout
-          </Button>
-        ): (
-        <></>
-        )}
-
+        <Button
+          onPress={() => navigation.navigate('StartWorkout', { exercises: workoutData.exercises, workout: workoutData })}
+          style={styles.button}
+        >
+          Start workout
+        </Button>
 
       </View>
     </ScrollView>
   );
 }
 
-export default DetailWorkout
+export default DetailWorkout;
 
 const styles = StyleSheet.create({
   base: {
@@ -116,5 +152,10 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20
-  }
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

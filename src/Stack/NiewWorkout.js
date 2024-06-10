@@ -152,7 +152,7 @@ const NiewWorkout = () => {
             return (
               <Card
                 key={index}
-                onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.name, exercises: workout.exercises })}
+                onPress={() => navigation.navigate('BaseDetailWorkout', { id: workout.id })}
               >
                 <View style={styles.images}>
                   <Image

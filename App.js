@@ -16,6 +16,7 @@ import Tips from './src/BottomTab/Tips';
 import Account from './src/BottomTab/Account';
 
 import DetailWorkout from './src/Stack/DetailWorkout';
+import BaseDetailWorkout from './src/Stack/BaseDetailWorkout';
 import NiewWorkout from './src/Stack/NiewWorkout';
 import EditWorkout from './src/Stack/EditWorkout';
 import StartWorkout from './src/Stack/StartWorkout';
@@ -128,6 +129,10 @@ function StackNavigatorWorkout() {
       <Stack.Screen
         name='DetailExercise'
         component={DetailExercise}
+      />
+      <Stack.Screen
+        name='BaseDetailWorkout'
+        component={BaseDetailWorkout}
       />
       <Stack.Screen
         name='NiewWorkout'

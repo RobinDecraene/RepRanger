@@ -9,7 +9,7 @@ import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
 import { SmallText } from '../../Components/SmallText';
 import { P } from '../../Components/Text';
-import { Button, ButtonLink } from '../../Components/Button';
+import { ButtonLink } from '../../Components/Button';
 
 const Workout = () => {
   const navigation = useNavigation();
@@ -135,7 +135,7 @@ const Workout = () => {
           myWorkoutData.map((workout, index) => (
             <Card
               key={index}
-              onPress={() => navigation.navigate('DetailWorkout', { id: workout.id, name: workout.workouts.name, exercises: workout.exercises, source: 'Workout', workout: workout })}
+              onPress={() => navigation.navigate('DetailWorkout', { id: workout.id })}
             >
               <Image
                 style={styles.exercisesImg}

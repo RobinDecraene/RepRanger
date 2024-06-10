@@ -23,7 +23,6 @@ const Exercises = () => {
 
   useEffect(() => {
     const fetchExercisesAndMuscles = async () => {
-      setLoading(true);
       try {
         const exercisesCollection = await firebase.firestore().collection('exercises').get();
         const exercisesData = await Promise.all(
