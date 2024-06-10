@@ -3,7 +3,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from '../../Firebase';
 
-import { Image, Pressable, StyleSheet, View, ActivityIndicator, ScrollView } from 'react-native';
+import { Image, Pressable, StyleSheet, View, ActivityIndicator, ScrollView, Alert } from 'react-native';
 import { Title } from '../../Components/Title';
 import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
@@ -68,6 +68,7 @@ const Workout = () => {
     }, [])
   );
 
+
   const removeWorkout = async (workoutId) => {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
@@ -83,6 +84,21 @@ const Workout = () => {
     } catch (error) {
       console.error('Error removing workout:', error);
     }
+  };
+
+  const confirmDeleteWorkout = (workoutId) => {
+    Alert.alert(
+      "Verwijder Workout",
+      "Weet je zeker dat je deze workout wilt verwijderen?",
+      [
+        {
+          text: "Annuleren",
+          style: "cancel"
+        },
+        { text: "Verwijder", onPress: () => removeWorkout(workoutId) }
+      ],
+      { cancelable: false }
+    );
   };
 
   if (loading) {
@@ -130,7 +146,7 @@ const Workout = () => {
                   <SmallTitle style={styles.cardInfoTitle}>{workout.workouts.name}</SmallTitle>
                   <SmallText>{workout.muscleGroupName}</SmallText>
                 </View>
-                <Pressable onPress={() => removeWorkout(workout.id)}>
+                <Pressable onPress={() => confirmDeleteWorkout(workout.id)}>
                   <MaterialCommunityIcons name="delete" color='#4E598C' size={30} />
                 </Pressable>
               </View>

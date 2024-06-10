@@ -38,7 +38,6 @@ const DetailHistory = () => {
       [
         {
           text: "Annuleren",
-          onPress: () => console.log("Cancel Pressed"),
           style: "cancel"
         },
         { text: "Verwijder", onPress: () => deleteWorkout() }

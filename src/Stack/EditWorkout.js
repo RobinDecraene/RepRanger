@@ -50,11 +50,6 @@ const EditWorkout = () => {
   );
 
   const removeExercise = async (workoutId, exerciseRef) => {
-    if (exerciseList.length <= 4) {
-      alert('Je moet minstens 4 oefeningen hebben in je workout.');
-      return;
-    }
-
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
       console.error('User not authenticated');
@@ -74,6 +69,25 @@ const EditWorkout = () => {
     } catch (error) {
       console.error('Error removing exercise:', error);
     }
+  };
+
+  const confirmDeleteExercise = (workoutId, exerciseRef) => {
+    if (exerciseList.length <= 4) {
+      alert('Je moet minstens 4 oefeningen hebben in je workout.');
+      return;
+    }
+    Alert.alert(
+      "Verwijder oefening",
+      "Weet je zeker dat je deze oefening wilt verwijderen?",
+      [
+        {
+          text: "Annuleren",
+          style: "cancel"
+        },
+        { text: "Verwijder", onPress: () => removeExercise(workoutId, exerciseRef) }
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
@@ -99,7 +113,7 @@ const EditWorkout = () => {
 
               <P style={styles.cardName}>{exercise.name}</P>
 
-              <Pressable onPress={() => removeExercise(id, exercise.id)}>
+              <Pressable onPress={() => confirmDeleteExercise(id, exercise.id)}>
                 <MaterialCommunityIcons name="delete" color="#4E598C" size={25} />
               </Pressable>
           </Card>
