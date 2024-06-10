@@ -25,6 +25,7 @@ const StartWorkout = () => {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [endTime, setEndTime] = useState(null);
   const [selectedSets, setSelectedSets] = useState(2);
   const [workoutData, setWorkoutData] = useState([]);
   const [currentExerciseData, setCurrentExerciseData] = useState([]);
@@ -54,6 +55,12 @@ const StartWorkout = () => {
     setIsTimerRunning(true);
   }, []);
 
+  useEffect(() => {
+    if (currentExerciseIndex === exercises.length) {
+      setIsTimerRunning(false);
+      setEndTime(elapsedTime);
+    }
+  }, [currentExerciseIndex, elapsedTime]);
   
 
   const handleNextExercise = () => {
@@ -108,33 +115,33 @@ const StartWorkout = () => {
   
   const handleEndWorkout = async () => {
     setIsTimerRunning(false);
-
+  
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
       return;
     }
-
+  
     const userRef = firebase.firestore().collection('users').doc(currentUser.uid).collection('history');
-
+  
     const finalWorkoutData = [
       ...workoutData,
       { exerciseName: exercises[currentExerciseIndex]?.name, sets: currentExerciseData }
     ].filter(item => item.exerciseName);
-
+  
     try {
       await userRef.add({
         workout: firebase.firestore().doc(`workouts/${workout.id}`),
         exercisesArray: finalWorkoutData,
-        elapsedTime,
+        elapsedTime: endTime,
         date: firebase.firestore.FieldValue.serverTimestamp()
       });
-      console.log('Workout added to history');
     } catch (error) {
       console.error('Error adding workout to history:', error);
     }
-
+  
     navigation.navigate('Workout');
   };
+  
 
   const handleStopWorkout = () => {
     setIsTimerRunning(false);
@@ -159,7 +166,7 @@ const StartWorkout = () => {
   return (
     <ScrollView ref={scrollViewRef} style={styles.base}>
       {isEnd ? (
-        <End elapsedTime={elapsedTime} handleEndWorkout = {handleEndWorkout} />
+        <End elapsedTime={endTime} handleEndWorkout = {handleEndWorkout} exercises={exercises} />
       ) : (
         <View style={styles.container}>
           {currentExercise && (

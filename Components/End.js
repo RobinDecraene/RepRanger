@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
 
 import { StyleSheet, View, Image } from 'react-native';
 import { Title } from './Title';
@@ -8,8 +7,7 @@ import { Card } from './Card';
 import { Button } from './Button';
 import { SmallText } from './SmallText';
 
-const End = ({ elapsedTime, handleEndWorkout }) => {
-  const navigation = useNavigation();
+const End = ({ elapsedTime, handleEndWorkout, exercises }) => {
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -27,7 +25,7 @@ const End = ({ elapsedTime, handleEndWorkout }) => {
 
       <Card style={styles.numbersCard}>
         <View style={styles.numbers}>
-          <P>6</P>
+          <P>{exercises.length}</P>
           <SmallText>Oef</SmallText>
         </View>
         <View style={styles.numbers}>
