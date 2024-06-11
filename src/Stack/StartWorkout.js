@@ -15,12 +15,11 @@ import { Set, SetPressed } from '../../Components/Sets';
 import { ButtonSecondary } from '../../Components/Button';
 import { TextInput } from 'react-native-gesture-handler';
 import End from '../../Components/End';
-import Halfway from '../../Components/Halfway';
 
 const StartWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { exercises, workout } = route.params;
+  const { exercises, workout, id } = route.params;
 
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const [isTimerRunning, setIsTimerRunning] = useState(false);
@@ -130,7 +129,7 @@ const StartWorkout = () => {
   
     try {
       await userRef.add({
-        workout: firebase.firestore().doc(`workouts/${workout.id}`),
+        workout: firebase.firestore().doc(`workouts/${id}`),
         exercisesArray: finalWorkoutData,
         elapsedTime: endTime,
         date: firebase.firestore.FieldValue.serverTimestamp()

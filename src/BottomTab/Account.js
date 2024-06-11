@@ -55,11 +55,9 @@ const Account = () => {
 
                 return { id: historyId, ...historyItem, workout: workoutData, exercises };
               } else {
-                console.error('Workout data or exercises array is invalid');
                 return null;
               }
             } else {
-              console.error('Invalid workout reference');
               return null;
             }
           }));
@@ -86,7 +84,6 @@ const Account = () => {
       await firebase.auth().signOut();
       navigation.navigate('Start');
     } catch (error) {
-      console.error('Error logging out:', error);
     }
   };
 
@@ -113,7 +110,7 @@ const Account = () => {
       
         <Image
           style={styles.profileImg}
-          source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/profile_pictures%2Fno-profil.png?alt=media`}}
+          source={{ uri: user.profilePicture || 'https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/profile_pictures%2Fno-profil.png?alt=media' }}
         />
 
         <SmallTitle>Workout historiek</SmallTitle>

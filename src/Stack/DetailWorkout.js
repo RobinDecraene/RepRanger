@@ -87,7 +87,7 @@ const DetailWorkout = () => {
         {workoutData.exercises && workoutData.exercises.map((exercise, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailExercise', { exercise: workoutData.exercises })}
+            onPress={() => navigation.navigate('DetailExercise', { exercise: exercise })}
             style={styles.card}>
             <Image
               style={styles.exercisesImg}
@@ -101,7 +101,7 @@ const DetailWorkout = () => {
         ))}
 
         <Button
-          onPress={() => navigation.navigate('StartWorkout', { exercises: workoutData.exercises, workout: workoutData })}
+          onPress={() => navigation.navigate('StartWorkout', { exercises: workoutData.exercises, workout: workoutData, id: id })}
           style={styles.button}
         >
           Start workout

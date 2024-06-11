@@ -43,7 +43,7 @@ const EditAccount = () => {
     const requestPermission = async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        alert('Sorry, we need camera roll permissions to make this work!');
+        alert('Sorry, we hebben toegang nodig tot uw camerarol voor dit te laten werken!');
       }
     };
 
@@ -63,10 +63,7 @@ const EditAccount = () => {
 
       if (!result.canceled && result.assets && result.assets.length > 0) {
         setImage(result.assets[0].uri);
-        console.log('Image URI:', result.assets[0].uri);
-      } else {
-        console.log('Image picker canceled or no image selected');
-      }
+      } 
     } catch (error) {
       console.error('Error picking image:', error);
     }
@@ -81,7 +78,6 @@ const EditAccount = () => {
     
       const ref = firebase.storage().ref().child(`profile_pictures/${firebase.auth().currentUser.uid}`);
       const uploadTask = ref.put(blob);
-      console.log('uploading');
     
       return new Promise((resolve, reject) => {
         uploadTask.on(
@@ -95,7 +91,6 @@ const EditAccount = () => {
           },
           async () => {
             const downloadURL = await ref.getDownloadURL();
-            console.log('Download URL:', downloadURL);
             resolve(downloadURL);
           }
         );
