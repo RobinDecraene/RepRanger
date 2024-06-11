@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 
-import { Pressable, StyleSheet, View, Image, ScrollView, ActivityIndicator } from 'react-native';
+import { Pressable, StyleSheet, View, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import { Title } from '../../Components/Title';
 import { Set, SetPressed } from '../../Components/Sets';
 import { Card } from '../../Components/Card';
@@ -20,6 +20,7 @@ const Exercises = () => {
   const [exercises, setExercises] = useState([]);
   const [muscleData, setMuscleData] = useState([]);
   const [selectedMuscle, setSelectedMuscle] = useState('Alles');
+  const [savedExercises, setSavedExercises] = useState([]);
 
   useEffect(() => {
     const fetchExercisesAndMuscles = async () => {
@@ -31,7 +32,7 @@ const Exercises = () => {
             const muscleGroupDoc = await data.muscle_group.get();
             const muscleGroupName = muscleGroupDoc.data().name;
             return {
-              id: doc.ref,
+              id: doc.ref.id,
               ...data,
               muscleGroupName,
             };
@@ -43,6 +44,17 @@ const Exercises = () => {
 
         setExercises(exercisesData);
         setMuscleData(muscleGroupsData);
+
+        const currentUser = firebase.auth().currentUser;
+        if (currentUser) {
+          const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
+          const savedExercisesRef = userRef.collection('saved_workouts').doc(id);
+          const savedDoc = await savedExercisesRef.get();
+
+          if (savedDoc.exists) {
+            setSavedExercises(savedDoc.data().exercisesSaved || []);
+          }
+        }
       } catch (error) {
         console.error('Error fetching data: ', error);
       } finally {
@@ -51,40 +63,74 @@ const Exercises = () => {
     };
 
     fetchExercisesAndMuscles();
-  }, []);
+  }, [id]);
 
-  const toggleSavedExercise = async (exerciseRef, isSaved) => {
+  const toggleSavedExercise = async (exerciseId, isSaved) => {
     const currentUser = firebase.auth().currentUser;
     if (!currentUser) {
       console.error('User not authenticated');
       return;
     }
-
+  
     const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
     const savedExercisesRef = userRef.collection('saved_workouts').doc(id);
-
+  
     try {
       const savedDoc = await savedExercisesRef.get();
       const existingExercises = savedDoc.exists ? savedDoc.data().exercisesSaved || [] : [];
-
+  
+      const exerciseRef = firebase.firestore().collection('exercises').doc(exerciseId);
+  
+      let updatedExercises;
+  
       if (isSaved) {
-        const updatedExercises = existingExercises.filter(ex => ex.id !== exerciseRef.id);
-        await savedExercisesRef.update({ exercisesSaved: updatedExercises });
+        updatedExercises = existingExercises.filter(ex => ex.id !== exerciseId);
       } else {
-        const updatedExercises = [...existingExercises, exerciseRef];
-        await savedExercisesRef.set({ exercisesSaved: updatedExercises }, { merge: true });
+        updatedExercises = [...existingExercises, exerciseRef];
+      }
+  
+      if (updatedExercises.length < 4 ) {
+        Alert.alert(
+          "Pas op",
+          "Je moet minstens 4 oefeningen in je workout hebben."
+        );
+        return;
       }
 
+      if ( updatedExercises.length > 8) {
+        Alert.alert(
+          "Pas op",
+          "Je mag maximum 8 oefeningen in je workout hebben",
+        );
+        return;
+      }
+  
+      if (isSaved) {
+        await savedExercisesRef.update({ exercisesSaved: updatedExercises });
+      } else {
+        await savedExercisesRef.set({ exercisesSaved: updatedExercises }, { merge: true });
+      }
+  
       setExercises(prevExercises => prevExercises.map(exercise => {
-        if (exercise.id.id === exerciseRef.id) {
+        if (exercise.id === exerciseId) {
           return { ...exercise, saved: !isSaved };
         }
         return exercise;
       }));
+  
+      setSavedExercises(savedExercises => {
+        if (isSaved) {
+          return savedExercises.filter(ex => ex.id !== exerciseId);
+        } else {
+          return [...savedExercises, exerciseRef];
+        }
+      });
     } catch (error) {
       console.error('Error toggling saved exercise:', error);
     }
   };
+  
+  
 
   const handleFilterPress = (muscleName) => {
     setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
@@ -101,6 +147,8 @@ const Exercises = () => {
       </View>
     );
   }
+
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -149,8 +197,8 @@ const Exercises = () => {
                 <SmallTitle style={styles.cardTitle}>{exercise.name}</SmallTitle>
                 <View style={styles.cardHeart}>
                   <SmallText>{exercise.muscleGroupName}</SmallText>
-                  <Pressable onPress={() => toggleSavedExercise(exercise.id, exercise.saved)}>
-                    <MaterialCommunityIcons name={exercise.saved ? "heart" : "heart-outline"} color='#4E598C' size={30} />
+                  <Pressable onPress={() => toggleSavedExercise(exercise.id, savedExercises.some(e => e.id === exercise.id))}>
+                    <MaterialCommunityIcons name={savedExercises.some(e => e.id === exercise.id) ? "heart" : "heart-outline"} color='#4E598C' size={30} />
                   </Pressable>
                 </View>
               </View>
