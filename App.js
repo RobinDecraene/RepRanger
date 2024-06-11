@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { firebase } from './Firebase';
 import { useEffect, useState } from 'react';
+import registerNNPushToken from 'native-notify';
 
 import Start from './src/Auth/Start';
 import Login from './src/Auth/Login';
@@ -204,6 +205,7 @@ function StackNavigatorAccount() {
 
 
 export default function App() {
+  registerNNPushToken(21812, 'b67eaYAE7QXOYD16dJLarM');
   return (
     <SafeAreaProvider>
       <NavigationContainer>
