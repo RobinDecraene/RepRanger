@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../Firebase';
 
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Alert } from 'react-native';
 import { Button, ButtonLink } from '../../Components/Button';
 import { Input } from '../../Components/Input';
 import { Title } from '../../Components/Title';
@@ -16,14 +16,28 @@ const Login = () => {
       try {
           await firebase.auth().signInWithEmailAndPassword(email,password);
       } catch (error) {
-          alert('Email of wachtwoord is verkeerd');
+        Alert.alert(
+          "Verkeerde inloggegevens",
+          "Je wachtwoord of email is verkeerd."
+        );
       }
   }
   
   const forgetPassword = () => {
+    if (!email) {
+      Alert.alert(
+        "Geen email",
+        "Je moet je email invullen voor je dit kan doen."
+      );
+      return;
+    }
+
     firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
-        alert('Wachtwoord reset email is verzonden!');
+      Alert.alert(
+        "Check je email",
+        "De wachtwoord reset mail is verzonden!"
+      );
     })
     .catch(error => {
         alert(error.message);
