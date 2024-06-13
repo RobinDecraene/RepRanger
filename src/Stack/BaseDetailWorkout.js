@@ -4,17 +4,19 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 
-import { Pressable, StyleSheet, View, Image } from 'react-native';
+import { Pressable, StyleSheet, View, Image, Alert } from 'react-native';
 import { P } from '../../Components/Text';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
 import { Title } from '../../Components/Title';
+
 
 const BaseDetailWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { id } = route.params;
   const [workoutData, setWorkoutData] = useState({});
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     const fetchWorkoutData = async () => {
@@ -22,54 +24,116 @@ const BaseDetailWorkout = () => {
       try {
         const workoutRef = await db.collection('workouts').doc(id).get();
         const workoutDoc = workoutRef.data();
-        
+
         const exerciseDataPromises = workoutDoc.exercises.map(async exerciseRef => {
           const exerciseSnapshot = await exerciseRef.get();
           return exerciseSnapshot.data();
         });
-        
+
         const exerciseData = await Promise.all(exerciseDataPromises);
-        
+
         setWorkoutData({ ...workoutDoc, exercises: exerciseData });
       } catch (error) {
         console.error('Error fetching workout document:', error);
       }
     };
+
+    const checkIfWorkoutIsSaved = async () => {
+      const db = firebase.firestore();
+      const currentUser = firebase.auth().currentUser;
+      if (currentUser) {
+        try {
+          const savedWorkoutRef = await db
+            .collection('users')
+            .doc(currentUser.uid)
+            .collection('saved_workouts')
+            .doc(id)
+            .get();
+
+          if (savedWorkoutRef.exists) {
+            setIsSaved(true);
+          }
+        } catch (error) {
+          console.error('Error checking saved workout:', error);
+        }
+      }
+    };
+
     fetchWorkoutData();
+    checkIfWorkoutIsSaved();
   }, [id]);
-  
-  
+
+  const deleteWorkout = async () => {
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      try {
+        const userRef = db.collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id);
+        await userRef.delete();
+        setIsSaved(false);
+      } catch (error) {
+        console.error('Error deleting saved workout:', error);
+      }
+    }
+  };
+
+  const toggleSavedWorkout = async () => {
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      try {
+        const userRef = db.collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id);
+        if (isSaved) {
+          Alert.alert(
+            "Verwijder Workout",
+            "Weet je zeker dat je deze workout wilt verwijderen?",
+            [
+              {
+                text: "Annuleren",
+                style: "cancel"
+              },
+              { text: "Verwijder", onPress: () => deleteWorkout() }
+            ],
+            { cancelable: false }
+          );
+        } else {
+          await userRef.set({ ...workoutData, id });
+          setIsSaved(true);
+        }
+      } catch (error) {
+        console.error('Error toggling saved workout:', error);
+      }
+    }
+  };
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
-        <Pressable
-          onPress={() => navigation.goBack()}
-          style={styles.icon}
-        >
+        <Pressable onPress={() => navigation.goBack()} style={styles.icon}>
           <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
 
         <Title>{workoutData.name}</Title>
 
-        <Pressable
-          style={styles.iconRight}
-        >
-          <MaterialCommunityIcons name="heart" color='#4E598C' size={30} />
+        <Pressable onPress={toggleSavedWorkout} style={styles.iconRight}>
+          <MaterialCommunityIcons
+            name={isSaved ? "heart" : "heart-outline"}
+            color="#4E598C"
+            size={30}
+          />
         </Pressable>
 
         {workoutData.exercises && workoutData.exercises.map((exercise, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailExercise' , { exercise: workoutData.exercises })}
+            onPress={() => navigation.navigate('DetailExercise', { exercise: workoutData.exercises })}
             style={styles.card}>
-              <Image
-                style={styles.exercisesImg}
-                source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercise.image}.png?alt=media`}}
-              />
-
-              <P style={styles.cardName}>{exercise.name}</P>
-
-              <MaterialIcons name="keyboard-arrow-right" size={35} color="#4E598C" />
+            <Image
+              style={styles.exercisesImg}
+              source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/exercises%2F${exercise.image}.png?alt=media` }}
+            />
+            <P style={styles.cardName}>{exercise.name}</P>
+            <MaterialIcons name="keyboard-arrow-right" size={35} color="#4E598C" />
           </Card>
         ))}
 
@@ -78,8 +142,7 @@ const BaseDetailWorkout = () => {
   );
 }
 
-
-export default BaseDetailWorkout
+export default BaseDetailWorkout;
 
 const styles = StyleSheet.create({
   base: {
