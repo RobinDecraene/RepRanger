@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useCallback  } from 'react';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { firebase } from '../../Firebase';
 
-import { View, StyleSheet, ScrollView, Image, ActivityIndicator, Pressable } from 'react-native';
+import { View, StyleSheet, ScrollView, Image, ActivityIndicator, Pressable, Alert } from 'react-native';
 import { Title } from '../../Components/Title';
 import { Card } from '../../Components/Card';
 import { SmallTitle } from '../../Components/SmallTitle';
@@ -18,7 +18,8 @@ const NiewWorkout = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMuscle, setSelectedMuscle] = useState('Alles');
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
     const fetchWorkout = async () => {
       try {
         const workoutSnapshot = await firebase.firestore().collection('workouts').get();
@@ -63,11 +64,32 @@ const NiewWorkout = () => {
     fetchWorkout();
 
     return () => unsubscribe();
-  }, []);
+  }, [])
+  );
 
   const handleFilterPress = (muscleName) => {
     setSelectedMuscle(muscleName === selectedMuscle ? 'Alles' : muscleName);
   };
+
+  const deleteWorkout = async (workoutId) => {
+    const db = firebase.firestore();
+    const currentUser = firebase.auth().currentUser;
+    if (currentUser) {
+      try {
+        const userRef = db.collection('users').doc(currentUser.uid).collection('saved_workouts').doc(workoutId);
+        await userRef.delete();
+        setWorkoutData(prevWorkoutData => prevWorkoutData.map(workout => {
+          if (workout.id === workoutId) {
+            return { ...workout, saved_workout: false };
+          }
+          return workout;
+        }));
+      } catch (error) {
+        console.error('Error deleting saved workout:', error);
+      }
+    }
+  };
+  
 
   const toggleSavedWorkout = async (workoutId, isSaved, exercises) => {
     const currentUser = firebase.auth().currentUser;
@@ -81,7 +103,18 @@ const NiewWorkout = () => {
   
     try {
       if (isSaved) {
-        await savedWorkoutsRef.delete();
+        Alert.alert(
+          "Verwijder Workout",
+          "Weet je zeker dat je deze workout wilt verwijderen?",
+          [
+            {
+              text: "Annuleren",
+              style: "cancel"
+            },
+            { text: "Verwijder", onPress: () => deleteWorkout(workoutId) }
+          ],
+          { cancelable: false }
+        );
       } else {
         const workoutDocRef = firebase.firestore().doc(`workouts/${workoutId}`);
         const exerciseRefs = exercises.map(exercise => firebase.firestore().doc(`exercises/${exercise.id}`));
@@ -90,19 +123,17 @@ const NiewWorkout = () => {
           exercisesSaved: exerciseRefs
         };
         await savedWorkoutsRef.set(savedWorkoutData);
+        setWorkoutData(prevWorkoutData => prevWorkoutData.map(workout => {
+          if (workout.id === workoutId) {
+            return { ...workout, saved_workout: true };
+          }
+          return workout;
+        }));
       }
-  
-      setWorkoutData(prevWorkoutData => prevWorkoutData.map(workout => {
-        if (workout.id === workoutId) {
-          return { ...workout, saved_workout: !isSaved };
-        }
-        return workout;
-      }));
     } catch (error) {
       console.error('Error toggling saved workout:', error);
     }
   };
-  
   
 
   if (loading) {
