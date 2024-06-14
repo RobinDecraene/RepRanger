@@ -63,49 +63,6 @@ const BaseDetailWorkout = () => {
     checkIfWorkoutIsSaved();
   }, [id]);
 
-  const deleteWorkout = async () => {
-    const db = firebase.firestore();
-    const currentUser = firebase.auth().currentUser;
-    if (currentUser) {
-      try {
-        const userRef = db.collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id);
-        await userRef.delete();
-        setIsSaved(false);
-      } catch (error) {
-        console.error('Error deleting saved workout:', error);
-      }
-    }
-  };
-
-  const toggleSavedWorkout = async () => {
-    const db = firebase.firestore();
-    const currentUser = firebase.auth().currentUser;
-    if (currentUser) {
-      try {
-        const userRef = db.collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id);
-        if (isSaved) {
-          Alert.alert(
-            "Verwijder Workout",
-            "Weet je zeker dat je deze workout wilt verwijderen?",
-            [
-              {
-                text: "Annuleren",
-                style: "cancel"
-              },
-              { text: "Verwijder", onPress: () => deleteWorkout() }
-            ],
-            { cancelable: false }
-          );
-        } else {
-          await userRef.set({ ...workoutData, id });
-          setIsSaved(true);
-        }
-      } catch (error) {
-        console.error('Error toggling saved workout:', error);
-      }
-    }
-  };
-
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -115,18 +72,11 @@ const BaseDetailWorkout = () => {
 
         <Title>{workoutData.name}</Title>
 
-        <Pressable onPress={toggleSavedWorkout} style={styles.iconRight}>
-          <MaterialCommunityIcons
-            name={isSaved ? "heart" : "heart-outline"}
-            color="#4E598C"
-            size={30}
-          />
-        </Pressable>
 
         {workoutData.exercises && workoutData.exercises.map((exercise, index) => (
           <Card
             key={index}
-            onPress={() => navigation.navigate('DetailExercise', { exercise: workoutData.exercises })}
+            onPress={() => navigation.navigate('DetailExercise', { exercise: exercise })}
             style={styles.card}>
             <Image
               style={styles.exercisesImg}
@@ -162,11 +112,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 50,
     left: 20
-  },
-  iconRight: {
-    position: 'absolute',
-    top: 55,
-    right: 20
   },
   card: {
     flexDirection: 'row',
