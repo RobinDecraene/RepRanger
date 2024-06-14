@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 
-import { Image, Pressable, StyleSheet, View, ActivityIndicator } from 'react-native';
+import { Image, Pressable, StyleSheet, View, ActivityIndicator, Alert } from 'react-native';
 import { P } from '../../Components/Text';
 import { Button } from '../../Components/Button';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -79,12 +79,28 @@ const Account = () => {
     }, [])
   );
 
-  const handleLogout = async () => {
-    try {
-      await firebase.auth().signOut();
-      navigation.navigate('Start');
-    } catch (error) {
-    }
+  const handleLogout = () => {
+    Alert.alert(
+      "Log uit",
+      "Ben je zeker dat je wilt uitloggen?",
+      [
+        {
+          text: "Annuleren",
+          style: "cancel"
+        },
+        {
+          text: "Log uit",
+          onPress: async () => {
+            try {
+              await firebase.auth().signOut();
+            } catch (error) {
+              console.error(error);
+            }
+          }
+        }
+      ],
+      { cancelable: false }
+    );
   };
 
   if (loading) {

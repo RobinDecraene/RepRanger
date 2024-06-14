@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { firebase } from '../../Firebase';
 
-import { StyleSheet, View, Alert } from 'react-native';
+import { StyleSheet, View, Alert, ScrollView } from 'react-native';
 import { Button, ButtonLink } from '../../Components/Button';
 import { Input } from '../../Components/Input';
 import { Title } from '../../Components/Title';
@@ -46,39 +46,49 @@ const Login = () => {
   
 
   return (
-    <View style={styles.container}>
-      <Title>Login</Title>
-      <Input
-        placeholder="Email" 
-        onChangeText={(email) => setEmail(email)}
-        keyboardType="email-address"
-        autoCapitalize='none'
-      />
+    <ScrollView style={styles.base} contentContainerStyle={styles.contentContainer}>
+      <View style={styles.container}>
+        <Title>Login</Title>
+        <Input
+          placeholder="Email" 
+          onChangeText={(email) => setEmail(email)}
+          keyboardType="email-address"
+          autoCapitalize='none'
+        />
 
-      <Input
-        placeholder="Wachtwoord" 
-        onChangeText={(password)=> setPassword(password)}
-        secureTextEntry={true}
-      />
+        <Input
+          placeholder="Wachtwoord" 
+          onChangeText={(password)=> setPassword(password)}
+          secureTextEntry={true}
+        />
 
-      <Button onPress={()=>loginUser(email,password)} style={styles.button}>Log in</Button>
-      <ButtonLink onPress={()=>navigation.navigate('Registration')} style={styles.margin}>Geen account? Regustreer u hier</ButtonLink>
-      <ButtonLink onPress={()=>{forgetPassword()}}>Wachtwoord vergeten?</ButtonLink>
-    </View>
+        <Button onPress={()=>loginUser(email,password)} style={styles.button}>Log in</Button>
+        <ButtonLink onPress={()=>navigation.navigate('Registration')} style={styles.margin}>Geen account? Regustreer u hier</ButtonLink>
+        <ButtonLink onPress={()=>{forgetPassword()}}>Wachtwoord vergeten?</ButtonLink>
+      </View>
+    </ScrollView>
   )
 }
 
 export default Login
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  base: {
     backgroundColor: '#FAFAFC',
+    width: "100%",
+    height: '100%'
+  },
+  contentContainer: {
+    flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
     paddingLeft: 20,
     paddingRight: 20,
     paddingTop: 20,
+  },
+  container: {
+    width: '100%',
+    alignItems: 'center',
   },
   button: {
     marginBottom: 10,
