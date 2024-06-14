@@ -188,6 +188,7 @@ const Exercises = () => {
             <Card
               style={styles.card}
               key={index}
+              onPress={() => navigation.navigate('DetailExercise', { exercise: exercise })}
             >
               <Image
                 style={styles.exercisesImg}
