@@ -1,8 +1,10 @@
-import React from 'react';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import { MaterialIcons } from '@expo/vector-icons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { firebase } from '../../Firebase';
 
-import { StyleSheet, View, Image, Pressable } from 'react-native';
+import { StyleSheet, View, Image, Pressable, Alert } from 'react-native';
 import { P } from '../../Components/Text';
 import { Title } from '../../Components/Title';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -12,7 +14,86 @@ import { SmallTitle } from '../../Components/SmallTitle';
 const DetailExercise = () => {
   const navigation = useNavigation();
   const route = useRoute();
-  const { exercise } = route.params;
+  const { exercise, source, id } = route.params;
+
+  const [isSaved, setIsSaved] = useState(false);
+
+  useFocusEffect(
+  useCallback(() => {
+    const fetchSavedExercises = async () => {
+      const currentUser = firebase.auth().currentUser;
+      if (!currentUser) {
+        console.error('User not authenticated');
+        return;
+      }
+
+      try {
+        const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
+        const savedExercisesRef = userRef.collection('saved_workouts').doc(id);
+        const savedDoc = await savedExercisesRef.get();
+        const savedExercises = savedDoc.exists ? savedDoc.data().exercisesSaved || [] : [];
+
+        setIsSaved(savedExercises.some(savedExercise => savedExercise.id === exercise.id));
+      } catch (error) {
+        console.error('Error fetching saved exercises:', error);
+      }
+    };
+
+    fetchSavedExercises();
+  }, [exercise.id, id])
+  );
+
+  const toggleSavedExercise = async () => {
+    const currentUser = firebase.auth().currentUser;
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    const userRef = firebase.firestore().collection('users').doc(currentUser.uid);
+    const savedExercisesRef = userRef.collection('saved_workouts').doc(id);
+
+    try {
+      const savedDoc = await savedExercisesRef.get();
+      const existingExercises = savedDoc.exists ? savedDoc.data().exercisesSaved || [] : [];
+      const exerciseRef = firebase.firestore().collection('exercises').doc(exercise.id);
+
+      let updatedExercises;
+
+      if (isSaved) {
+        updatedExercises = existingExercises.filter(ex => ex.id !== exercise.id);
+      } else {
+        updatedExercises = [...existingExercises, exerciseRef];
+      }
+
+      if (updatedExercises.length < 4) {
+        Alert.alert(
+          "Pas op",
+          "Je moet minstens 4 oefeningen in je workout hebben."
+        );
+        return;
+      }
+
+      if (updatedExercises.length > 8) {
+        Alert.alert(
+          "Pas op",
+          "Je mag maximum 8 oefeningen in je workout hebben",
+        );
+        return;
+      }
+
+      if (isSaved) {
+        await savedExercisesRef.update({ exercisesSaved: updatedExercises });
+      } else {
+        await savedExercisesRef.set({ exercisesSaved: updatedExercises }, { merge: true });
+      }
+
+      setIsSaved(!isSaved);
+    } catch (error) {
+      console.error('Error toggling saved exercise:', error);
+    }
+  };
+
   return (
     <ScrollView style={styles.base}>
       <View style={styles.container}>
@@ -23,12 +104,16 @@ const DetailExercise = () => {
         >
           <MaterialIcons name="keyboard-arrow-left" size={40} color="#4E598C" />
         </Pressable>
-
+        {source === 'Exercises' && (
+          <Pressable style={styles.iconRight} onPress={toggleSavedExercise}>
+            <MaterialCommunityIcons name={isSaved ? "heart" : "heart-outline"} color='#4E598C' size={30} />
+          </Pressable>
+        )}
 
         <Card style={styles.imagesCard}>
           <Image
             style={styles.exercisesImg}
-            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/big_exercises%2F${exercise.image_big}.png?alt=media`}}
+            source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/big_exercises%2F${exercise.image_big}.png?alt=media` }}
           />
         </Card>
 
@@ -46,16 +131,14 @@ const DetailExercise = () => {
           <Image
             style={styles.muscles}
             source={{ uri: `https://firebasestorage.googleapis.com/v0/b/repranger-b8691.appspot.com/o/muscles%2F${exercise.image_muscle}.png?alt=media` }}
-
-            />
+          />
         </Card>
-
       </View>
     </ScrollView>
   );
 }
 
-export default DetailExercise
+export default DetailExercise;
 
 const styles = StyleSheet.create({
   base: {
@@ -110,5 +193,10 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     alignItems: 'flex-start',
     marginBottom: 70
-  }
+  },
+  iconRight: {
+    position: 'absolute',
+    top: 55,
+    right: 20
+  },
 });

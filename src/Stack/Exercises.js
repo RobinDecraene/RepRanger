@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigation, useRoute  } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
+import { useNavigation, useRoute, useFocusEffect } from '@react-navigation/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
@@ -22,7 +22,8 @@ const Exercises = () => {
   const [selectedMuscle, setSelectedMuscle] = useState('Alles');
   const [savedExercises, setSavedExercises] = useState([]);
 
-  useEffect(() => {
+  useFocusEffect(
+    useCallback(() => {
     const fetchExercisesAndMuscles = async () => {
       try {
         const exercisesCollection = await firebase.firestore().collection('exercises').get();
@@ -63,7 +64,8 @@ const Exercises = () => {
     };
 
     fetchExercisesAndMuscles();
-  }, [id]);
+  }, [id])
+  );
 
   const toggleSavedExercise = async (exerciseId, isSaved) => {
     const currentUser = firebase.auth().currentUser;
@@ -188,7 +190,7 @@ const Exercises = () => {
             <Card
               style={styles.card}
               key={index}
-              onPress={() => navigation.navigate('DetailExercise', { exercise: exercise })}
+              onPress={() => navigation.navigate('DetailExercise', { exercise: exercise, source: 'Exercises', id: id })}
             >
               <Image
                 style={styles.exercisesImg}
