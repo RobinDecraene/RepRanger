@@ -31,6 +31,7 @@ const StartWorkout = () => {
   const intervalIdRef = useRef(null);
   const scrollViewRef = useRef(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [exerciseKey, setExerciseKey] = useState(0);
 
   const formatTime = (seconds) => {
     const minutes = Math.floor(seconds / 60);
@@ -60,7 +61,6 @@ const StartWorkout = () => {
       setEndTime(elapsedTime);
     }
   }, [currentExerciseIndex, elapsedTime]);
-  
 
   const handleNextExercise = () => {
     const isAnyInputEmpty = currentExerciseData.some(set => set.reps === '' || set.kg === '');
@@ -74,42 +74,51 @@ const StartWorkout = () => {
     }
     
     const currentExercise = exercises[currentExerciseIndex];
+    const exerciseExists = workoutData.some(data => data.exerciseName === currentExercise.name);
     
-    setWorkoutData(prevData => [
-      ...prevData,
-      { exerciseName: currentExercise.name, sets: currentExerciseData }
-    ]);
-    
-    setCurrentExerciseIndex(prevIndex => prevIndex + 1);
-    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
-  };
-
-
-  const handlePreviousExercise = () => {
-    const isAnyInputEmpty = currentExerciseData.some(set => set.reps === '' || set.kg === '');
-    
-    if (isAnyInputEmpty) {
-      Alert.alert(
-        "Lege set",
-        "Je bent een van je sets vergeten invullen!",
-      );
-      return;
+    if (!exerciseExists) {
+      setWorkoutData(prevData => [
+        ...prevData,
+        { exerciseName: currentExercise.name, sets: currentExerciseData }
+      ]);
+    } else {
+      setWorkoutData(prevData => prevData.map(data =>
+        data.exerciseName === currentExercise.name
+          ? { exerciseName: data.exerciseName, sets: currentExerciseData }
+          : data
+      ));
     }
     
+    setCurrentExerciseIndex(prevIndex => prevIndex + 1);
+    setCurrentExerciseData([]);
+    setExerciseKey(prevKey => prevKey + 1);
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  };
+  
+  const handlePreviousExercise = () => {
     const currentExercise = exercises[currentExerciseIndex];
+    const exerciseExists = workoutData.some(data => data.exerciseName === currentExercise.name);
     
-    setWorkoutData(prevData => [
-      ...prevData,
-      { exerciseName: currentExercise.name, sets: currentExerciseData }
-    ]);
+    if (!exerciseExists) {
+      setWorkoutData(prevData => [
+        ...prevData,
+        { exerciseName: currentExercise.name, sets: currentExerciseData }
+      ]);
+    } else {
+      setWorkoutData(prevData => prevData.map(data =>
+        data.exerciseName === currentExercise.name
+          ? { exerciseName: data.exerciseName, sets: currentExerciseData }
+          : data
+      ));
+    }
     
     setCurrentExerciseIndex(prevIndex => prevIndex - 1);
-    
-    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
-    
-    const previousExerciseData = workoutData[workoutData.length - 1]?.sets || [];
+    const previousExerciseData = workoutData.find(data => data.exerciseName === exercises[currentExerciseIndex - 1]?.name)?.sets || [];
     setCurrentExerciseData(previousExerciseData);
+    setExerciseKey(prevKey => prevKey + 1);
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   };
+  
   
   
   const handleEndWorkout = async () => {
@@ -239,7 +248,7 @@ const StartWorkout = () => {
               </View>
 
               {Array.from({ length: selectedSets }).map((_, index) => (
-                <Card key={index} style={styles.setCard}>
+                <Card key={`${exerciseKey}-${index}`} style={styles.setCard}>
                   <SmallTitle>{`Set ${index + 1}`}</SmallTitle>
                   <View style={styles.setCardInfo}>
                     <View style={styles.setCardInputRow}>
@@ -247,6 +256,7 @@ const StartWorkout = () => {
                         style={pickerSelectStyles}
                         placeholder={{ label: ' ', value: '' }}
                         onValueChange={(value) => handleSetDataChange(index, 'reps', value)}
+                        value={currentExerciseData[index]?.reps || ''}
                         items={[
                           { label: '8', value: '8' },
                           { label: '9', value: '9' },
@@ -262,12 +272,14 @@ const StartWorkout = () => {
                         style={styles.setCardInput} 
                         keyboardType='numeric'
                         onChangeText={(value) => handleSetDataChange(index, 'kg', value)}
+                        value={currentExerciseData[index]?.kg || ''}
                       />
                       <P>kg</P>
                     </View>
                   </View>
                 </Card>
               ))}
+
 
               <Card onPress={handleNextExercise} style={[styles.nextExercises, styles.marginTop]}>
                 {exercises[currentExerciseIndex + 1] ? (
