@@ -4,7 +4,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 
-import { Pressable, StyleSheet, View, Image, Alert } from 'react-native';
+import { Pressable, StyleSheet, View, Image, Alert, ActivityIndicator } from 'react-native';
 import { P } from '../../Components/Text';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Card } from '../../Components/Card';
@@ -15,99 +15,110 @@ const BaseDetailWorkout = () => {
   const navigation = useNavigation();
   const route = useRoute();
   const { id } = route.params;
+
+  const [loading, setLoading] = useState(true);
   const [workoutData, setWorkoutData] = useState({});
   const [isSaved, setIsSaved] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
-      const fetchWorkoutData = async () => {
-        const db = firebase.firestore();
-        try {
-          const workoutRef = await db.collection('workouts').doc(id).get();
-          const workoutDoc = workoutRef.data();
+    const fetchWorkout = async () => {
+      try {
+        const workoutDoc = await firebase.firestore().collection('workouts').doc(id).get();
+        const workout = workoutDoc.data();
 
-          const exerciseDataPromises = workoutDoc.exercises.map(async exerciseRef => {
-            const exerciseSnapshot = await exerciseRef.get();
-            return exerciseSnapshot.data();
-          });
+        const muscleGroupDoc = await workout.muscle_group.get();
+        const muscleGroupData = muscleGroupDoc.data();
+        workout.muscle_group = muscleGroupData;
 
-          const exerciseData = await Promise.all(exerciseDataPromises);
+        const exercisesPromises = workout.exercises.map(async exerciseRef => {
+          const exerciseDoc = await exerciseRef.get();
+          return { id: exerciseDoc.id, ...exerciseDoc.data() };
+        });
 
-          setWorkoutData({ ...workoutDoc, exercises: exerciseData });
-        } catch (error) {
-          console.error('Error fetching workout document:', error);
-        }
-      };
+        workout.exercises = await Promise.all(exercisesPromises);
 
-      const checkIfWorkoutIsSaved = async () => {
-        const db = firebase.firestore();
         const currentUser = firebase.auth().currentUser;
         if (currentUser) {
-          try {
-            const savedWorkoutRef = await db
-              .collection('users')
-              .doc(currentUser.uid)
-              .collection('saved_workouts')
-              .doc(id)
-              .get();
-
-            if (savedWorkoutRef.exists) {
-              setIsSaved(true);
-            }
-          } catch (error) {
-            console.error('Error checking saved workout:', error);
-          }
+          const savedWorkoutRef = await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id).get();
+          setIsSaved(savedWorkoutRef.exists);
         }
-      };
 
-      fetchWorkoutData();
-      checkIfWorkoutIsSaved();
+        setWorkoutData(workout);
+      } catch (error) {
+        console.error('Error fetching workout:', error);
+      }
+    };
 
-    }, [id])
+    fetchWorkout();
+    setLoading(false);
+  }, [id])
   );
 
-  const deleteWorkout = async () => {
-    const db = firebase.firestore();
+  const saveWorkout = async () => {
     const currentUser = firebase.auth().currentUser;
-    if (currentUser) {
-      try {
-        const userRef = db.collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id);
-        await userRef.delete();
-        setIsSaved(false);
-      } catch (error) {
-        console.error('Error deleting saved workout:', error);
-      }
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    try {
+      const workoutDocRef = firebase.firestore().doc(`workouts/${id}`);
+      const exerciseRefs = workoutData.exercises.map(exercise => firebase.firestore().doc(`exercises/${exercise.id}`));
+      const savedWorkoutData = {
+        workout: workoutDocRef,
+        exercisesSaved: exerciseRefs
+      };
+
+      await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id).set(savedWorkoutData);
+      setIsSaved(true);
+    } catch (error) {
+      console.error('Error saving workout:', error);
     }
   };
 
   const toggleSavedWorkout = async () => {
-    const db = firebase.firestore();
     const currentUser = firebase.auth().currentUser;
-    if (currentUser) {
-      try {
-        const userRef = db.collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id);
-        if (isSaved) {
-          Alert.alert(
-            "Verwijder Workout",
-            "Weet je zeker dat je deze workout wilt verwijderen?",
-            [
-              {
-                text: "Annuleren",
-                style: "cancel"
-              },
-              { text: "Verwijder", onPress: () => deleteWorkout() }
-            ],
-            { cancelable: false }
-          );
-        } else {
-          await userRef.set({ ...workoutData, id });
-          setIsSaved(true);
-        }
-      } catch (error) {
-        console.error('Error toggling saved workout:', error);
-      }
+    if (!currentUser) {
+      console.error('User not authenticated');
+      return;
+    }
+
+    if (isSaved) {
+      Alert.alert(
+        "Verwijder Workout",
+        "Weet je zeker dat je deze workout wilt verwijderen?",
+        [
+          {
+            text: "Annuleren",
+            style: "cancel"
+          },
+          {
+            text: "Verwijder",
+            onPress: async () => {
+              try {
+                await firebase.firestore().collection('users').doc(currentUser.uid).collection('saved_workouts').doc(id).delete();
+                setIsSaved(false);
+              } catch (error) {
+                console.error('Error deleting saved workout:', error);
+              }
+            }
+          }
+        ],
+        { cancelable: false }
+      );
+    } else {
+      saveWorkout();
     }
   };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4E598C" />
+      </View>
+    );
+  }
 
   return (
     <ScrollView style={styles.base}>
@@ -139,11 +150,10 @@ const BaseDetailWorkout = () => {
             <MaterialIcons name="keyboard-arrow-right" size={35} color="#4E598C" />
           </Card>
         ))}
-
       </View>
     </ScrollView>
   );
-}
+};
 
 export default BaseDetailWorkout;
 
