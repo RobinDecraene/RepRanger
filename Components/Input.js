@@ -32,14 +32,12 @@ export function Input({ placeholder, onChangeText, autoCapitalize, secureTextEnt
 
 const styles = StyleSheet.create({
   input: {
-    backgroundColor:'#EBECF2',
-    alignItems:'center',
-    justifyContent:'center',
+    backgroundColor: '#EBECF2',
     borderRadius: 30,
-    borderTopRightRadius: 30,
-    borderTopLeftRadius: 30,
     marginBottom: 15,
     width: '100%',
-    color: '#4E598C'
+    color: '#4E598C',
+    padding: 5,
+    textAlign: 'center'
   }
 });
