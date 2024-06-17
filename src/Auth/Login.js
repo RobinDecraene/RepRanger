@@ -40,7 +40,10 @@ const Login = () => {
       );
     })
     .catch(error => {
-        alert(error.message);
+      Alert.alert(
+        "Probleem",
+        error.message
+      );
     });
   }
   

@@ -73,7 +73,10 @@ const EditWorkout = () => {
 
   const confirmDeleteExercise = (workoutId, exerciseRef) => {
     if (exerciseList.length <= 4) {
-      alert('Je moet minstens 4 oefeningen hebben in je workout.');
+      Alert.alert(
+        "Niet genoeg oefeningen",
+        "Je moet minstens 4 oefening hebben in je workout.",
+        );
       return;
     }
     Alert.alert(
@@ -122,7 +125,10 @@ const EditWorkout = () => {
         <Button
           onPress={() => {
             if (exerciseList.length >= 8) {
-              alert('Je kan niet meer dan 8 oefeningne hebben in je workout');
+              Alert.alert(
+                "Te veel oefeningen",
+                "Je kan niet meer dan 8 oefeningen hebben in je workout.",
+                );
             } else {
               navigation.navigate('Exercises', { id: id });
             }

@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { firebase } from '../../Firebase';
 import * as ImagePicker from 'expo-image-picker';
 
-import { Pressable, StyleSheet, View, Image, ActivityIndicator } from 'react-native';
+import { Pressable, StyleSheet, View, Image, ActivityIndicator, Alert } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { Title } from '../../Components/Title';
 import { Input } from '../../Components/Input';
@@ -43,7 +43,10 @@ const EditAccount = () => {
     const requestPermission = async () => {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== 'granted') {
-        alert('Sorry, we hebben toegang nodig tot uw camerarol voor dit te laten werken!');
+        Alert.alert(
+          "Toegang tot camerarol",
+          "We hebben toegang nodig tot uw camerarol voor dit te laten werken!",
+        );
       }
     };
 
